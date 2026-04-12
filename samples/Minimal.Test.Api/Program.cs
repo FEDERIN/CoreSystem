@@ -1,4 +1,5 @@
 using Core.Observability;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,4 +17,16 @@ app.UseObservabilityEndpoints();
 
 app.MapGet("/hello", () => Results.Ok(new { message = "Tracing is active!" }));
 
-app.Run();
+try
+{
+    Log.Information("Starting web host");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
