@@ -10,24 +10,35 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       # Overriding settings for Docker network (using service names)
-      - OpenTelemetry__Tracing__Enabled=true
-      - OpenTelemetry__Tracing__OtlpEndpoint=http://jaeger:4317
+      - OpenTelemetry__Tracing__OtlpEndpoint=http://otel-collector:4317
+      - OpenTelemetry__Logging__OtlpEndpoint=http://otel-collector:4317
       - OpenTelemetry__Metrics__Enabled=true
+      - OpenTelemetry__Tracing__Enabled=true
       - OpenTelemetry__Logging__Enabled=true
-      - OpenTelemetry__Logging__OtlpEndpoint=http://jaeger:4317
+    depends_on:
+      - otel-collector
+
+  # 2. The Collector (all-in-one Collector that sends to Jaeger and exposes metrics for Prometheus)
+  otel-collector:
+    container_name: core-otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-col/config.yml
+    command: ["--config=/etc/otel-col/config.yml"]
+    ports:
+      - "4317:4317" # Receive gRPC from the Minimal API
+      - "8889:8889" # Exhibit metrics for Prometheus
     depends_on:
       - jaeger
-      - prometheus
 
-  # 2. Jaeger (Tracing)
+  # 3. Jaeger (Visualizer of traces)
   jaeger:
     container_name: core-jaeger
     image: jaegertracing/all-in-one:latest
     ports:
       - "16686:16686" # UI
-      - "4317:4317"   # OTLP gRPC endpoint
 
-  # 3. Prometheus (Metrics)
+  # 4. Prometheus (Scrapes the Collector)
   prometheus:
     container_name: core-prometheus
     image: prom/prometheus:latest
@@ -37,7 +48,7 @@
     ports:
       - "9090:9090"
 
-  # 4. Grafana (Dashboards)
+  # 5. Grafana
   grafana:
     container_name: core-grafana
     image: grafana/grafana:latest
@@ -45,3 +56,5 @@
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning

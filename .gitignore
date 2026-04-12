@@ -1,10 +1,15 @@
 # Build outputs
 bin/
 obj/
+*.user
+*.userosscache
+*.sln.docstates
 
 # User-specific files
 .vs/
 .vscode/
+.idea/
+*.swp
 
 # Local configuration
 appsettings.Development.json
@@ -30,3 +35,15 @@ coverage-report/
 [Tt]est[Rr]esults/
 
 *.cobertura.xml
+
+# --- NuGet ---
+nupkgs/
+dist/
+packages/
+*.nupkg
+*.snupkg
+
+# Data
+.data/
+grafana/data/
+prometheus/data/

@@ -4,4 +4,4 @@
 scrape_configs:
   - job_name: 'minimal-api'
     static_configs:
-      - targets: ['minimal-api:8080'] # Using the service name from docker-compose
+      - targets: ['otel-collector:8889']

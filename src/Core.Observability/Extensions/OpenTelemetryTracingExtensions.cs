@@ -1,4 +1,5 @@
 ﻿using Core.Observability.Options;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
@@ -61,12 +62,29 @@ public static class OpenTelemetryTracingExtensions
                     })
                     // Automatic instrumentation for outgoing HTTP calls
                     .AddHttpClientInstrumentation()
+
                     // Automatic instrumentation for SQL Server queries
                     .AddSqlClientInstrumentation(options =>
                     {
-                        options.SetDbStatementForText = true;
                         options.RecordException = true;
+                        options.EnrichWithSqlCommand = (activity, command) =>
+                        {
+                            if (command is SqlCommand sqlCommand)
+                            {
+                                var query = sqlCommand.CommandText;
+
+                                if (query.Contains("password", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    activity.SetTag("db.statement", "REDACTED_FOR_SECURITY");
+                                }
+                                else
+                                {
+                                    activity.SetTag("db.statement", query);
+                                }
+                            }
+                        };
                     })
+
                     // Universal OTLP Exporter using the endpoint from options
                     .AddOtlpExporter(otlpOptions =>
                     {
