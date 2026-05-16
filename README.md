@@ -1,29 +1,157 @@
 # CoreSystem Ecosystem
 
-Welcome to the **CoreSystem** repository. This is a centralized ecosystem of reusable .NET libraries designed to standardize and accelerate the development of high-performance microservices.
+> Centralized ecosystem of reusable .NET libraries for building consistent, scalable, and high-performance microservices.
 
 ---
 
-## 📌 Project Vision
+## 🚀 Overview
 
-The goal of this repository is to provide a set of "Core" components that solve common architectural cross-cutting concerns, ensuring consistency across different services.
+**CoreSystem** provides a collection of modular and reusable libraries that solve common architectural and cross-cutting concerns in distributed systems.
 
-### Planned Modules
+The ecosystem is designed to help teams:
 
-* **Core.Observability**: (Upcoming) Plug-and-play integration for OpenTelemetry, Prometheus, Jaeger, and Serilog.
-* **Core.Messaging**: (Planned) Standardized wrappers for RabbitMQ/Azure Service Bus.
-* **Core.Security**: (Planned) Shared JWT validation and Authorization policies.
+- Standardize microservice architecture
+- Reduce duplicated infrastructure code
+- Improve maintainability and observability
+- Accelerate development across multiple services
 
 ---
 
-## 🏗️ Repository Structure
+# ✨ Features
 
-We follow a **Src/Samples** architecture to maintain professional-grade isolation:
+- Modular architecture
+- Clean separation of concerns
+- Enterprise-ready structure
+- Plug-and-play integrations
+- Scalable for large distributed systems
+- Consistent developer experience
+
+---
+
+# 📦 Planned Modules
+
+| Module | Description | Status |
+|---|---|---|
+| `Core.Observability` | OpenTelemetry, Prometheus, Jaeger, Serilog integration | 🚧 Upcoming |
+| `Core.Messaging` | RabbitMQ / Azure Service Bus abstractions | 📋 Planned |
+| `Core.Security` | JWT validation and authorization policies | 📋 Planned |
+
+---
+
+# 🏗️ Repository Structure
 
 ```text
-/
-├── src/                # Production-ready library projects
-├── samples/            # Demonstration APIs and implementation examples
-├── docs/               # Detailed documentation and architecture diagrams
-└── CoreSystem.sln      # Global Solution file
-    
+CoreSystem/
+│
+├── src/                     # Production-ready libraries
+│   ├── Core.Observability/
+│
+├── samples/                 # Example implementations
+│   ├── Sample.Minimal.Test.Api/
+│
+├── docs/                    # Architecture docs and guides
+│
+├── tests/                   # Unit and integration tests
+│
+├── CoreSystem.sln
+└── README.md
+```
+
+---
+
+# 🧠 Architectural Principles
+
+- Clean Architecture
+- SOLID principles
+- Dependency Injection first
+- High cohesion, low coupling
+- Observability by default
+- Cloud-native ready
+
+---
+
+# ⚙️ Technologies
+
+- .NET 8
+- ASP.NET Core
+- OpenTelemetry
+- Serilog
+- RabbitMQ
+- Docker
+- Kubernetes
+- xUnit
+
+---
+
+# 🚀 Getting Started
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-user/CoreSystem.git
+```
+
+Open the solution:
+
+```bash
+cd CoreSystem
+dotnet build
+```
+
+Run a sample:
+
+```bash
+cd samples/Sample.Api
+dotnet run
+```
+
+---
+
+# 📖 Documentation
+
+Detailed documentation and architectural guides are available in the `/docs` folder.
+
+Topics include:
+
+- Installation
+- Configuration
+- Observability setup
+- Messaging patterns
+- Security policies
+- Deployment strategies
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+If you'd like to contribute:
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Open a Pull Request
+
+---
+
+# 📌 Roadmap
+
+- [ ] Core.Observability
+- [ ] Core.Messaging
+- [ ] Core.Security
+- [ ] Distributed caching support
+- [ ] API Gateway utilities
+- [ ] Resilience and retry policies
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# ⭐ Support
+
+If you find this project useful, consider giving it a star on GitHub.
