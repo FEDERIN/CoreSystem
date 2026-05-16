@@ -1,34 +1,63 @@
-# CoreSystem Ecosystem
+# ⚙️ CoreSystem Ecosystem
 
-> Centralized ecosystem of reusable .NET libraries for building consistent, scalable, and high-performance microservices.
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-8.0-512bd4.svg" />
+  <img src="https://img.shields.io/badge/Architecture-Microservices-blue.svg" />
+  <img src="https://img.shields.io/badge/OpenTelemetry-Observability-orange.svg" />
+  <img src="https://img.shields.io/badge/Docker-Container-2496ed.svg" />
+  <img src="https://img.shields.io/badge/Status-Active-success.svg" />
+</p>
 
----
-
-## 🚀 Overview
-
-**CoreSystem** provides a collection of modular and reusable libraries that solve common architectural and cross-cutting concerns in distributed systems.
-
-The ecosystem is designed to help teams:
-
-- Standardize microservice architecture
-- Reduce duplicated infrastructure code
-- Improve maintainability and observability
-- Accelerate development across multiple services
+<p align="center">
+  <b>Cloud-Native • Modular • Observability-First • Enterprise-Ready</b>
+</p>
 
 ---
 
-# ✨ Features
+## 📖 Overview
 
-- Modular architecture
-- Clean separation of concerns
-- Enterprise-ready structure
-- Plug-and-play integrations
-- Scalable for large distributed systems
-- Consistent developer experience
+**CoreSystem** is a centralized ecosystem of reusable .NET libraries designed to standardize and accelerate the development of modern distributed systems and high-performance microservices.
+
+The project focuses on:
+
+- Consistent architecture across services
+- Shared infrastructure components
+- Cloud-native engineering practices
+- Developer productivity
+- Production-ready integrations
 
 ---
 
-# 📦 Planned Modules
+## ✨ Core Features
+
+| Category | Description |
+|----------|-------------|
+| 🏗 Architecture | Modular reusable libraries |
+| 📊 Observability | OpenTelemetry + Metrics + Logging |
+| 📨 Messaging | RabbitMQ / Azure Service Bus abstractions |
+| 🛡 Security | Shared JWT validation & authorization |
+| ⚡ Performance | Optimized for scalable microservices |
+| 🐳 Dev Experience | Docker-first workflows |
+
+---
+
+## 🧠 Architecture
+
+```mermaid
+graph TD
+    Services --> CoreSystem
+    CoreSystem --> Observability
+    CoreSystem --> Messaging
+    CoreSystem --> Security
+
+    Observability --> OpenTelemetry
+    Messaging --> RabbitMQ
+    Security --> JWT
+```
+
+---
+
+## 📦 Planned Modules
 
 | Module | Description | Status |
 |---|---|---|
@@ -38,20 +67,25 @@ The ecosystem is designed to help teams:
 
 ---
 
-# 🏗️ Repository Structure
+## 🏗 Repository Structure
 
 ```text
 CoreSystem/
 │
 ├── src/                     # Production-ready libraries
 │   ├── Core.Observability/
+│   ├── Core.Messaging/
+│   └── Core.Security/
 │
 ├── samples/                 # Example implementations
-│   ├── Sample.Minimal.Test.Api/
+│   ├── Sample.Api/
+│   └── Sample.Worker/
 │
-├── docs/                    # Architecture docs and guides
+├── tests/                   # Unit & integration tests
 │
-├── tests/                   # Unit and integration tests
+├── docs/                    # Architecture & guides
+│
+├── docker/
 │
 ├── CoreSystem.sln
 └── README.md
@@ -59,46 +93,38 @@ CoreSystem/
 
 ---
 
-# 🧠 Architectural Principles
-
-- Clean Architecture
-- SOLID principles
-- Dependency Injection first
-- High cohesion, low coupling
-- Observability by default
-- Cloud-native ready
-
----
-
-# ⚙️ Technologies
+## 🏗 Tech Stack
 
 - .NET 8
 - ASP.NET Core
 - OpenTelemetry
 - Serilog
 - RabbitMQ
-- Docker
+- Docker & Docker Compose
 - Kubernetes
 - xUnit
 
 ---
 
-# 🚀 Getting Started
+## 🚀 Getting Started
 
-Clone the repository:
+### 🐳 Run with Docker
 
 ```bash
-git clone https://github.com/your-user/CoreSystem.git
+docker compose up -d --build
 ```
 
-Open the solution:
+---
+
+### 💻 Build Solution
 
 ```bash
-cd CoreSystem
 dotnet build
 ```
 
-Run a sample:
+---
+
+### ▶️ Run Sample API
 
 ```bash
 cd samples/Sample.Api
@@ -107,26 +133,45 @@ dotnet run
 
 ---
 
-# 📖 Documentation
+## 📊 Observability Vision
 
-Detailed documentation and architectural guides are available in the `/docs` folder.
+CoreSystem aims to provide production-grade observability out of the box:
 
-Topics include:
-
-- Installation
-- Configuration
-- Observability setup
-- Messaging patterns
-- Security policies
-- Deployment strategies
+- 🔭 Distributed tracing → OpenTelemetry
+- 📈 Metrics → Prometheus
+- 📊 Dashboards → Grafana
+- 🧾 Structured logging → Serilog
+- 🩺 Health checks integration
 
 ---
 
-# 🤝 Contributing
+## 🧪 Engineering Goals
 
-Contributions are welcome.
+This ecosystem is designed to demonstrate:
 
-If you'd like to contribute:
+- Enterprise-level architecture
+- Reusable platform engineering
+- Scalable distributed systems
+- Clean and maintainable codebases
+- Cloud-native backend development
+
+---
+
+## 📌 Roadmap
+
+- [ ] Core.Observability
+- [ ] Core.Messaging
+- [ ] Core.Security
+- [ ] Distributed caching support
+- [ ] API Gateway utilities
+- [ ] Resilience & retry policies
+- [ ] Service discovery integrations
+
+---
+
+## 🤝 Contributing
+
+Contributions, ideas, and improvements are welcome.
 
 1. Fork the repository
 2. Create a feature branch
@@ -135,23 +180,12 @@ If you'd like to contribute:
 
 ---
 
-# 📌 Roadmap
-
-- [ ] Core.Observability
-- [ ] Core.Messaging
-- [ ] Core.Security
-- [ ] Distributed caching support
-- [ ] API Gateway utilities
-- [ ] Resilience and retry policies
-
----
-
-# 📄 License
+## 📄 License
 
 This project is licensed under the MIT License.
 
 ---
 
-# ⭐ Support
+## ⭐ Support
 
 If you find this project useful, consider giving it a star on GitHub.
