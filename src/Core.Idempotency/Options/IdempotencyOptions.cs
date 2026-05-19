@@ -37,7 +37,6 @@ public class IdempotencyOptions
 
     /// <summary>
     /// The name of the OpenTelemetry meter used to report metrics.
-    /// Default is "FGutierrez.Core.Idempotency".
     /// </summary>
     public string? MeterName { get; set; } = null;
 }
