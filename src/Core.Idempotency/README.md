@@ -2,7 +2,7 @@
 
 ![NuGet](https://img.shields.io/nuget/v/FGutierrez.Core.Idempotency?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/FGutierrez.Core.Idempotency?style=for-the-badge)
-![License](https://img.shields.io/github/license/FEDERIN/CoreSystem?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.15.1-purple?style=for-the-badge)
 ![Storage](https://img.shields.io/badge/Storage-Redis%20%7C%20PostgreSQL-green?style=for-the-badge)
