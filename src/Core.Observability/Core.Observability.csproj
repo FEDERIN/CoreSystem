@@ -10,14 +10,13 @@
     <Authors>Federin Pastor Gutierrez Ortiz</Authors>
     <Description>Standardized observability for .NET 8 Cloud-Native apps with OpenTelemetry and Serilog.</Description>
     <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
-    
     <PackageReadmeFile>README.md</PackageReadmeFile>
-	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
-	<None Include="LICENSE.txt" Pack="true" PackagePath="\" />
+	<None Include="LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
   
   <ItemGroup>

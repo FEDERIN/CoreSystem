@@ -5,7 +5,6 @@ using Core.Idempotency.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configuración de Observabilidad (Ya lo tienes perfecto)
 builder.AddObservability(
     environment: builder.Environment.EnvironmentName,
     serviceName: "Minimal.Test.Api",
@@ -35,16 +34,13 @@ else
 
 var app = builder.Build();
 
-// 3. Middlewares de Infraestructura
 app.UseObservabilityEndpoints();
 
-// IMPORTANTE: El middleware de idempotencia debe ir antes de los endpoints
-// pero después de la observabilidad si quieres que las trazas midan el acierto en caché
 app.UseIdempotency();
 
 app.MapGet("/hello", () => Results.Ok(new { message = "Tracing is active!" }));
 
-// Endpoint de prueba para Idempotencia (POST)
+
 app.MapPost("/process-order", () =>
     Results.Ok(new
     {

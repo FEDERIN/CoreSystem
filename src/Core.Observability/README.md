@@ -54,6 +54,12 @@ Auto-detects service name, version, and environment.
 
 /health and /ready endpoints with structured output.
 
+### 🔗 Automatic Suite Integration
+Out-of-the-box support for **FGutierrez.Core.Idempotency**. Metrics and Traces from our idempotency engine are collected automatically without extra configuration.
+
+### 🛡️ Resilience First
+The library validates OTLP endpoints and configuration sections at startup. If the collector is down or the config is missing, your application remains stable and continues to run.
+
 ---
 
 ## 📦 Installation
@@ -61,6 +67,34 @@ Auto-detects service name, version, and environment.
 dotnet add package FGutierrez.Core.Observability
 
 ---
+
+
+## ⚙️ Configuration (appsettings.json)
+To enable telemetry, add the OpenTelemetry section to your appsettings.json. The library uses this configuration to manage exporters and instrumentation sources.
+
+Note: To capture data from the Idempotency engine, ensure "FGutierrez.Core.Idempotency" is included in the Meters and Sources arrays.
+
+```json
+{
+  "OpenTelemetry": {
+    "Tracing": {
+      "Enabled": true,
+      "OtlpEndpoint": "http://localhost:4317",
+    },
+    "Metrics": {
+      "Enabled": true,
+      "OtlpEndpoint": "http://localhost:4317",
+      "Meters": [
+        "FGutierrez.Core.Idempotency"
+      ]
+    },
+    "Logging": {
+      "Enabled": true,
+      "OtlpEndpoint": "http://localhost:4317"
+    }
+  }
+}
+```
 
 ## 🧑‍💻 Usage
 
