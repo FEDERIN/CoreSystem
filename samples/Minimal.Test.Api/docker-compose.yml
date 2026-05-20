@@ -1,5 +1,29 @@
 ﻿services:
-  # 1. Your Minimal API (Sample Project)
+  # 1. PostgreSQL (Provider)
+  postgres:
+    image: postgres:16-alpine
+    container_name: core-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432" # IMPORTANTE: Expone el puerto para tu API local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d observability_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Redis Local
+  redis:
+    image: redis:7-alpine
+    container_name: core-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+
+  # 3. Your Minimal API (Sample Project)
   minimal-api:
     container_name: minimal-test-api
     build:
@@ -9,16 +33,31 @@
       - "5185:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      # Overriding settings for Docker network (using service names)
+      # OpenTelemetry Configuration
       - OpenTelemetry__Tracing__OtlpEndpoint=http://otel-collector:4317
+      - OpenTelemetry__Metrics__OtlpEndpoint=http://otel-collector:4317
       - OpenTelemetry__Logging__OtlpEndpoint=http://otel-collector:4317
       - OpenTelemetry__Metrics__Enabled=true
       - OpenTelemetry__Tracing__Enabled=true
       - OpenTelemetry__Logging__Enabled=true
+      # List of meters to instrument (The 0 indicates the first item in the list)
+      - OpenTelemetry__Metrics__Meters__0=FGutierrez.Core.Idempotency
+
+      # Idempotency Configuration (This was missing)
+      - Idempotency__Provider=${IDEMPOTENCY_PROVIDER}
+      - Idempotency__Enabled=true
+      - Idempotency__HeaderName=X-Idempotency-Key
+      - Idempotency__Expiration=24:00:00
+      - Idempotency__MeterName=FGutierrez.Core.Idempotency
+
+      # Connection Strings
+      - ConnectionStrings__PostgresIdempotency=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__RedisLocal=redis:6379,password=${REDIS_PASSWORD},ssl=false
     depends_on:
       - otel-collector
+      - postgres
 
-  # 2. The Collector (all-in-one Collector that sends to Jaeger and exposes metrics for Prometheus)
+  # 4. The Collector
   otel-collector:
     container_name: core-otel-collector
     image: otel/opentelemetry-collector-contrib:latest
@@ -31,14 +70,14 @@
     depends_on:
       - jaeger
 
-  # 3. Jaeger (Visualizer of traces)
+  # 5. Jaeger
   jaeger:
     container_name: core-jaeger
     image: jaegertracing/all-in-one:latest
     ports:
       - "16686:16686" # UI
 
-  # 4. Prometheus (Scrapes the Collector)
+  # 6. Prometheus
   prometheus:
     container_name: core-prometheus
     image: prom/prometheus:latest
@@ -48,13 +87,14 @@
     ports:
       - "9090:9090"
 
-  # 5. Grafana
+  # 7. Grafana
   grafana:
     container_name: core-grafana
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning

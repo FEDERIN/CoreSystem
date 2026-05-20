@@ -7,6 +7,7 @@ WORKDIR /src
 # paths must match the file system exactly.
 COPY ["samples/Minimal.Test.Api/Minimal.Test.Api.csproj", "samples/Minimal.Test.Api/"]
 COPY ["src/Core.Observability/Core.Observability.csproj", "src/Core.Observability/"]
+COPY ["src/Core.Idempotency/Core.Idempotency.csproj", "src/Core.Idempotency/"]
 
 # 2. Restore dependencies
 RUN dotnet restore "samples/Minimal.Test.Api/Minimal.Test.Api.csproj"

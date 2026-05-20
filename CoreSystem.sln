@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11811.120
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -10,6 +10,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{9938565C-D966-4DB9-8D3B-6D92CACE56DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimal.Test.Api", "samples\Minimal.Test.Api\Minimal.Test.Api.csproj", "{4E85C4A5-C126-A849-A39B-96D82B5ACFA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Idempotency", "src\Core.Idempotency\Core.Idempotency.csproj", "{EC908145-4354-4D09-AB2E-99BCBE7E6315}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CC99C87C-68B7-48BD-9903-804D628BC53A}"
+	ProjectSection(SolutionItems) = preProject
+		docs\idempotency-flow.png = docs\idempotency-flow.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +32,10 @@ Global
 		{4E85C4A5-C126-A849-A39B-96D82B5ACFA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E85C4A5-C126-A849-A39B-96D82B5ACFA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E85C4A5-C126-A849-A39B-96D82B5ACFA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC908145-4354-4D09-AB2E-99BCBE7E6315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC908145-4354-4D09-AB2E-99BCBE7E6315}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC908145-4354-4D09-AB2E-99BCBE7E6315}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC908145-4354-4D09-AB2E-99BCBE7E6315}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{733186E1-3FFF-753B-5BC8-313CA916646D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{4E85C4A5-C126-A849-A39B-96D82B5ACFA5} = {9938565C-D966-4DB9-8D3B-6D92CACE56DF}
+		{EC908145-4354-4D09-AB2E-99BCBE7E6315} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

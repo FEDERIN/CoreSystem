@@ -12,17 +12,19 @@ public class OpenTelemetryOptions
 public class OtlpLoggingOptions
 {
     public bool Enabled { get; set; }
-    public string OtlpEndpoint { get; set; } = "http://jaeger:4317";
+    public string OtlpEndpoint { get; set; } = "http://otel-collector:4317";
 }
 
 public class OtlpTracingOptions
 {
     public bool Enabled { get; set; }
-    public string OtlpEndpoint { get; set; } = "http://jaeger:4317";
+    public string OtlpEndpoint { get; set; } = "http://otel-collector:4317";
     public double SamplingProbability { get; set; } = 1.0;
 }
 
 public class OtlpMetricsOptions
 {
     public bool Enabled { get; set; }
+    public string OtlpEndpoint { get; set; } = "http://otel-collector:4317";
+    public List<string> Meters { get; set; } = [];
 }

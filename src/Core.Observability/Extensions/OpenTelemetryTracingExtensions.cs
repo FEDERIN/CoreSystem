@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Diagnostics;
 
 namespace Core.Observability.Extensions;
 
@@ -20,24 +21,31 @@ public static class OpenTelemetryTracingExtensions
         string serviceName,
         string serviceNamespace)
     {
-        // Bind the "OpenTelemetry" section from appsettings.json to our options class
+        // Guard clause for the service collection
+        ArgumentNullException.ThrowIfNull(services);
+
         var oTelOptions = new OpenTelemetryOptions();
-        configuration.GetSection(OpenTelemetryOptions.SectionName).Bind(oTelOptions);
+        var section = configuration.GetSection(OpenTelemetryOptions.SectionName);
+
+        // If the configuration section is missing, bypass tracing setup to prevent crashes
+        if (!section.Exists()) return services;
+
+        section.Bind(oTelOptions);
 
         // Early return if tracing is not enabled in configuration
-        if (!oTelOptions.Tracing.Enabled)
+        if (oTelOptions.Tracing == null || !oTelOptions.Tracing.Enabled)
             return services;
 
-        // Configure the Resource with application metadata
+        // Configure the Resource with application metadata and versioning
         var resourceBuilder = ResourceBuilder.CreateDefault()
             .AddService(
-                serviceName: serviceName,
+                serviceName: serviceName ?? "unknown-service",
                 serviceVersion: typeof(OpenTelemetryTracingExtensions).Assembly.GetName().Version?.ToString() ?? "1.0.0")
             .AddAttributes(new Dictionary<string, object>
             {
-                ["deployment.environment"] = environment,
+                ["deployment.environment"] = environment ?? "unknown",
                 ["host.name"] = Environment.MachineName,
-                ["service.namespace"] = serviceNamespace
+                ["service.namespace"] = serviceNamespace ?? "default-namespace"
             });
 
         // Setup OpenTelemetry SDK for Tracing
@@ -46,7 +54,7 @@ public static class OpenTelemetryTracingExtensions
             {
                 tracerProvider
                     .SetResourceBuilder(resourceBuilder)
-                    // Use the SamplingProbability from our centralized options
+                    // Use the SamplingProbability from our centralized options (Safe default to 1.0)
                     .SetSampler(new TraceIdRatioBasedSampler(oTelOptions.Tracing.SamplingProbability))
 
                     // Automatic instrumentation for ASP.NET Core requests
@@ -57,13 +65,15 @@ public static class OpenTelemetryTracingExtensions
                         options.Filter = httpContext =>
                         {
                             var path = httpContext.Request.Path.Value ?? string.Empty;
-                            return !path.Contains("/health") && !path.Contains("/swagger") && !path.Contains("/metrics");
+                            return !path.Contains("/health") &&
+                                   !path.Contains("/swagger") &&
+                                   !path.Contains("/metrics");
                         };
                     })
                     // Automatic instrumentation for outgoing HTTP calls
                     .AddHttpClientInstrumentation()
 
-                    // Automatic instrumentation for SQL Server queries
+                    // Automatic instrumentation for SQL Server queries with security redaction
                     .AddSqlClientInstrumentation(options =>
                     {
                         options.RecordException = true;
@@ -73,7 +83,8 @@ public static class OpenTelemetryTracingExtensions
                             {
                                 var query = sqlCommand.CommandText;
 
-                                if (query.Contains("password", StringComparison.OrdinalIgnoreCase))
+                                // Redact sensitive information from traces
+                                if (!string.IsNullOrEmpty(query) && query.Contains("password", StringComparison.OrdinalIgnoreCase))
                                 {
                                     activity.SetTag("db.statement", "REDACTED_FOR_SECURITY");
                                 }
@@ -83,18 +94,38 @@ public static class OpenTelemetryTracingExtensions
                                 }
                             }
                         };
-                    })
+                    });
 
-                    // Universal OTLP Exporter using the endpoint from options
-                    .AddOtlpExporter(otlpOptions =>
+                // Resilience check for Tracing OTLP endpoint
+                var endpoint = oTelOptions.Tracing.OtlpEndpoint;
+
+                if (string.IsNullOrWhiteSpace(endpoint))
+                {
+                    Trace.WriteLine("[Observability] Tracing OTLP Endpoint is empty. Skipping exporter.");
+                    return;
+                }
+
+                // Using TryCreate to ensure the application remains stable despite configuration errors
+                if (Uri.TryCreate(endpoint, UriKind.Absolute, out var endpointUri))
+                {
+                    tracerProvider.AddOtlpExporter(otlpOptions =>
                     {
-                        otlpOptions.Endpoint = new Uri(oTelOptions.Tracing.OtlpEndpoint);
+                        otlpOptions.Endpoint = endpointUri;
                         otlpOptions.Protocol = OtlpExportProtocol.Grpc;
                     });
+                }
+                else
+                {
+                    Trace.WriteLine($"[Observability] Tracing OTLP Endpoint '{endpoint}' is invalid. Skipping exporter.");
+                }
             });
 
-        // Allow unencrypted gRPC traffic (required for Jaeger in local Docker environments)
-        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+        if (environment == "Development")
+        {
+            // Allow unencrypted gRPC traffic (required for some OTLP/gRPC local environments)
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+        }
 
         return services;
     }

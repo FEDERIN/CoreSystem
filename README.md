@@ -1,123 +1,206 @@
 # ⚙️ CoreSystem Ecosystem
 
-
 <p align="center">
-  <img src="https://img.shields.io/badge/.NET-8.0-512bd4.svg" />
-  <img src="https://img.shields.io/badge/Architecture-Microservices-blue.svg" />
-  <img src="https://img.shields.io/badge/OpenTelemetry-Observability-orange.svg" />
-  <img src="https://img.shields.io/badge/Docker-Container-2496ed.svg" />
-  <img src="https://img.shields.io/badge/Status-Active-success.svg" />
+  <img src="https://img.shields.io/badge/.NET-8.0-512bd4?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Architecture-Microservices-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/OpenTelemetry-Native-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" />
 </p>
 
 <p align="center">
-  <b>Cloud-Native • Modular • Observability-First • Enterprise-Ready</b>
+  <b>Cloud-Native • Modular • Observability-First • Production-Ready</b>
 </p>
 
 ---
 
-## 📖 Overview
+# 📖 Overview
 
-**CoreSystem** is a centralized ecosystem of reusable .NET libraries designed to standardize and accelerate the development of modern distributed systems and high-performance microservices.
+**CoreSystem** is a modular ecosystem of reusable .NET libraries focused on simplifying the development of modern distributed systems and high-performance microservices.
 
-The project focuses on:
+The project provides production-ready building blocks for solving common cross-cutting concerns such as:
 
-- Consistent architecture across services
-- Shared infrastructure components
-- Cloud-native engineering practices
-- Developer productivity
-- Production-ready integrations
+- Distributed observability
+- Request idempotency
+- Logging & tracing
+- Infrastructure abstraction
+- Cloud-native integrations
+- Scalable API development
+
+CoreSystem is designed around clean architecture principles, extensibility, and operational excellence.
 
 ---
 
-## ✨ Core Features
+# ✨ Ecosystem Features
 
 | Category | Description |
-|----------|-------------|
-| 🏗 Architecture | Modular reusable libraries |
+|---|---|
+| 🏗 Modular Architecture | Independent reusable NuGet packages |
 | 📊 Observability | OpenTelemetry + Metrics + Logging |
-| 📨 Messaging | RabbitMQ / Azure Service Bus abstractions |
-| 🛡 Security | Shared JWT validation & authorization |
-| ⚡ Performance | Optimized for scalable microservices |
-| 🐳 Dev Experience | Docker-first workflows |
+| ⚡ High Performance | Optimized middleware-first design |
+| 🧩 Extensibility | Provider-based architecture |
+| ☁ Cloud-Native | Docker & distributed systems ready |
+| 🚀 Developer Experience | Minimal setup & plug-and-play integrations |
 
 ---
 
-## 🧠 Architecture
+# 🧠 Ecosystem Architecture
 
 ```mermaid
 graph TD
-    Services --> CoreSystem
+
+    APIs --> CoreSystem
+
     CoreSystem --> Observability
-    CoreSystem --> Messaging
-    CoreSystem --> Security
+    CoreSystem --> Idempotency
 
     Observability --> OpenTelemetry
-    Messaging --> RabbitMQ
-    Security --> JWT
+    Observability --> Serilog
+    Observability --> Prometheus
+
+    Idempotency --> PostgreSQL
+    Idempotency --> Redis
 ```
 
 ---
 
-## 📦 Planned Modules
+# 📦 Available Packages
 
-| Module | Description | Status |
+| Package | Description | Status |
 |---|---|---|
-| `Core.Observability` | OpenTelemetry, Prometheus, Jaeger, Serilog integration | 🚧 Upcoming |
-| `Core.Messaging` | RabbitMQ / Azure Service Bus abstractions | 📋 Planned |
-| `Core.Security` | JWT validation and authorization policies | 📋 Planned |
+| `FGutierrez.Core.Observability` | OpenTelemetry, Serilog, Metrics & Health Checks | ✅ Stable |
+| `FGutierrez.Core.Idempotency` | Distributed idempotency middleware with Redis/PostgreSQL | ✅ Stable |
 
 ---
 
-## 🏗 Repository Structure
+# ⚡ FGutierrez.Core.Observability
+
+Production-grade observability integrations for ASP.NET Core applications.
+
+## Features
+
+- OpenTelemetry tracing
+- Runtime & HTTP metrics
+- Serilog integration
+- Health checks
+- OTLP exporter support
+- Prometheus-ready metrics
+
+## Included Components
+
+```text
+Extensions/
+├── HealthCheckEndpointsExtensions.cs
+├── HealthCheckExtensions.cs
+├── OpenTelemetryMetricsExtensions.cs
+├── OpenTelemetryTracingExtensions.cs
+└── SerilogExtensions.cs
+```
+
+---
+
+# 🎟️ FGutierrez.Core.Idempotency
+
+Distributed idempotency engine for ensuring critical operations execute exactly once.
+
+## Features
+
+- Redis provider
+- PostgreSQL provider
+- Response replay support
+- Duplicate request prevention
+- OpenTelemetry metrics
+- Middleware-based execution pipeline
+
+## Internal Architecture
+
+```text
+Storage/
+├── PostgreSQL/
+│   └── PostgresIdempotencyStorage.cs
+└── Redis/
+    └── RedisIdempotencyStorage.cs
+```
+
+---
+
+# 🏗 Repository Structure
 
 ```text
 CoreSystem/
 │
-├── src/                     # Production-ready libraries
+├── src/
 │   ├── Core.Observability/
-│   ├── Core.Messaging/
-│   └── Core.Security/
+│   │   ├── Extensions/
+│   │   ├── Options/
+│   │   └── ObservabilityDependencyInjection.cs
+│   │
+│   └── Core.Idempotency/
+│       ├── Middleware/
+│       ├── Storage/
+│       │   ├── PostgreSQL/
+│       │   └── Redis/
+│       ├── Diagnostics/
+│       ├── Models/
+│       ├── Options/
+│       └── Extensions/
+│       └── IdempotencyExtensions.cs
+
 │
-├── samples/                 # Example implementations
-│   ├── Sample.Api/
-│   └── Sample.Worker/
+├── samples/
+│   └── Minimal.Test.Api/
+│       ├── docker-compose.yml
+│       ├── prometheus.yml
+│       ├── otel-collector-config.yml
+│       └── Program.cs
 │
-├── tests/                   # Unit & integration tests
+├── .github/
+│   └── workflows/
 │
-├── docs/                    # Architecture & guides
-│
-├── docker/
-│
+├── LICENSE.txt
+├── global.json
 ├── CoreSystem.sln
 └── README.md
 ```
 
 ---
 
-## 🏗 Tech Stack
+# 🏗 Technology Stack
+
+## Backend
 
 - .NET 8
-- ASP.NET Core
+- ASP.NET Core Minimal APIs
+- Dapper
+- Middleware Pipeline
+
+## Observability
+
 - OpenTelemetry
 - Serilog
-- RabbitMQ
-- Docker & Docker Compose
-- Kubernetes
-- xUnit
+- Prometheus
+- OTLP Exporter
+
+## Infrastructure
+
+- PostgreSQL
+- Redis
+- Docker
+- Grafana
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### 🐳 Run with Docker
+## Clone Repository
 
 ```bash
-docker compose up -d --build
+git clone https://github.com/FEDERIN/CoreSystem.git
 ```
 
 ---
 
-### 💻 Build Solution
+## Build Solution
 
 ```bash
 dotnet build
@@ -125,54 +208,87 @@ dotnet build
 
 ---
 
-### ▶️ Run Sample API
+## Run Sample API
 
 ```bash
-cd samples/Sample.Api
+cd samples/Minimal.Test.Api
 dotnet run
 ```
 
 ---
 
-## 📊 Observability Vision
+## Run Full Observability Stack
 
-CoreSystem aims to provide production-grade observability out of the box:
+```bash
+docker compose up -d
+```
 
-- 🔭 Distributed tracing → OpenTelemetry
-- 📈 Metrics → Prometheus
-- 📊 Dashboards → Grafana
-- 🧾 Structured logging → Serilog
-- 🩺 Health checks integration
+This launches:
 
----
-
-## 🧪 Engineering Goals
-
-This ecosystem is designed to demonstrate:
-
-- Enterprise-level architecture
-- Reusable platform engineering
-- Scalable distributed systems
-- Clean and maintainable codebases
-- Cloud-native backend development
+- PostgreSQL
+- Redis
+- OpenTelemetry Collector
+- Prometheus
+- Grafana
 
 ---
 
-## 📌 Roadmap
+# 📊 Observability Stack
 
-- [ ] Core.Observability
-- [ ] Core.Messaging
-- [ ] Core.Security
-- [ ] Distributed caching support
-- [ ] API Gateway utilities
-- [ ] Resilience & retry policies
-- [ ] Service discovery integrations
+CoreSystem promotes an **Observability-First** engineering model.
+
+Included integrations:
+
+| Component | Purpose |
+|---|---|
+| OpenTelemetry | Distributed tracing |
+| Prometheus | Metrics collection |
+| Grafana | Visualization dashboards |
+| Serilog | Structured logging |
+| Health Checks | Runtime monitoring |
 
 ---
 
-## 🤝 Contributing
+# 🧪 Engineering Principles
+
+CoreSystem follows modern backend engineering practices:
+
+- Clean Architecture
+- SOLID principles
+- Middleware-first integrations
+- Provider-based extensibility
+- High cohesion / low coupling
+- Production-grade defaults
+- Cloud-native development
+
+---
+
+# 📌 Current Focus
+
+## Completed
+
+- [x] Distributed Observability
+- [x] Idempotency Engine
+- [x] Redis Support
+- [x] PostgreSQL Support
+- [x] OpenTelemetry Integration
+
+## Planned
+
+- [ ] Distributed Messaging
+- [ ] JWT Security Components
+- [ ] Rate Limiting
+- [ ] Distributed Cache
+- [ ] API Gateway Utilities
+- [ ] Kubernetes Helpers
+
+---
+
+# 🤝 Contributing
 
 Contributions, ideas, and improvements are welcome.
+
+## Development Workflow
 
 1. Fork the repository
 2. Create a feature branch
@@ -181,12 +297,12 @@ Contributions, ideas, and improvements are welcome.
 
 ---
 
-## 📄 License
+# 📄 License
 
-This project is licensed under the MIT License.
+MIT License © Federin Pastor Gutierrez Ortiz
 
 ---
 
-## ⭐ Support
+# ⭐ Support
 
-If you find this project useful, consider giving it a star on GitHub.
+If this ecosystem helps you, consider giving the repository a star on GitHub.
