@@ -1,0 +1,22 @@
+graph LR
+    subgraph Application_Runtime [Application Runtime]
+        App[Your Service] -->|Intercept| Obs[FGutierrez.Core.Observability]
+        Idem[FGutierrez.Core.Idempotency] -.->|Native Signals| Obs
+    end
+
+    subgraph Telemetry_Pipeline [Standard OTLP Pipeline]
+        Obs -->|gRPC / OTLP| OTel[OTel Collector / Agent]
+    end
+
+    subgraph Backends [Analysis & Storage Backends]
+        OTel --> Traces[Distributed Tracing Systems]
+        OTel --> Metrics[Metrics & Time Series DB]
+        OTel --> Logs[Log Management Platforms]
+    end
+
+    subgraph Visualization [Visualization]
+        Traces & Metrics & Logs --> Dashboards[Unified Dashboards]
+    end
+
+    style Obs fill:#f9f,stroke:#333,stroke-width:2px
+    style Idem fill:#bbf,stroke:#333,stroke-dasharray: 5 5

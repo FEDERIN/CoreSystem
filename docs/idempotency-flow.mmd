@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    participant Client
+    participant Middleware as Idempotency Middleware
+    participant Storage as Storage (Redis/Postgres)
+    participant API as Business Logic (API)
+
+    Note over Client, API: Request Phase
+    Client->>Middleware: HTTP Request + X-Idempotency-Key
+    Middleware->>Storage: GetRecordAsync(key)
+    Storage-->>Middleware: Return Record (Data or Null)
+
+    alt Key Already Exists
+        Note right of Middleware: Cache Hit
+        Middleware-->>Client: 200 OK (Cached Response Body)
+    else Key is New
+        Note right of Middleware: Cache Miss
+        Middleware->>API: Forward to Next()
+        API-->>Middleware: Response (Result)
+        Middleware->>Storage: SaveRecordAsync(key, response)
+        Middleware-->>Client: Original Response
+    end

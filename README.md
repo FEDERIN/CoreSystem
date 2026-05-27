@@ -129,11 +129,14 @@ Storage/
 ```text
 CoreSystem/
 │
+├── docs/
 ├── src/
 │   ├── Core.Observability/
 │   │   ├── Extensions/
 │   │   ├── Options/
 │   │   └── ObservabilityDependencyInjection.cs
+│       └── LICENSE
+│       └── README.md
 │   │
 │   └── Core.Idempotency/
 │       ├── Middleware/
@@ -145,10 +148,15 @@ CoreSystem/
 │       ├── Options/
 │       └── Extensions/
 │       └── IdempotencyExtensions.cs
+│       └── LICENSE
+│       └── README.md
 
 │
 ├── samples/
 │   └── Minimal.Test.Api/
+│       └── grafana/
+│       │   ├── provisioning/
+│       │   │   ├── datasources/
 │       ├── docker-compose.yml
 │       ├── prometheus.yml
 │       ├── otel-collector-config.yml
@@ -156,8 +164,7 @@ CoreSystem/
 │
 ├── .github/
 │   └── workflows/
-│
-├── LICENSE.txt
+├── LICENSE
 ├── global.json
 ├── CoreSystem.sln
 └── README.md

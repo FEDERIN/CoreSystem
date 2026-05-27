@@ -2,7 +2,7 @@
 
 ![NuGet](https://img.shields.io/nuget/v/FGutierrez.Core.Idempotency?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/FGutierrez.Core.Idempotency?style=for-the-badge)
-![License](https://img.shields.io/github/license/FEDERIN/CoreSystem?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.15.1-purple?style=for-the-badge)
 ![Storage](https://img.shields.io/badge/Storage-Redis%20%7C%20PostgreSQL-green?style=for-the-badge)
@@ -90,6 +90,55 @@ dotnet add package FGutierrez.Core.Idempotency
 
 ---
 
+# ⚙️ Configuration
+
+## 🛠️ Infrastructure Setup (PostgreSQL)
+
+> [!IMPORTANT]
+> **Database Provisioning:** The library automatically creates the required table (`idempotency_keys`) and indexes, but it **requires the physical database to exist** in the server.
+
+Before running the application, ensure the database specified in your connection string is created:
+
+```sql
+CREATE DATABASE idempotency_db; -- or the name in your connection string (ConnectionStrings.Idempotency)
+```
+
+### 🕒 Expiration Format (`TimeSpan`)
+
+The `Expiration` field follows the standard .NET `TimeSpan` string format: `[d.]hh:mm:ss`. 
+
+> [!CAUTION]
+> **Hour Overflow:** In .NET, the hour component must be between 0 and 23. If you specify `24:00:00`, the system will interpret it as **24 days** instead of 24 hours.
+
+To avoid misconfigurations, use the following guide:
+
+| Desired Duration | Config Value | Explanation |
+| :--- | :--- | :--- |
+| **1 Hour** | `01:00:00` | Standard `hh:mm:ss` |
+| **23 Hours** | `23:00:00` | Maximum hour value |
+| **24 Hours (1 Day)** | `1.00:00:00` | Use `d.hh:mm:ss` (note the dot) |
+| **30 Hours** | `1.06:00:00` | 1 Day + 6 Hours |
+| **7 Days** | `7.00:00:00` | 7 Days |
+
+## appsettings.json
+
+```json
+{
+  "ConnectionStrings": {
+    "Idempotency": "Host=localhost;Port=5432;Database=idempotency_db;Username=admin;Password=admin"
+  },
+  "Idempotency": {
+    "Enabled": true,
+    "Provider": "PostgreSQL",
+    "AllowedMethods": [ "POST", "PUT", "DELETE" ],
+    "HeaderName": "X-Idempotency-Key",
+    "Expiration": "06:00:00",
+    "MeterName": "FGutierrez.Core.Idempotency"
+  }
+}
+```
+
+---
 # 🚀 Quick Start
 
 ## Register Services
@@ -97,19 +146,7 @@ dotnet add package FGutierrez.Core.Idempotency
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddIdempotency(options =>
-{
-    options.Provider = IdempotencyProvider.PostgreSQL;
-    
-    // HTTP Header
-    options.HeaderName = "X-Idempotency-Key";
-
-    // Expiration policy
-    options.Expiration = TimeSpan.FromHours(24);
-
-    // OpenTelemetry Meter
-    options.MeterName = "FGutierrez.Core.Idempotency";
-});
+builder.Services.AddIdempotencyProvider(builder.Configuration);
 
 var app = builder.Build();
 ```

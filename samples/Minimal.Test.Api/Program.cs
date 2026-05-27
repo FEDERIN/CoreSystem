@@ -5,46 +5,22 @@ using Core.Idempotency.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configuración de Observabilidad (Ya lo tienes perfecto)
 builder.AddObservability(
     environment: builder.Environment.EnvironmentName,
     serviceName: "Minimal.Test.Api",
     serviceNamespace: "CoreSystems");
 
-
-var idempotencyOptions = new IdempotencyOptions();
-builder.Configuration.GetSection("Idempotency").Bind(idempotencyOptions);
-
-// Logic to decide provider based on configuration
-if (idempotencyOptions.Provider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
-{
-    var postgresConn = builder.Configuration.GetConnectionString("PostgresIdempotency");
-    builder.Services.AddPostgresIdempotency(postgresConn ?? string.Empty, options =>
-    {
-        builder.Configuration.GetSection("Idempotency").Bind(options);
-    });
-}
-else
-{
-    var redisConn = builder.Configuration.GetConnectionString("RedisCloud");
-    builder.Services.AddRedisIdempotency(redisConn ?? string.Empty, options =>
-    {
-        builder.Configuration.GetSection("Idempotency").Bind(options);
-    });
-}
+builder.Services.AddIdempotencyProvider(builder.Configuration);
 
 var app = builder.Build();
 
-// 3. Middlewares de Infraestructura
 app.UseObservabilityEndpoints();
 
-// IMPORTANTE: El middleware de idempotencia debe ir antes de los endpoints
-// pero después de la observabilidad si quieres que las trazas midan el acierto en caché
 app.UseIdempotency();
 
 app.MapGet("/hello", () => Results.Ok(new { message = "Tracing is active!" }));
 
-// Endpoint de prueba para Idempotencia (POST)
+
 app.MapPost("/process-order", () =>
     Results.Ok(new
     {

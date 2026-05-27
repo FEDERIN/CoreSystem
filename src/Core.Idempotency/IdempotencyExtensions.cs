@@ -56,6 +56,9 @@ public static class IdempotencyExtensions
 
     public static IApplicationBuilder UseIdempotency(this IApplicationBuilder app)
     {
+        var storage = app.ApplicationServices.GetService<IIdempotencyStorage>();
+        if (storage == null) return app;
+
         return app.UseMiddleware<IdempotencyMiddleware>();
     }
 }

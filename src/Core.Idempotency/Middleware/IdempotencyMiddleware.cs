@@ -13,19 +13,19 @@ namespace Core.Idempotency.Middleware;
 /// </summary>
 public class IdempotencyMiddleware(
     RequestDelegate next,
-    IIdempotencyStorage storage,
     IOptions<IdempotencyOptions> options,
-    IdempotencyMetrics metrics)
+    IdempotencyMetrics metrics,
+    IIdempotencyStorage? storage = null)
 {
     private readonly RequestDelegate _next = next;
-    private readonly IIdempotencyStorage _storage = storage;
+    private readonly IIdempotencyStorage? _storage = storage;
     private readonly IdempotencyOptions _options = options.Value;
     private readonly IdempotencyMetrics _metrics = metrics;
 
     public async Task InvokeAsync(HttpContext context)
     {
         // 1. New check: If disabled, bypass the entire middleware
-        if (!_options.Enabled)
+        if (!_options.Enabled || _storage == null)
         {
             await _next(context);
             return;

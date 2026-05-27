@@ -15,7 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Idempotency", "src\Cor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CC99C87C-68B7-48BD-9903-804D628BC53A}"
 	ProjectSection(SolutionItems) = preProject
+		docs\idempotency-flow.mmd = docs\idempotency-flow.mmd
 		docs\idempotency-flow.png = docs\idempotency-flow.png
+		docs\observability-flow.mmd = docs\observability-flow.mmd
+		docs\observability-flow.png = docs\observability-flow.png
 	EndProjectSection
 EndProject
 Global
