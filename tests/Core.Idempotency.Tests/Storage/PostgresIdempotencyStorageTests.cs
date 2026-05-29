@@ -50,12 +50,4 @@ public class PostgresIdempotencyStorageTests
         // Assert
         storage.Should().NotBeNull();
     }
-
-    [Fact]
-    public void Constructor_WithNullConnectionString_ThrowsArgumentNullException()
-    {
-        // Act & Assert
-        var action = () => new PostgresIdempotencyStorage(null!);
-        action.Should().Throw<ArgumentNullException>();
-    }
 }

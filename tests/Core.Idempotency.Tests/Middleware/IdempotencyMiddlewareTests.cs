@@ -1,3 +1,4 @@
+using Core.Idempotency.Middleware;
 using Core.Idempotency.Models;
 using Core.Idempotency.Storage;
 using Core.Idempotency.Tests.Fixtures;

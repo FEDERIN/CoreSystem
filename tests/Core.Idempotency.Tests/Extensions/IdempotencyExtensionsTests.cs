@@ -1,4 +1,3 @@
-using Core.Idempotency;
 using Core.Idempotency.Storage;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +21,7 @@ public class IdempotencyExtensionsTests
         // Assert
         var storage = serviceProvider.GetService<IIdempotencyStorage>();
         storage.Should().NotBeNull();
-        storage.Should().BeOfType<Core.Idempotency.Storage.Redis.RedisIdempotencyStorage>();
+        storage.Should().BeOfType<Idempotency.Storage.Redis.RedisIdempotencyStorage>();
     }
 
     [Fact]
@@ -39,7 +38,7 @@ public class IdempotencyExtensionsTests
         // Assert
         var storage = serviceProvider.GetService<IIdempotencyStorage>();
         storage.Should().NotBeNull();
-        storage.Should().BeOfType<Core.Idempotency.Storage.PostgreSQL.PostgresIdempotencyStorage>();
+        storage.Should().BeOfType<Idempotency.Storage.PostgreSQL.PostgresIdempotencyStorage>();
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public class IdempotencyExtensionsTests
         var serviceProvider = services.BuildServiceProvider();
 
         // Assert
-        var optionsMonitor = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptionsMonitor<Core.Idempotency.Options.IdempotencyOptions>>();
+        var optionsMonitor = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptionsMonitor<Idempotency.Options.IdempotencyOptions>>();
         var options = optionsMonitor.CurrentValue;
         options.AllowedMethods.Should().Contain("DELETE");
         options.MeterName.Should().Be("custom.idempotency");

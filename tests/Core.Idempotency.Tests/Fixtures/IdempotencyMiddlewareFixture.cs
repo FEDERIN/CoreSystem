@@ -1,7 +1,6 @@
 using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
 using Core.Idempotency.Diagnostics;
-using Core.Idempotency.Models;
 using Core.Idempotency.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -44,6 +43,6 @@ internal static class OptionsExtensions
 {
     public static IOptions<T> AsOptions<T>(this T value) where T : class
     {
-        return Options.Create(value);
+        return Microsoft.Extensions.Options.Options.Create(value);
     }
 }
