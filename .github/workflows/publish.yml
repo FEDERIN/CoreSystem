@@ -36,9 +36,14 @@ jobs:
       - name: Build and Pack
         run: |
           # Pack only the specific project identified in the tag
+          dotnet build src/${{ env.PROJECT }}/${{ env.PROJECT }}.csproj \
+            --configuration Release \
+            /p:Version=${{ env.VERSION }}
+
           dotnet pack src/${{ env.PROJECT }}/${{ env.PROJECT }}.csproj \
             --configuration Release \
             /p:Version=${{ env.VERSION }} \
+            --no-build \
             --output ./nupkgs
 
       - name: Publish to NuGet
