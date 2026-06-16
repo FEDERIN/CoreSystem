@@ -31,16 +31,52 @@ CoreSystem is designed around clean architecture principles, extensibility, and 
 
 ---
 
+# 🌍 Ecosystem Vision
+
+CoreSystem aims to become a complete toolkit for building modern .NET distributed systems.
+
+Current focus:
+
+- Observability
+- Idempotency
+
+Future modules:
+
+- Distributed Messaging
+- Security
+- Rate Limiting
+- Distributed Cache
+- Service Discovery
+- Resilience Patterns
+- API Gateway Utilities
+
+---
+
 # ✨ Ecosystem Features
 
 | Category | Description |
 |---|---|
 | 🏗 Modular Architecture | Independent reusable NuGet packages |
-| 📊 Observability | OpenTelemetry + Metrics + Logging |
+| 📊 Observability | OpenTelemetry-based telemetry |
 | ⚡ High Performance | Optimized middleware-first design |
 | 🧩 Extensibility | Provider-based architecture |
 | ☁ Cloud-Native | Docker & distributed systems ready |
 | 🚀 Developer Experience | Minimal setup & plug-and-play integrations |
+
+---
+
+# 🎯 Design Principles
+
+CoreSystem follows a set of engineering principles:
+
+- OpenTelemetry First
+- Cloud-Native by Design
+- Middleware-Centric Architecture
+- Provider-Based Extensibility
+- Production-Ready Defaults
+- Low Coupling / High Cohesion
+- Minimal Configuration
+- Developer Experience Focused
 
 ---
 
@@ -55,12 +91,20 @@ graph TD
     CoreSystem --> Idempotency
 
     Observability --> OpenTelemetry
-    Observability --> Serilog
-    Observability --> Prometheus
+    Observability --> OTLP
 
     Idempotency --> PostgreSQL
     Idempotency --> Redis
 ```
+
+---
+
+# 🚀 Latest Releases
+
+| Package | Latest Version |
+|----------|----------|
+| FGutierrez.Core.Observability | 1.1.3 |
+| FGutierrez.Core.Idempotency | 1.2.0 |
 
 ---
 
@@ -80,11 +124,13 @@ Production-grade observability integrations for ASP.NET Core applications.
 ## Features
 
 - OpenTelemetry tracing
-- Runtime & HTTP metrics
+- Runtime metrics
+- HTTP metrics
+- Structured logging
 - Serilog integration
 - Health checks
 - OTLP exporter support
-- Prometheus-ready metrics
+- Automatic telemetry correlation
 
 ## Included Components
 
@@ -111,6 +157,7 @@ Distributed idempotency engine for ensuring critical operations execute exactly 
 - Duplicate request prevention
 - OpenTelemetry metrics
 - Middleware-based execution pipeline
+- Configurable expiration policies
 
 ## Internal Architecture
 
@@ -130,13 +177,15 @@ Storage/
 CoreSystem/
 │
 ├── docs/
+│
 ├── src/
+│   │
 │   ├── Core.Observability/
 │   │   ├── Extensions/
 │   │   ├── Options/
-│   │   └── ObservabilityDependencyInjection.cs
-│       └── LICENSE
-│       └── README.md
+│   │   ├── ObservabilityDependencyInjection.cs
+│   │   ├── LICENSE
+│   │   └── README.md
 │   │
 │   └── Core.Idempotency/
 │       ├── Middleware/
@@ -146,17 +195,14 @@ CoreSystem/
 │       ├── Diagnostics/
 │       ├── Models/
 │       ├── Options/
-│       └── Extensions/
-│       └── IdempotencyExtensions.cs
-│       └── LICENSE
+│       ├── Extensions/
+│       ├── IdempotencyExtensions.cs
+│       ├── LICENSE
 │       └── README.md
-
 │
 ├── samples/
 │   └── Minimal.Test.Api/
-│       └── grafana/
-│       │   ├── provisioning/
-│       │   │   ├── datasources/
+│       ├── grafana/
 │       ├── docker-compose.yml
 │       ├── prometheus.yml
 │       ├── otel-collector-config.yml
@@ -164,6 +210,8 @@ CoreSystem/
 │
 ├── .github/
 │   └── workflows/
+│
+├── CHANGELOG.md
 ├── LICENSE
 ├── global.json
 ├── CoreSystem.sln
@@ -185,7 +233,6 @@ CoreSystem/
 
 - OpenTelemetry
 - Serilog
-- Prometheus
 - OTLP Exporter
 
 ## Infrastructure
@@ -193,7 +240,6 @@ CoreSystem/
 - PostgreSQL
 - Redis
 - Docker
-- Grafana
 
 ---
 
@@ -205,15 +251,11 @@ CoreSystem/
 git clone https://github.com/FEDERIN/CoreSystem.git
 ```
 
----
-
 ## Build Solution
 
 ```bash
 dotnet build
 ```
-
----
 
 ## Run Sample API
 
@@ -222,9 +264,7 @@ cd samples/Minimal.Test.Api
 dotnet run
 ```
 
----
-
-## Run Full Observability Stack
+## Run Full Local Stack
 
 ```bash
 docker compose up -d
@@ -235,24 +275,39 @@ This launches:
 - PostgreSQL
 - Redis
 - OpenTelemetry Collector
-- Prometheus
-- Grafana
+- Sample dashboards and monitoring tools
 
 ---
 
-# 📊 Observability Stack
+# 📊 Telemetry Ecosystem
 
-CoreSystem promotes an **Observability-First** engineering model.
+CoreSystem follows an **OpenTelemetry-first** approach.
 
-Included integrations:
+Telemetry is exported through the OpenTelemetry Protocol (OTLP), making the ecosystem vendor-neutral and backend-agnostic.
 
-| Component | Purpose |
-|---|---|
-| OpenTelemetry | Distributed tracing |
-| Prometheus | Metrics collection |
-| Grafana | Visualization dashboards |
-| Serilog | Structured logging |
-| Health Checks | Runtime monitoring |
+Supported platforms include:
+
+- Grafana
+- Jaeger
+- Prometheus
+- Datadog
+- New Relic
+- Elastic
+- Azure Monitor
+- Any OTLP-compatible backend
+
+```text
+Application
+      │
+      ▼
+OpenTelemetry SDK
+      │
+      ▼
+OTLP Exporter
+      │
+      ▼
+Collector / Backend
+```
 
 ---
 
@@ -261,12 +316,13 @@ Included integrations:
 CoreSystem follows modern backend engineering practices:
 
 - Clean Architecture
-- SOLID principles
-- Middleware-first integrations
-- Provider-based extensibility
-- High cohesion / low coupling
-- Production-grade defaults
-- Cloud-native development
+- SOLID Principles
+- Middleware-First Integrations
+- Provider-Based Extensibility
+- High Cohesion / Low Coupling
+- Production-Grade Defaults
+- Cloud-Native Development
+- Observability by Default
 
 ---
 
@@ -288,6 +344,34 @@ CoreSystem follows modern backend engineering practices:
 - [ ] Distributed Cache
 - [ ] API Gateway Utilities
 - [ ] Kubernetes Helpers
+- [ ] Service Discovery
+- [ ] Resilience Policies
+
+---
+
+# 📦 Package Publishing
+
+This repository uses GitHub Actions to automate NuGet packaging and publishing.
+
+To publish a package, create a Git tag using the following format:
+
+```text
+<ProjectName>/v<Major>.<Minor>.<Patch>
+```
+
+Example:
+
+```bash
+git tag FGutierrez.Core.Idempotency/v1.2.0
+git push origin FGutierrez.Core.Idempotency/v1.2.0
+```
+
+The GitHub workflow will automatically:
+
+1. Build the package
+2. Generate the NuGet artifact
+3. Publish it to NuGet.org
+4. Create the corresponding GitHub Release
 
 ---
 
@@ -308,8 +392,12 @@ Contributions, ideas, and improvements are welcome.
 
 MIT License © Federin Pastor Gutierrez Ortiz
 
+See the LICENSE file for details.
+
 ---
 
 # ⭐ Support
 
 If this ecosystem helps you, consider giving the repository a star on GitHub.
+
+Building modern .NET distributed systems, one reusable component at a time.

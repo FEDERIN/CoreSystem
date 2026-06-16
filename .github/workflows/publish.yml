@@ -1,0 +1,43 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - '*/*@*' # Triggers on tags formatted as: ProjectName/v1.0.0
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' 
+
+      - name: Extract info
+        run: |
+          # Split tag format: ProjectName/v1.0.0
+          # PROJECT will be 'Core.Idempotency' or 'Core.Observability', etc.
+          PROJECT_NAME=$(echo $GITHUB_REF_NAME | cut -d'/' -f1)
+          # Extract version and remove the 'v' prefix
+          VERSION=$(echo $GITHUB_REF_NAME | cut -d'/' -f2 | sed 's/v//')
+          echo "PROJECT=$PROJECT_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Build and Pack
+        run: |
+          # Pack only the specific project identified in the tag
+          dotnet pack src/${{ env.PROJECT }}/${{ env.PROJECT }}.csproj \
+            --configuration Release \
+            /p:Version=${{ env.VERSION }} \
+            --output ./nupkgs
+
+      - name: Publish to NuGet
+        run: |
+          # Push the package to NuGet.org
+          dotnet nuget push ./nupkgs/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate

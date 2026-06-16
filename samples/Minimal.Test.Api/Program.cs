@@ -1,7 +1,6 @@
 using Core.Observability;
 using Core.Idempotency;
 using Serilog;
-using Core.Idempotency.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
