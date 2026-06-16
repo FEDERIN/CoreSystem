@@ -24,6 +24,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CC99C87C-6
 		docs\observability-flow.png = docs\observability-flow.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{EF9A3793-6BA8-44B0-8ED8-182BD6D4E34A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{41535C27-8E2F-4AA0-8F66-C658319FCF79}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,8 +62,9 @@ Global
 		{4E85C4A5-C126-A849-A39B-96D82B5ACFA5} = {9938565C-D966-4DB9-8D3B-6D92CACE56DF}
 		{EC908145-4354-4D09-AB2E-99BCBE7E6315} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{A1B2C3D4-E5F6-47B8-9C0D-1E2F3A4B5C6D} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{41535C27-8E2F-4AA0-8F66-C658319FCF79} = {EF9A3793-6BA8-44B0-8ED8-182BD6D4E34A}
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = preSolution
+	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}
 	EndGlobalSection
 EndGlobal

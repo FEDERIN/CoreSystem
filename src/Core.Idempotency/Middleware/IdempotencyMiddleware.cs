@@ -88,7 +88,11 @@ public class IdempotencyMiddleware(
                 memoryStream.Position = 0;
             }
 
-            await memoryStream.CopyToAsync(originalBodyStream);
+            if (memoryStream.Length > 0)
+            {
+                memoryStream.Position = 0;
+                await memoryStream.CopyToAsync(originalBodyStream);
+            }
         }
         finally
         {
