@@ -3,7 +3,7 @@ name: Publish NuGet Package
 on:
   push:
     tags:
-      - '*/*@*' # Triggers on tags formatted as: ProjectName/v1.0.0
+      - '*/v*'
 
 jobs:
   build-and-publish:
@@ -18,13 +18,20 @@ jobs:
 
       - name: Extract info
         run: |
-          # Split tag format: ProjectName/v1.0.0
-          # PROJECT will be 'Core.Idempotency' or 'Core.Observability', etc.
+          # Extract project name (before the '/')
           PROJECT_NAME=$(echo $GITHUB_REF_NAME | cut -d'/' -f1)
-          # Extract version and remove the 'v' prefix
+          # Extract version (after the '/') and remove the 'v' prefix
           VERSION=$(echo $GITHUB_REF_NAME | cut -d'/' -f2 | sed 's/v//')
+          
           echo "PROJECT=$PROJECT_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Validate project folder
+        run: |
+          if [ ! -d "src/${{ env.PROJECT }}" ]; then
+            echo "Error: Project directory 'src/${{ env.PROJECT }}' does not exist."
+            exit 1
+          fi
 
       - name: Build and Pack
         run: |
