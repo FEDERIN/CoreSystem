@@ -57,7 +57,9 @@ public class IdempotencyMiddleware(
             context.Response.ContentType = cached.ContentType;
             context.Response.Headers.Append("X-Idempotency-Cache", "HIT");
 
-            await context.Response.WriteAsync(cached.Body ?? string.Empty);
+            if (cached.StatusCode != StatusCodes.Status204NoContent && !string.IsNullOrEmpty(cached.Body))
+                await context.Response.WriteAsync(cached.Body);
+
             return;
         }
 

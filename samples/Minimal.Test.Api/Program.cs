@@ -28,6 +28,12 @@ app.MapPost("/process-order", () =>
         processedAt = DateTime.UtcNow
     }));
 
+app.MapDelete("/delete-item/{id}", (Guid id) =>
+{
+    return Results.NoContent();
+})
+.WithName("DeleteWithIdempotency");
+
 try
 {
     Log.Information("Starting web host with Observability and Idempotency");
