@@ -6,7 +6,7 @@
 	<Nullable>enable</Nullable>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageId>FGutierrez.Core.Idempotency</PackageId>
-	<Version>1.2.0</Version>
+	<Version>1.2.1</Version>
 <PackageReleaseNotes>$([System.IO.File]::ReadAllText($(MSBuildProjectDirectory)/CHANGELOG.md))</PackageReleaseNotes>
 	<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	<Description>Distributed Idempotency engine for .NET 8 with PostgreSQL and Redis providers, featuring native OpenTelemetry integration.</Description>
