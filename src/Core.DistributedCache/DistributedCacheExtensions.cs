@@ -34,6 +34,11 @@ public static class DistributedCacheExtensions
         {
             var redisConfig = new ConfigurationOptions();
             options.Redis.Configuration(redisConfig);
+
+            redisConfig.AbortOnConnectFail = false;
+            redisConfig.ConnectRetry = 3;
+            redisConfig.ConnectTimeout = 5000;
+
             var connection = ConnectionMultiplexer.Connect(redisConfig);
             services.AddSingleton<IConnectionMultiplexer>(connection);
 

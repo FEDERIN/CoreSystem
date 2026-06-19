@@ -42,19 +42,22 @@ public class CacheMiddleware(
         using var memoryStream = new MemoryStream();
         context.Response.Body = memoryStream;
 
-        await _next(context);
-
-        if (context.Response.StatusCode == StatusCodes.Status200OK)
+        try
         {
-            if (memoryStream.Length <= _options.MaxCacheableSize)
+            await _next(context);
+
+            if (context.Response.StatusCode == StatusCodes.Status200OK && memoryStream.Length <= _options.MaxCacheableSize)
             {
                 memoryStream.Position = 0;
                 var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
                 await _cache.SetAsync(cacheKey, responseBody, _options.DefaultExpiration);
             }
-
+        }
+        finally
+        {
             memoryStream.Position = 0;
             await memoryStream.CopyToAsync(originalBodyStream);
+            context.Response.Body = originalBodyStream;
         }
     }
 }

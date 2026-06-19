@@ -11,8 +11,6 @@ public class ResilientCacheDecorator : ICoreCacheService, IDisposable
     private readonly MemoryCacheStorage _memory;
     private readonly Timer _healthCheckTimer;
 
-
-
     public ResilientCacheDecorator(RedisCacheStorage redis, MemoryCacheStorage memory)
     {
         _redis = redis;
@@ -27,7 +25,9 @@ public class ResilientCacheDecorator : ICoreCacheService, IDisposable
             _redis.GetDatabase().Ping();
             IsRedisHealthy = true;
         }
-        catch { IsRedisHealthy = false; }
+        catch { 
+            IsRedisHealthy = false; 
+        }
     }
 
     public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)

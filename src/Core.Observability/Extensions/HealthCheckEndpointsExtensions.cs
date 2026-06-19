@@ -12,7 +12,7 @@ public static class HealthCheckEndpointsExtensions
     {
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
-            Predicate = _ => false,
+            Predicate = _ => true,
             ResponseWriter = async (ctx, _) =>
             {
                 ctx.Response.ContentType = "application/json; charset=utf-8";

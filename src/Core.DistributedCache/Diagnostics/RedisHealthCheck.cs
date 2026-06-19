@@ -10,11 +10,12 @@ public class RedisHealthCheck(IConnectionMultiplexer redis, ICoreCacheService ca
     public async Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context, CancellationToken ct = default)
     {
+        // Check if the cache service is using the ResilientCacheDecorator
         if (cacheService is ResilientCacheDecorator decorator)
         {
             if (!decorator.IsRedisHealthy)
             {
-                return HealthCheckResult.Degraded("Redis reportado como caído por el decorador (Circuit Breaker abierto).");
+                return HealthCheckResult.Degraded("Redis reported as down by the decorator (Circuit Breaker open).");
             }
         }
 
@@ -23,11 +24,11 @@ public class RedisHealthCheck(IConnectionMultiplexer redis, ICoreCacheService ca
             var db = redis.GetDatabase();
             await db.PingAsync();
 
-            return HealthCheckResult.Healthy("Redis está conectado correctamente.");
+            return HealthCheckResult.Healthy("Redis is connected successfully.");
         }
         catch (Exception ex)
         {
-            return HealthCheckResult.Degraded("Redis no responde. Fallback a memoria activo.", ex);
+            return HealthCheckResult.Degraded("Redis is not responding. Memory fallback active.", ex);
         }
     }
 }
