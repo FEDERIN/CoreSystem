@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>FGutierrez.Core.Observability</PackageId>
-    <Version>1.1.3</Version>
+    <Version>1.1.4</Version>
     <Authors>Federin Pastor Gutierrez Ortiz</Authors>
     <Description>Standardized observability for .NET 8 Cloud-Native apps with OpenTelemetry and Serilog.</Description>
     <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
