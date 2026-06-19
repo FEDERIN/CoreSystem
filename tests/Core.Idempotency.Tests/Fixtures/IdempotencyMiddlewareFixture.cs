@@ -1,10 +1,11 @@
+using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
-using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.Diagnostics.Metrics;
 
 namespace Core.Idempotency.Tests.Fixtures;
 
@@ -28,7 +29,15 @@ public class IdempotencyMiddlewareFixture
             Expiration = TimeSpan.FromHours(1),
             MeterName = "test.idempotency"
         };
-        Metrics = new IdempotencyMetrics(Options.MeterName);
+
+        var meterFactoryMock = new Mock<IMeterFactory>();
+
+        meterFactoryMock
+            .Setup(f => f.Create(It.IsAny<MeterOptions>()))
+            .Returns(new Meter(Options.MeterName));
+
+        Metrics = new IdempotencyMetrics(meterFactoryMock.Object, Options.MeterName);
+
         HttpContext = new DefaultHttpContext();
     }
 

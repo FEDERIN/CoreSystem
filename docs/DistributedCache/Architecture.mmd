@@ -1,0 +1,11 @@
+graph TD
+
+    App[Application] --> Cache[ICoreCacheService]
+
+    Cache --> Decorator[Resilient Cache Decorator]
+
+    Decorator --> Redis[RedisCacheStorage]
+    Decorator --> Memory[MemoryCacheStorage]
+
+    Redis --> RedisServer[(Redis Server)]
+    Memory --> Runtime[(Application Memory)]

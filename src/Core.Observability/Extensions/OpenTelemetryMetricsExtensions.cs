@@ -1,4 +1,5 @@
-﻿using Core.Observability.Options;
+﻿using Core.Observability.Abstractions;
+using Core.Observability.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
@@ -45,6 +46,18 @@ public static class OpenTelemetryMetricsExtensions
                 ["deployment.environment"] = environment ?? "unknown",
                 ["host.name"] = Environment.MachineName
             });
+
+        // 1. Escanear contribuciones (Igual que en Tracing)
+        var contributorTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(s => s.GetTypes())
+            .Where(t => typeof(IObservabilityContributor).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+
+        // 2. Ejecutar la configuración de métricas de cada módulo
+        foreach (var type in contributorTypes)
+        {
+            var contributor = (IObservabilityContributor)Activator.CreateInstance(type)!;
+            contributor.ConfigureObservability(services, configuration);
+        }
 
         services.AddOpenTelemetry()
             .WithMetrics(meterProvider =>

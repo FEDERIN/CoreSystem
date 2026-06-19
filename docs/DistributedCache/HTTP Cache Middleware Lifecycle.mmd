@@ -1,0 +1,25 @@
+sequenceDiagram
+
+    participant Client as HTTP Client
+    participant MW as Cache Middleware
+    participant API as API Endpoint
+
+    Client->>MW: GET /api/resource
+
+    MW->>MW: Check cache
+
+    alt Cache Hit
+
+        MW-->>Client: Cached Response
+
+    else Cache Miss
+
+        MW->>API: Execute Request
+
+        API-->>MW: Response
+
+        MW->>MW: Store Response
+
+        MW-->>Client: Original Response
+
+    end

@@ -1,0 +1,11 @@
+flowchart TD
+
+    Request([Cache Request])
+    Request --> RedisCheck{Redis Available?}
+    RedisCheck -- Yes --> RedisAccess[Attempt Redis Access]
+    RedisAccess --> Success{Operation Successful?}
+    Success -- Yes --> Return([Return Cached Data])
+    Success -- No --> Fallback[Log Error + Use Memory Cache]
+    RedisCheck -- No --> Fallback
+    Fallback --> MemoryAccess[Query Memory Cache]
+    MemoryAccess --> Return

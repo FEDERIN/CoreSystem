@@ -14,7 +14,6 @@ public class PostgresIdempotencyStorageTests
     {
         // Arrange
         var storage = new PostgresIdempotencyStorage(TestConnectionString);
-        var key = "test-key-123";
 
         // Note: This test verifies the method structure.
         // Full integration testing would require a real PostgreSQL database.
