@@ -1,0 +1,25 @@
+sequenceDiagram
+
+    participant App as Application
+    participant Cache as ICoreCacheService
+    participant DB as Data Source
+
+    App->>Cache: GetOrAddAsync(key, factory)
+
+    Cache->>Cache: Check cache entry
+
+    alt Cache Hit
+
+        Cache-->>App: Return cached value
+
+    else Cache Miss
+
+        Cache->>DB: Execute factory()
+
+        DB-->>Cache: Return data
+
+        Cache->>Cache: Store value
+
+        Cache-->>App: Return new value
+
+    end

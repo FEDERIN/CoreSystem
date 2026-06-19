@@ -1,12 +1,13 @@
-﻿using Core.Idempotency.Middleware;
+﻿using Core.Idempotency.Diagnostics;
+using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
 using Core.Idempotency.Storage;
-using Core.Idempotency.Storage.Redis;
 using Core.Idempotency.Storage.PostgreSQL;
-using Core.Idempotency.Diagnostics;
+using Core.Idempotency.Storage.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using System.Diagnostics.Metrics;
 
 namespace Core.Idempotency;
 
@@ -21,7 +22,8 @@ public static class IdempotencyExtensions
 
         // 2. Register IdempotencyMetrics as a Singleton
         // We use the MeterName defined in IdempotencyOptions
-        services.AddSingleton(new IdempotencyMetrics(options.MeterName));
+
+        services.AddSingleton(s => new IdempotencyMetrics(s.GetRequiredService<IMeterFactory>(), options.MeterName));
 
         return services;
     }

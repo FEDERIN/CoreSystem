@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core.Idempotency\Core.Idempotency.csproj" />
     <ProjectReference Include="..\..\src\Core.Observability\Core.Observability.csproj" />
+    <ProjectReference Include="..\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -34,7 +34,7 @@ public static class ObservabilityDependencyInjection
         builder.Services.AddOpenTelemetryMetrics(builder.Configuration, environment, serviceName);
 
         // 4. Add Health Checks (optional, but recommended for readiness/liveness probes)
-        builder.Services.AddCoreHealthChecks();
+        builder.Services.AddCoreHealthChecks(builder.Configuration);
 
         return builder;
     }

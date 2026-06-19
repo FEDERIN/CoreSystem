@@ -1,0 +1,14 @@
+graph TD
+    APIs --> CoreSystem
+
+    CoreSystem --> Observability
+    CoreSystem --> Idempotency
+    CoreSystem --> DistributedCache
+
+    Observability --> OpenTelemetry
+
+    Idempotency --> PostgreSQL
+    Idempotency --> Redis
+
+    DistributedCache --> Memory
+    DistributedCache --> Redis

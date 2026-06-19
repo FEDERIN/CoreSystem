@@ -1,4 +1,5 @@
-﻿using Core.Observability.Options;
+﻿using Core.Observability.Abstractions;
+using Core.Observability.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +48,17 @@ public static class OpenTelemetryTracingExtensions
                 ["host.name"] = Environment.MachineName,
                 ["service.namespace"] = serviceNamespace ?? "default-namespace"
             });
+
+        var contributorTypes = AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(s => s.GetTypes())
+        .Where(t => typeof(IObservabilityContributor).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+
+        var allSources = new List<string>();
+        foreach (var type in contributorTypes)
+        {
+            var contributor = (IObservabilityContributor)Activator.CreateInstance(type)!;
+            allSources.AddRange(contributor.GetActivitySources());
+        }
 
         // Setup OpenTelemetry SDK for Tracing
         services.AddOpenTelemetry()
