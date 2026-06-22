@@ -7,6 +7,7 @@ public static class CoreCacheExtensions
         string key,
         Func<Task<T>> factory,
         TimeSpan? expiration = null,
+        string[]? tags = null,
         CancellationToken ct = default)
     {
         var cachedValue = await cache.GetAsync<T>(key, ct);
@@ -19,7 +20,7 @@ public static class CoreCacheExtensions
 
         if (value is not null)
         {
-            await cache.SetAsync(key, value, expiration, [] ,ct);
+            await cache.SetAsync(key, value, expiration, tags, ct);
         }
 
         return value;
