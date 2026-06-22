@@ -1,4 +1,5 @@
 ﻿using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.Attributes;
 using Core.DistributedCache.Diagnostics;
 using Core.DistributedCache.Options;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +19,18 @@ public class CacheMiddleware(
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Method != HttpMethods.Get)
+        var endpoint = context.GetEndpoint();
+        var cacheAttribute = endpoint?.Metadata.GetMetadata<CacheableAttribute>();
+    
+        if (cacheAttribute == null)
         {
             await _next(context);
             return;
         }
+
+        var expiration = cacheAttribute.ExpirationSeconds.HasValue
+                ? TimeSpan.FromSeconds(cacheAttribute.ExpirationSeconds.Value)
+                : _options.DefaultExpiration;
 
         var cacheKey = $"cache_{context.Request.Path}{context.Request.QueryString}";
 
@@ -50,7 +58,16 @@ public class CacheMiddleware(
             {
                 memoryStream.Position = 0;
                 var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
-                await _cache.SetAsync(cacheKey, responseBody, _options.DefaultExpiration);
+
+                string[]? tags = cacheAttribute.Tag != null ? [cacheAttribute.Tag] : null;
+
+                await _cache.SetAsync(cacheKey, responseBody, expiration);
+
+                await _cache.SetAsync(
+                    cacheKey,
+                    responseBody,
+                    TimeSpan.FromSeconds(cacheAttribute.ExpirationSeconds ?? 60),
+                    tags);
             }
         }
         finally

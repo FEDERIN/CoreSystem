@@ -9,39 +9,43 @@
 
 ---
 
-## 🚀 Overview
+# 🚀 Overview
 
 **FGutierrez.Core.DistributedCache** is a high-performance distributed caching library for **.NET 8** designed to provide a unified abstraction over multiple cache providers.
 
 The library simplifies cache integration by providing:
 
-- In-memory caching
-- Redis distributed caching
-- Automatic resilience and fallback strategies
-- HTTP response caching middleware
-- OpenTelemetry metrics
-- Health checks
-- Provider-based extensibility
+* In-memory caching
+* Redis distributed caching
+* Automatic resilience and fallback strategies
+* HTTP response caching middleware
+* OpenTelemetry metrics
+* Health checks
+* Provider-based extensibility
+* Declarative method-level caching
 
-Built following a **cloud-native approach**, the library allows applications to consume caching capabilities without being coupled to a specific infrastructure provider.
-
----
-
-## ✨ Key Features
-
-| Feature | Description |
-|---|---|
-| 🧩 Unified API | Single abstraction for multiple cache providers |
-| ⚡ High Performance | Optimized cache access patterns |
-| 🔄 Resilience | Automatic fallback when distributed cache is unavailable |
-| 🧠 Cache Aside Pattern | Built-in GetOrAddAsync workflow |
-| 🌐 HTTP Middleware | Response caching support for APIs |
-| 📊 Observability | OpenTelemetry metrics integration |
-| 🩺 Health Checks | Cache provider availability monitoring |
+Built following **cloud-native architecture principles**, applications can consume caching capabilities without being coupled to a specific infrastructure provider.
 
 ---
 
-## 🏗 Architecture
+# ✨ Features
+
+| Feature                 | Description                                              |
+| ----------------------- | -------------------------------------------------------- |
+| 🧩 Unified API          | Single abstraction over multiple cache providers         |
+| ⚡ High Performance      | Optimized cache access patterns                          |
+| 🔄 Resilience           | Automatic fallback when distributed cache is unavailable |
+| 🧠 Cache Aside Pattern  | Built-in `GetOrAddAsync` workflow                        |
+| 🌐 HTTP Middleware      | API response caching support                             |
+| 📊 Observability        | OpenTelemetry metrics integration                        |
+| 🩺 Health Checks        | Provider availability monitoring                         |
+| 🏷️ Declarative Caching | Attribute-based caching using `[Cacheable]`              |
+
+---
+
+# 🏗️ Architecture
+
+The library follows a provider-based architecture where the application consumes a single abstraction while the infrastructure layer decides the cache implementation.
 
 ```mermaid
 graph TD
@@ -59,7 +63,54 @@ graph TD
 
 ---
 
-## 🛡️ Resilience Flow
+# 🏭 Cache Provider Factory
+
+When an application requires explicit provider selection, the library exposes `ICacheServiceFactory`.
+
+```mermaid
+sequenceDiagram
+
+    participant C as Client (Repository)
+    participant F as ICacheServiceFactory
+    participant DI as IServiceProvider
+    participant D as ResilientCacheDecorator
+    participant R as RedisCacheStorage
+    participant M as MemoryCacheStorage
+
+    C->>F: GetCacheService(ProviderType)
+
+    F->>DI: Resolve(ICoreCacheService)
+
+    Note over DI: Configuration injects the<br/>ResilientCacheDecorator by default
+
+    DI-->>F: Returns ResilientCacheDecorator
+
+    F-->>C: Returns ICoreCacheService
+
+    C->>D: GetAsync(key)
+
+    alt Redis is Healthy
+
+        D->>R: Execute operation
+        R-->>D: Return value
+
+    else Redis is unavailable
+
+        Note over D: Apply fallback strategy
+
+        D->>M: Execute operation
+        M-->>D: Return value
+
+    end
+
+    D-->>C: Return final result
+```
+
+---
+
+# 🛡️ Resilience Strategy
+
+The default implementation uses a resilient decorator that automatically falls back to memory cache when Redis becomes unavailable.
 
 ```mermaid
 flowchart TD
@@ -74,7 +125,7 @@ flowchart TD
 
     Success -- Yes --> Return([Return Cached Data])
 
-    Success -- No --> Fallback[Log Error + Use Memory Cache]
+    Success -- No --> Fallback[Log Error + Memory Fallback]
 
     RedisCheck -- No --> Fallback
 
@@ -85,7 +136,9 @@ flowchart TD
 
 ---
 
-## ⚡ GetOrAddAsync Cache-Aside Pattern
+# ⚡ Cache Aside Pattern
+
+The library provides a built-in `GetOrAddAsync` workflow.
 
 ```mermaid
 sequenceDiagram
@@ -117,7 +170,9 @@ sequenceDiagram
 
 ---
 
-## 🌐 HTTP Cache Middleware Lifecycle
+# 🌐 HTTP Cache Middleware
+
+Provides transparent response caching capabilities for API endpoints.
 
 ```mermaid
 sequenceDiagram
@@ -149,7 +204,9 @@ sequenceDiagram
 
 ---
 
-## 📦 Installation
+# 📦 Installation
+
+Install the package using NuGet:
 
 ```bash
 dotnet add package FGutierrez.Core.DistributedCache
@@ -157,30 +214,75 @@ dotnet add package FGutierrez.Core.DistributedCache
 
 ---
 
-## ⚙️ Configuration
+# ⚙️ Configuration
 
-## Redis Enabled
+## appsettings.json
 
-```csharp
-builder.Services.AddCoreDistributedCache(options =>
+```json
 {
-    options.InstanceName = "MyApplication";
-
-    options.DefaultExpiration = TimeSpan.FromMinutes(30);
-
-    options.Redis.Enabled = true;
-
-    options.Redis.Configuration = redis =>
-    {
-        redis.EndPoints.Add("localhost", 6379);
-        redis.AbortOnConnectFail = false;
-    };
-});
+  "DistributedCache": {
+    "Provider": "Redis",
+    "InstanceName": "MySystem",
+    "Redis": {
+      "Enabled": true,
+      "Host": "localhost:6379",
+      "Password": "your-password"
+    }
+  }
+}
 ```
 
 ---
 
-## 🧑‍💻 Usage Example
+## Redis Setup
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+var distributedCache = config.GetSection("DistributedCache");
+
+if (distributedCache.Exists())
+{
+    builder.Services.AddCoreDistributedCache(options =>
+    {
+        distributedCache.Bind(options);
+
+        if (options.Redis.Enabled)
+        {
+            var redisSection =
+                config.GetSection("DistributedCache:Redis");
+
+            var host =
+                redisSection["Host"] ?? "localhost:6379";
+
+            var password =
+                redisSection["Password"];
+
+            options.Redis.Configuration = redisConfig =>
+            {
+                redisConfig.EndPoints.Add(host);
+
+                if (!string.IsNullOrEmpty(password))
+                {
+                    redisConfig.Password = password;
+                }
+
+                redisConfig.AbortOnConnectFail = false;
+            };
+        }
+    });
+}
+
+var app = builder.Build();
+app.UseCoreDistributedCache();
+app.Run();
+```
+
+---
+
+# 🧑‍💻 Basic Usage
+
+Inject `ICoreCacheService` into your services.
 
 ```csharp
 public class ProductService
@@ -191,7 +293,6 @@ public class ProductService
     {
         _cache = cache;
     }
-
 
     public async Task<Product> GetAsync(Guid id)
     {
@@ -207,88 +308,154 @@ public class ProductService
 
 ---
 
-## 📊 Observability
+# 🎯 Advanced Usage: Provider Selection
 
-The library exposes cache metrics through **OpenTelemetry**.
+```csharp
+public class MyBusinessService(ICacheServiceFactory cacheFactory)
+{
+    public async Task SaveAsync(bool forceRedis)
+    {
+        var provider =
+            forceRedis
+            ? CacheProviderType.Redis
+            : CacheProviderType.Memory;
 
-| Metric | Description |
-|---|---|
-| `cache.distributed.hits` | Successful cache retrievals |
-| `cache.distributed.misses` | Cache lookup failures |
-| `cache.distributed.errors` | Provider errors |
-| `cache.distributed.fallbacks` | Resilience fallback executions |
+        var cache =
+            cacheFactory.GetCache(provider);
 
-Compatible with any OpenTelemetry backend:
+        await cache.SetAsync(
+            "my_key",
+            myData,
+            TimeSpan.FromMinutes(5));
+    }
 
-- Grafana
-- Prometheus
-- Jaeger
-- Azure Monitor
-- Elastic Observability
-- Other OTLP-compatible platforms
+
+    public async Task DefaultAsync()
+    {
+        var cache =
+            cacheFactory.GetDefaultCache();
+
+        await cache.GetOrAddAsync(
+            "default_key",
+            async () => GetData());
+    }
+}
+```
 
 ---
 
-## 🩺 Health Checks
+# 🏷️ Declarative Caching
 
-The library integrates with:
+Caching logic can be applied declaratively using the `[Cacheable]` attribute.
+
+This removes repetitive cache handling code from business services.
+
+Example:
+
+```csharp
+[HttpGet("data/{id}")]
+[Cacheable(
+    tag: "Order",
+    expirationSeconds: 300)]
+public async Task<IActionResult> GetData(string id)
+{
+    var result =
+        await myService.GetDataAsync(id);
+
+    return Ok(result);
+}
+```
+
+---
+
+# 📊 Observability
+
+The library integrates with **OpenTelemetry Metrics**.
+
+| Metric                        | Description                    |
+| ----------------------------- | ------------------------------ |
+| `cache.distributed.hits`      | Successful cache retrievals    |
+| `cache.distributed.misses`    | Cache lookup misses            |
+| `cache.distributed.errors`    | Provider errors                |
+| `cache.distributed.fallbacks` | Resilience fallback executions |
+
+Compatible with:
+
+* Grafana
+* Prometheus
+* Jaeger
+* Azure Monitor
+* Elastic Observability
+* Any OTLP-compatible backend
+
+---
+
+# 🩺 Health Checks
+
+The package integrates with:
 
 ```csharp
 builder.Services.AddHealthChecks();
 ```
 
-Allowing monitoring of:
+Provides monitoring for:
 
-- Redis availability
-- Memory cache status
-- Provider connectivity
-
----
-
-## 🛠️ Requirements
-
-- .NET 8 SDK
-- Microsoft.Extensions.Caching.Memory
-- StackExchange.Redis
-- OpenTelemetry
-- Microsoft.Extensions.Diagnostics.HealthChecks
+* Redis availability
+* Memory cache status
+* Provider connectivity
 
 ---
 
-## 🏗 Design Principles
+# 🛠️ Requirements
+
+* .NET 8 SDK
+* Microsoft.Extensions.Caching.Memory
+* StackExchange.Redis
+* OpenTelemetry
+* Microsoft.Extensions.Diagnostics.HealthChecks
+
+---
+
+# 🏗️ Design Principles
 
 FGutierrez.Core.DistributedCache follows:
 
-- Clean Architecture principles
-- Provider-based extensibility
-- High cohesion / low coupling
-- Cloud-native design
-- Resilient infrastructure patterns
-- Observability-first development
+* Clean Architecture principles
+* Provider-based extensibility
+* High cohesion / low coupling
+* Cloud-native patterns
+* Resilient infrastructure design
+* Observability-first development
 
 ---
 
-## 📌 Roadmap
+# 🗺️ Roadmap
 
-- [x] Memory Cache provider
-- [x] Redis provider
-- [x] Cache Aside pattern
-- [x] Resilience fallback
-- [x] OpenTelemetry metrics
-- [x] Health checks
+## Completed
 
-Future:
+* [x] Memory Cache provider
+* [x] Redis provider
+* [x] Cache Aside pattern
+* [x] Resilience fallback
+* [x] OpenTelemetry metrics
+* [x] Health checks
+* [x] Declarative caching
 
-- [ ] SQL Server cache provider
-- [ ] PostgreSQL cache provider
-- [ ] Multi-level distributed cache
-- [ ] Cache invalidation events
+## Future
+
+* [ ] SQL Server cache provider
+* [ ] PostgreSQL cache provider
+* [ ] Multi-level distributed cache
+* [ ] Cache invalidation events
+* [ ] Cache warming strategies
 
 ---
 
-## 🤝 Contributing
+# 🤝 Contributing
 
 Contributions are welcome.
+
+Steps:
 
 1. Fork the repository
 2. Create a feature branch
@@ -297,16 +464,18 @@ Contributions are welcome.
 
 ---
 
-## 📄 License
+# 📄 License
 
-MIT License © Federin Pastor Gutierrez Ortiz
+MIT License
 
-See the LICENSE file for details.
+© Federin Pastor Gutierrez Ortiz
+
+See the `LICENSE` file for details.
 
 ---
 
-## ⭐ Support
+# ⭐ Support
 
-If this ecosystem helps you, consider giving the repository a star on GitHub.
+If this ecosystem helps you build modern .NET distributed systems, consider giving the repository a star on GitHub.
 
-Building modern .NET distributed systems, one reusable component at a time.
+Building reusable cloud-native components, one package at a time.
