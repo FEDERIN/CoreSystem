@@ -19,7 +19,7 @@ public static class CoreCacheExtensions
 
         if (value is not null)
         {
-            await cache.SetAsync(key, value, expiration, ct);
+            await cache.SetAsync(key, value, expiration, [] ,ct);
         }
 
         return value;
