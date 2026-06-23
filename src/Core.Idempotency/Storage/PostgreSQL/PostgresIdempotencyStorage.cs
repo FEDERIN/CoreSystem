@@ -1,10 +1,11 @@
 ﻿using Core.Idempotency.Models;
 using Npgsql;
 using Dapper;
+using Core.Idempotency.Abstractions;
 
 namespace Core.Idempotency.Storage.PostgreSQL;
 
-public class PostgresIdempotencyStorage(string connectionString) : IIdempotencyStorage
+internal class PostgresIdempotencyStorage(string connectionString) : IIdempotencyStorage
 {
     private readonly string _connectionString = connectionString;
     private static bool _tableChecked = false;

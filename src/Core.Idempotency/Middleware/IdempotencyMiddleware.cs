@@ -1,9 +1,9 @@
 ﻿using Core.Idempotency.Models;
-using Core.Idempotency.Storage;
 using Core.Idempotency.Options;
 using Core.Idempotency.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Core.Idempotency.Abstractions;
 
 namespace Core.Idempotency.Middleware;
 
@@ -11,7 +11,7 @@ namespace Core.Idempotency.Middleware;
 /// Middleware responsible for handling request idempotency by intercepting
 /// specific HTTP methods and caching successful responses.
 /// </summary>
-public class IdempotencyMiddleware(
+internal class IdempotencyMiddleware(
     RequestDelegate next,
     IOptions<IdempotencyOptions> options,
     IdempotencyMetrics metrics,

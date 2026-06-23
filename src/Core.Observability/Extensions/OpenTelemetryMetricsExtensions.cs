@@ -12,7 +12,7 @@ namespace Core.Observability.Extensions;
 /// <summary>
 /// Extension methods for configuring OpenTelemetry metrics with OTLP export.
 /// </summary>
-public static class OpenTelemetryMetricsExtensions
+internal static class OpenTelemetryMetricsExtensions
 {
     public static IServiceCollection AddOpenTelemetryMetrics(
         this IServiceCollection services,
@@ -47,12 +47,10 @@ public static class OpenTelemetryMetricsExtensions
                 ["host.name"] = Environment.MachineName
             });
 
-        // 1. Escanear contribuciones (Igual que en Tracing)
         var contributorTypes = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(s => s.GetTypes())
             .Where(t => typeof(IObservabilityContributor).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
-        // 2. Ejecutar la configuración de métricas de cada módulo
         foreach (var type in contributorTypes)
         {
             var contributor = (IObservabilityContributor)Activator.CreateInstance(type)!;

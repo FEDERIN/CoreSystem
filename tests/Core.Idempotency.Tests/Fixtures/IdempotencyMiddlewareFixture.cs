@@ -1,7 +1,7 @@
+using Core.Idempotency.Abstractions;
 using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
-using Core.Idempotency.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -41,7 +41,7 @@ public class IdempotencyMiddlewareFixture
         HttpContext = new DefaultHttpContext();
     }
 
-    public IdempotencyMiddleware CreateMiddleware()
+    internal IdempotencyMiddleware CreateMiddleware()
     {
         var optionsWrapper = Options.AsOptions();
         return new IdempotencyMiddleware(NextMock.Object, optionsWrapper, Metrics, StorageMock.Object);

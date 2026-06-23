@@ -5,7 +5,7 @@ using StackExchange.Redis;
 
 namespace Core.DistributedCache.Diagnostics;
 
-public class RedisHealthCheck(IConnectionMultiplexer redis, ICoreCacheService cacheService) : IHealthCheck
+internal class RedisHealthCheck(IConnectionMultiplexer redis, ICoreCacheService cacheService) : IHealthCheck
 {
     public async Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context, CancellationToken ct = default)

@@ -50,7 +50,6 @@ public static class ObservabilityDependencyInjection
         // Enable Serilog request logging to capture HTTP metadata (status codes, duration, etc.)
         app.UseSerilogRequestLogging();
 
-
         // Maps health check endpoints (/health and /ready)
         app.MapCoreHealthEndpoints();
 
