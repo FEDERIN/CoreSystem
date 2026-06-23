@@ -1,7 +1,7 @@
-﻿using Core.Idempotency.Diagnostics;
+﻿using Core.Idempotency.Abstractions;
+using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
-using Core.Idempotency.Storage;
 using Core.Idempotency.Storage.PostgreSQL;
 using Core.Idempotency.Storage.Redis;
 using Microsoft.AspNetCore.Builder;

@@ -1,12 +1,13 @@
 ﻿using Core.DistributedCache.Abstractions;
 using Core.DistributedCache.Attributes;
 using Core.DistributedCache.Diagnostics;
+using Core.DistributedCache.Extensions;
 using Core.DistributedCache.Options;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.DistributedCache.Middleware;
 
-public class CacheMiddleware(
+internal class CacheMiddleware(
     RequestDelegate next,
     ICoreCacheService cache,
     CacheOptions options,
@@ -32,7 +33,7 @@ public class CacheMiddleware(
                 ? TimeSpan.FromSeconds(cacheAttribute.ExpirationSeconds.Value)
                 : _options.DefaultExpiration;
 
-        var cacheKey = $"cache_{context.Request.Path}{context.Request.QueryString}";
+        var cacheKey = context.Request.GenerateCacheKey(_options.InstanceName ??"api_cache");
 
         var cachedResponse = await _cache.GetAsync<string>(cacheKey);
 
@@ -66,7 +67,7 @@ public class CacheMiddleware(
                 await _cache.SetAsync(
                     cacheKey,
                     responseBody,
-                    TimeSpan.FromSeconds(cacheAttribute.ExpirationSeconds ?? 60),
+                    expiration,
                     tags);
             }
         }

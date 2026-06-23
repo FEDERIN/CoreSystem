@@ -6,7 +6,7 @@
 	<Nullable>enable</Nullable>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageId>FGutierrez.Core.Idempotency</PackageId>
-	<Version>1.2.1</Version>
+	<Version>1.2.2</Version>
 <PackageReleaseNotes>$([System.IO.File]::ReadAllText($(MSBuildProjectDirectory)/CHANGELOG.md))</PackageReleaseNotes>
 	<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	<Description>Distributed Idempotency engine for .NET 8 with PostgreSQL and Redis providers, featuring native OpenTelemetry integration.</Description>
@@ -33,9 +33,9 @@
 	  <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
 	  <None Include="LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="nupkgs\" />
-  </ItemGroup>
-
+ <ItemGroup>
+	 <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+		 <_Parameter1>Core.Idempotency.Tests</_Parameter1>
+	 </AssemblyAttribute>
+ </ItemGroup>
 </Project>

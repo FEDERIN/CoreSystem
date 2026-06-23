@@ -1,6 +1,6 @@
 ﻿using Core.Idempotency.Models;
 
-namespace Core.Idempotency.Storage;
+namespace Core.Idempotency.Abstractions;
 
 public interface IIdempotencyStorage
 {

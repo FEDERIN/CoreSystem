@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>FGutierrez.Core.Observability</PackageId>
-    <Version>1.1.5</Version>
+    <Version>1.1.6</Version>
     <Authors>Federin Pastor Gutierrez Ortiz</Authors>
     <Description>Standardized observability for .NET 8 Cloud-Native apps with OpenTelemetry and Serilog.</Description>
     <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
@@ -34,5 +34,4 @@
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
 	<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
   </ItemGroup>
-
 </Project>

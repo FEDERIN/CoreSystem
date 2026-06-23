@@ -1,4 +1,5 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿
+namespace Core.DistributedCache.Abstractions;
 
 public static class CoreCacheExtensions
 {

@@ -27,13 +27,13 @@ public class PostgresIdempotencyStorageTests
     {
         // Arrange
         var storage = new PostgresIdempotencyStorage(TestConnectionString);
-        var response = new IdempotencyResponse
+        _ = new IdempotencyResponse
         {
             StatusCode = 200,
             ContentType = "application/json",
             Body = "{\"result\":\"ok\"}"
         };
-        var expiration = TimeSpan.FromHours(1);
+        _ = TimeSpan.FromHours(1);
 
         // Act & Assert - Verify method structure
         await Task.CompletedTask;

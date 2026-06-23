@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace Core.DistributedCache.Storage.Memory;
 
-public class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
+internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
     private readonly ConcurrentDictionary<string, ConcurrentHashSet<string>> _tagIndex = new();

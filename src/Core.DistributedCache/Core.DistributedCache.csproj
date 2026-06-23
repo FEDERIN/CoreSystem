@@ -9,7 +9,7 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>FGutierrez.Core.DistributedCache</PackageId>
-		<Version>1.1.4</Version>
+		<Version>1.1.5</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Distributed cache abstraction for .NET 8 supporting Redis and In-Memory providers, with native OpenTelemetry integration.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
@@ -37,5 +37,11 @@
 
 	<ItemGroup>
     	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+		<_Parameter1>Core.DistributedCache.Tests</_Parameter1>
+	  </AssemblyAttribute>
 	</ItemGroup>
 </Project>

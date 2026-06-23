@@ -4,7 +4,7 @@ using Core.DistributedCache.Storage.Redis;
 
 namespace Core.DistributedCache.Storage;
 
-public class ResilientCacheDecorator : ICoreCacheService, IDisposable
+internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
 {
     public bool IsRedisHealthy { get; private set; } = true;
     private readonly RedisCacheStorage _redis;
@@ -25,7 +25,6 @@ public class ResilientCacheDecorator : ICoreCacheService, IDisposable
             _redis.GetDatabase().Ping();
             if (!IsRedisHealthy)
             {
-                //_memory.ClearAll();
                 IsRedisHealthy = true;
             }
         }

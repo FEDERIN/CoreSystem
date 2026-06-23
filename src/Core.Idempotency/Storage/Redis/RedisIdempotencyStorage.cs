@@ -1,10 +1,11 @@
 ﻿using StackExchange.Redis;
 using System.Text.Json;
 using Core.Idempotency.Models;
+using Core.Idempotency.Abstractions;
 
 namespace Core.Idempotency.Storage.Redis;
 
-public class RedisIdempotencyStorage(IConnectionMultiplexer redis) : IIdempotencyStorage
+internal class RedisIdempotencyStorage(IConnectionMultiplexer redis) : IIdempotencyStorage
 {
     private readonly IDatabase _db = redis.GetDatabase();
     private const string KeyPrefix = "idemp:";

@@ -1,11 +1,8 @@
 ﻿using Core.DistributedCache.Abstractions;
 using Core.DistributedCache.Options;
-using Core.DistributedCache.Storage;
 using Core.DistributedCache.Storage.Memory;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using StackExchange.Redis;
 
 namespace Core.DistributedCache.Tests;
 
@@ -29,7 +26,7 @@ public class DistributedCacheExtensionsTests
         // Assert
         Assert.NotNull(serviceProvider.GetService<ICacheSerializer>());
         Assert.NotNull(serviceProvider.GetService<ICoreCacheService>());
-        Assert.NotNull(serviceProvider.GetService<MemoryCacheStorage>());
+        Assert.NotNull(serviceProvider.GetService<ICacheServiceFactory>());
         Assert.IsType<CacheOptions>(serviceProvider.GetService<CacheOptions>());
     }
 

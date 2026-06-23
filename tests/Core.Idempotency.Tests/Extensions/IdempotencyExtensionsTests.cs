@@ -1,4 +1,4 @@
-using Core.Idempotency.Storage;
+using Core.Idempotency.Abstractions;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

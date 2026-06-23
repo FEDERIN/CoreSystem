@@ -13,7 +13,7 @@ namespace Core.Observability.Extensions;
 /// <summary>
 /// Extension methods for setting up OpenTelemetry tracing using a centralized options class.
 /// </summary>
-public static class OpenTelemetryTracingExtensions
+internal static class OpenTelemetryTracingExtensions
 {
     public static IServiceCollection AddOpenTelemetryTracing(
         this IServiceCollection services,

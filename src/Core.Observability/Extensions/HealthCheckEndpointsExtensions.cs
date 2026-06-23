@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Core.Observability.Extensions;
 
-public static class HealthCheckEndpointsExtensions
+internal static class HealthCheckEndpointsExtensions
 {
     public static WebApplication MapCoreHealthEndpoints(this WebApplication app)
     {

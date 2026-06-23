@@ -10,7 +10,7 @@ namespace Core.Observability.Extensions;
 /// <summary>
 /// Extension methods to configure Serilog with Console and OpenTelemetry sinks.
 /// </summary>
-public static class SerilogExtensions
+internal static class SerilogExtensions
 {
     public static WebApplicationBuilder AddSerilogConfiguration(
         this WebApplicationBuilder builder,
