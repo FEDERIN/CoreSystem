@@ -62,8 +62,6 @@ internal class CacheMiddleware(
 
                 string[]? tags = cacheAttribute.Tag != null ? [cacheAttribute.Tag] : null;
 
-                await _cache.SetAsync(cacheKey, responseBody, expiration);
-
                 await _cache.SetAsync(
                     cacheKey,
                     responseBody,
