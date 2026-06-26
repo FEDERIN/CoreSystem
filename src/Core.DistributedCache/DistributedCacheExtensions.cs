@@ -22,7 +22,12 @@ public static class DistributedCacheExtensions
         var options = new CacheOptions();
         setupAction(options);
         services.AddSingleton(options);
-        services.AddSingleton<ICacheSerializer, JsonCacheSerializer>();
+
+        services.AddSingleton<JsonCacheSerializer>();
+        services.AddSingleton<MessagePackCacheSerializer>();
+        services.AddSingleton<ProtobufCacheSerializer>();
+        services.AddSingleton<ICacheSerializerFactory, CacheSerializerFactory>();
+
         services.AddSingleton(s => new CacheMetrics(
                 s.GetRequiredService<IMeterFactory>()));
 
@@ -45,7 +50,7 @@ public static class DistributedCacheExtensions
             services.AddSingleton<RedisCacheStorage>(sp =>
             {
                 var conn = sp.GetRequiredService<IConnectionMultiplexer>();
-                return new RedisCacheStorage(conn, options, sp.GetRequiredService<ICacheSerializer>());
+                return new RedisCacheStorage(conn, options, sp.GetRequiredService<ICacheSerializerFactory>());
             });
 
             services.AddSingleton<ICoreCacheService, ResilientCacheDecorator>();

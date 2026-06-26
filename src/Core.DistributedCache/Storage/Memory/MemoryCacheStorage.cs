@@ -18,7 +18,31 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
         var options = new MemoryCacheEntryOptions();
-        if (expiration.HasValue) options.SetAbsoluteExpiration(expiration.Value);
+
+        if (expiration.HasValue)
+            options.SetAbsoluteExpiration(expiration.Value);
+
+        if (tags != null && tags.Length > 0)
+        {
+            options.RegisterPostEvictionCallback((evictedKey, _, reason, _) =>
+            {
+                if (reason != EvictionReason.Removed)
+                {
+                    foreach (var tag in tags)
+                    {
+                        if (_tagIndex.TryGetValue(tag, out var keys))
+                        {
+                            keys.TryRemove((string)evictedKey, out _);
+
+                            if (keys.IsEmpty)
+                            {
+                                _tagIndex.TryRemove(tag, out _);
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
         _memoryCache.Set(key, value, options);
 

@@ -7,10 +7,10 @@ namespace Core.DistributedCache.Storage.Redis;
 internal class RedisCacheStorage(
     IConnectionMultiplexer redis,
     CacheOptions options,
-    ICacheSerializer serializer) : ICoreCacheService
+    ICacheSerializerFactory serializerFactory) : ICoreCacheService
 {
     private readonly IDatabase _database = redis.GetDatabase();
-    private readonly ICacheSerializer _serializer = serializer;
+    private readonly ICacheSerializerFactory _serializerFactory = serializerFactory;
     private readonly string _prefix = string.IsNullOrWhiteSpace(options.InstanceName)
         ? string.Empty
         : $"{options.InstanceName}:";
@@ -21,8 +21,18 @@ internal class RedisCacheStorage(
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
-        var value = await _database.StringGetAsync(GetFullKey(key));
-        return value.HasValue ? _serializer.Deserialize<T>(value!) : default;
+        byte[]? buffer = await _database.StringGetAsync($"{_prefix}{key}");
+        if (buffer == null || buffer.Length == 0) return default;
+
+        // 1. Detección inteligente: ¿El primer byte es un tipo válido?
+        if (Enum.IsDefined(typeof(SerializerType), buffer[0]))
+        {
+            SerializerType type = (SerializerType)buffer[0];
+            return _serializerFactory.GetSerializer(type).Deserialize<T>(buffer.AsSpan(1).ToArray());
+        }
+
+        // 2. Fallback para datos legados (JSON puro)
+        return _serializerFactory.GetSerializer(SerializerType.Json).Deserialize<T>(buffer);
     }
 
     public async Task RemoveAsync(string key, CancellationToken ct = default)
@@ -33,11 +43,26 @@ internal class RedisCacheStorage(
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
-        var fullKey = GetFullKey(key);
-        var serializedValue = _serializer.Serialize(value);
+        var serializer = _serializerFactory.GetSerializer(options.SerializerType);
+
+        byte[] payload = serializer.Serialize(value);
+
+        byte[] dataToStore;
+
+        if (serializer.RequiresHeader)
+        {
+            dataToStore = new byte[payload.Length + 1];
+            dataToStore[0] = (byte)options.SerializerType;
+            payload.AsSpan().CopyTo(dataToStore.AsSpan(1));
+        }
+        else
+        {
+            dataToStore = payload;
+        }
+
         Expiration expiry = expiration.HasValue ? new Expiration(expiration.Value) : default;
 
-        await _database.StringSetAsync(fullKey, serializedValue, expiry: expiry);
+        await _database.StringSetAsync(GetFullKey(key), dataToStore, expiry);
 
         if (tags != null && tags.Length > 0)
         {

@@ -1,7 +1,8 @@
 ﻿namespace Core.DistributedCache.Abstractions;
 
-internal interface ICacheSerializer
+public interface ICacheSerializer
 {
-    string Serialize<T>(T value);
-    T? Deserialize<T>(string value);
+    byte[] Serialize<T>(T value);
+    T? Deserialize<T>(byte[] bytes);
+    public bool RequiresHeader => false;
 }
