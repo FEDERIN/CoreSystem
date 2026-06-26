@@ -16,8 +16,8 @@ internal class RedisCacheStorage(
         : $"{options.InstanceName}:";
 
     private string GetFullKey(string key) => $"{_prefix}{key}";
-
     public IDatabase GetDatabase() => _database;
+
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
@@ -34,13 +34,7 @@ internal class RedisCacheStorage(
         // 2. Fallback para datos legados (JSON puro)
         return _serializerFactory.GetSerializer(SerializerType.Json).Deserialize<T>(buffer);
     }
-
-    public async Task RemoveAsync(string key, CancellationToken ct = default)
-        => await _database.KeyDeleteAsync(GetFullKey(key));
-
-    public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
-        => await _database.KeyExistsAsync(GetFullKey(key));
-
+    
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
         var serializer = _serializerFactory.GetSerializer(options.SerializerType);
@@ -76,6 +70,9 @@ internal class RedisCacheStorage(
         }
     }
 
+    public async Task RemoveAsync(string key, CancellationToken ct = default)
+        => await _database.KeyDeleteAsync(GetFullKey(key));
+
     public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
     {
         var tagKey = $"{_prefix}tag:{tag}";
@@ -88,6 +85,48 @@ internal class RedisCacheStorage(
             await _database.KeyDeleteAsync(keysToDelete);
 
             await _database.KeyDeleteAsync(tagKey);
+        }
+    }
+
+    public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
+        => await _database.KeyExistsAsync(GetFullKey(key));
+
+    public async Task<T?> GetOrAddAsync<T>(string key, Func<CancellationToken, Task<T>> factory, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
+    {
+        var cachedValue = await GetAsync<T>(key, ct);
+
+        if (cachedValue is not null)
+            return cachedValue;
+
+        var lockKey = $"{GetFullKey(key)}:lock";
+        var token = Guid.NewGuid().ToString();
+
+        if (await _database.LockTakeAsync(lockKey, token, TimeSpan.FromSeconds(10)))
+        {
+            try
+            {
+                cachedValue = await GetAsync<T>(key, ct);
+
+                if (cachedValue is not null) 
+                    return cachedValue;
+
+                
+                var value = await factory(ct);
+
+                if (value is not null) 
+                    await SetAsync(key, value, expiration, tags, ct);
+
+                return value;
+            }
+            finally
+            {
+                await _database.LockReleaseAsync(lockKey, token);
+            }
+        }
+        else
+        {
+            await Task.Delay(100, ct);
+            return await GetAsync<T>(key, ct);
         }
     }
 }

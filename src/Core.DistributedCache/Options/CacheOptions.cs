@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using Polly;
+using StackExchange.Redis;
 
 namespace Core.DistributedCache.Options;
 
@@ -10,6 +11,7 @@ public class CacheOptions
     public long MaxCacheableSize { get; set; } = 1024 * 1024;
     public RedisOptions Redis { get; set; } = new();
     public SerializerType SerializerType { get; set; } = SerializerType.Json;
+    public IAsyncPolicy? ResiliencePolicy { get; set; }
 }
 
 public class RedisOptions

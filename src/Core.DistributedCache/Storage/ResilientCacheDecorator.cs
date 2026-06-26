@@ -6,10 +6,15 @@ namespace Core.DistributedCache.Storage;
 
 internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
 {
-    public bool IsRedisHealthy { get; private set; } = true;
+    private volatile bool _isRedisHealthy = true;
+    public bool IsRedisHealthy => _isRedisHealthy;
+
     private readonly RedisCacheStorage _redis;
     private readonly MemoryCacheStorage _memory;
     private readonly Timer _healthCheckTimer;
+
+    private int _failureCount = 0;
+    private const int Threshold = 3;
 
     public ResilientCacheDecorator(RedisCacheStorage redis, MemoryCacheStorage memory)
     {
@@ -23,24 +28,14 @@ internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
         try
         {
             _redis.GetDatabase().Ping();
-            if (!IsRedisHealthy)
-            {
-                IsRedisHealthy = true;
-            }
+            _failureCount = 0;
+            _isRedisHealthy = true;
         }
-        catch { 
-            IsRedisHealthy = false; 
-        }
-    }
-
-    public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
-    {
-        if (IsRedisHealthy)
+        catch
         {
-            try { return await _redis.ExistsAsync(key, ct); }
-            catch { IsRedisHealthy = false; }
+            _failureCount++;
+            if (_failureCount >= Threshold) _isRedisHealthy = false;
         }
-        return await _memory.ExistsAsync(key, ct);
     }
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
@@ -48,7 +43,7 @@ internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
         if (IsRedisHealthy)
         {
             try { return await _redis.GetAsync<T>(key, ct); }
-            catch { IsRedisHealthy = false; }
+            catch { _isRedisHealthy = false; }
         }
         return await _memory.GetAsync<T>(key, ct);
     }
@@ -58,9 +53,19 @@ internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
         if (IsRedisHealthy)
         {
             try { await _redis.SetAsync(key, value, exp, tags, ct); return; }
-            catch { IsRedisHealthy = false; }
+            catch { _isRedisHealthy = false; }
         }
         await _memory.SetAsync(key, value, exp, tags, ct);
+    }
+
+    public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
+    {
+        if (IsRedisHealthy)
+        {
+            try { return await _redis.ExistsAsync(key, ct); }
+            catch { _isRedisHealthy = false; }
+        }
+        return await _memory.ExistsAsync(key, ct);
     }
 
     public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
@@ -68,7 +73,7 @@ internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
         if (IsRedisHealthy)
         {
             try { await _redis.InvalidateByTagAsync(tag, ct); return; }
-            catch { IsRedisHealthy = false; }
+            catch { _isRedisHealthy = false; }
         }
         await _memory.InvalidateByTagAsync(tag, ct);
     }
@@ -78,9 +83,19 @@ internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
         if (IsRedisHealthy)
         {
             try { await _redis.RemoveAsync(key, ct); }
-            catch { IsRedisHealthy = false; }
+            catch { _isRedisHealthy = false; }
         }
         await _memory.RemoveAsync(key, ct);
+    }
+
+    public async Task<T?> GetOrAddAsync<T>(string key, Func<CancellationToken, Task<T>> factory, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
+    {
+        if (IsRedisHealthy)
+        {
+            try { return await _redis.GetOrAddAsync<T>(key, factory, expiration, tags, ct); }
+            catch { _isRedisHealthy = false; }
+        }
+        return await _memory.GetOrAddAsync<T>(key, factory, expiration, tags, ct);
     }
 
     public void Dispose()

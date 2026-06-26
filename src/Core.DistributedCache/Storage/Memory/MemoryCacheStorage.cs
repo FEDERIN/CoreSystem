@@ -8,6 +8,7 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
     private readonly ConcurrentDictionary<string, ConcurrentHashSet<string>> _tagIndex = new();
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
 
     public Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
@@ -57,6 +58,12 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
         await Task.CompletedTask;
     }
 
+    public Task RemoveAsync(string key, CancellationToken ct = default)
+    {
+        _memoryCache.Remove(key);
+        return Task.CompletedTask;
+    }
+
     public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
     {
         if (_tagIndex.TryRemove(tag, out var keys))
@@ -69,15 +76,42 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
         await Task.CompletedTask;
     }
 
-    public Task RemoveAsync(string key, CancellationToken ct = default)
-    {
-        _memoryCache.Remove(key);
-        return Task.CompletedTask;
-    }
-
     public Task<bool> ExistsAsync(string key, CancellationToken ct = default)
     {
         return Task.FromResult(_memoryCache.TryGetValue(key, out _));
+    }
+
+    public async Task<T?> GetOrAddAsync<T>(
+            string key,
+            Func<CancellationToken, Task<T>> factory,
+            TimeSpan? expiration = null,
+            string[]? tags = null,
+            CancellationToken ct = default)
+    {
+        if (_memoryCache.TryGetValue(key, out T? value))
+            return value;
+
+        var myLock = _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
+        await myLock.WaitAsync(ct);
+
+        try
+        {
+            if (_memoryCache.TryGetValue(key, out value))
+                return value;
+
+            value = await factory(ct);
+
+            if (value != null)
+            {
+                await SetAsync(key, value, expiration, tags, ct);
+            }
+
+            return value;
+        }
+        finally
+        {
+            myLock.Release();
+        }
     }
 }
 
