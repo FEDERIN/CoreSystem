@@ -3,8 +3,10 @@ using Core.DistributedCache.Diagnostics;
 using Core.DistributedCache.Middleware;
 using Core.DistributedCache.Options;
 using Core.DistributedCache.Serialization;
+using Core.DistributedCache.Services;
 using Core.DistributedCache.Storage;
 using Core.DistributedCache.Storage.Memory;
+using Core.DistributedCache.Storage.Memory.Abstractions;
 using Core.DistributedCache.Storage.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +34,9 @@ public static class DistributedCacheExtensions
                 s.GetRequiredService<IMeterFactory>()));
 
         services.AddMemoryCache();
+        services.AddSingleton<IMemoryTagIndex, MemoryTagIndex>();
+        services.AddSingleton<IMemoryKeyTracker, MemoryKeyTracker>();
+        services.AddSingleton<IKeyLockProvider, KeyLockProvider>();
 
         services.AddSingleton<MemoryCacheStorage>();
 
@@ -61,6 +66,8 @@ public static class DistributedCacheExtensions
         }
 
         services.AddSingleton<ICacheServiceFactory, CacheServiceFactory>();
+
+        services.AddHostedService<RedisRehydrationBackgroundService>();
 
         return services;
     }

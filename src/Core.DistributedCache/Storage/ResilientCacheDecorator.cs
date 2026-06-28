@@ -1,107 +1,102 @@
 ﻿using Core.DistributedCache.Abstractions;
 using Core.DistributedCache.Storage.Memory;
 using Core.DistributedCache.Storage.Redis;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.CircuitBreaker;
+using StackExchange.Redis;
 
 namespace Core.DistributedCache.Storage;
 
-internal class ResilientCacheDecorator : ICoreCacheService, IDisposable
+internal class ResilientCacheDecorator(
+    RedisCacheStorage redisStorage,
+    MemoryCacheStorage memoryStorage,
+    ILogger<ResilientCacheDecorator> logger) : ICoreCacheService
 {
-    private volatile bool _isRedisHealthy = true;
-    public bool IsRedisHealthy => _isRedisHealthy;
+    private readonly RedisCacheStorage _redisStorage = redisStorage;
+    private readonly MemoryCacheStorage _memoryStorage = memoryStorage;
+    private readonly ILogger<ResilientCacheDecorator> _logger = logger;
+    private readonly AsyncCircuitBreakerPolicy _circuitBreaker = Policy
+            .Handle<RedisConnectionException>()
+            .Or<TimeoutException>()
+            .Or<RedisCommandException>()
+            .AdvancedCircuitBreakerAsync(
+                failureThreshold: 0.5,
+                samplingDuration: TimeSpan.FromSeconds(30),
+                minimumThroughput: 10,
+                durationOfBreak: TimeSpan.FromSeconds(15)
+            );
 
-    private readonly RedisCacheStorage _redis;
-    private readonly MemoryCacheStorage _memory;
-    private readonly Timer _healthCheckTimer;
-
-    private int _failureCount = 0;
-    private const int Threshold = 3;
-
-    public ResilientCacheDecorator(RedisCacheStorage redis, MemoryCacheStorage memory)
-    {
-        _redis = redis;
-        _memory = memory;
-        _healthCheckTimer = new Timer(CheckRedisHealth, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30));
-    }
-
-    private void CheckRedisHealth(object? state)
-    {
-        try
-        {
-            _redis.GetDatabase().Ping();
-            _failureCount = 0;
-            _isRedisHealthy = true;
-        }
-        catch
-        {
-            _failureCount++;
-            if (_failureCount >= Threshold) _isRedisHealthy = false;
-        }
-    }
+    public bool IsRedisHealthy => _circuitBreaker.CircuitState != CircuitState.Open;
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
-        if (IsRedisHealthy)
-        {
-            try { return await _redis.GetAsync<T>(key, ct); }
-            catch { _isRedisHealthy = false; }
-        }
-        return await _memory.GetAsync<T>(key, ct);
+        return await ExecuteAsync(
+            async () => await _redisStorage.GetAsync<T>(key, ct),
+            async () => await _memoryStorage.GetAsync<T>(key)
+        );
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? exp = null, string[]? tags = null, CancellationToken ct = default)
     {
-        if (IsRedisHealthy)
+        try
         {
-            try { await _redis.SetAsync(key, value, exp, tags, ct); return; }
-            catch { _isRedisHealthy = false; }
+            await _circuitBreaker.ExecuteAsync(() => _redisStorage.SetAsync(key, value, exp, tags, ct));
         }
-        await _memory.SetAsync(key, value, exp, tags, ct);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Redis Set falló. Degradando a MemoryCache con origen marcado.");
+
+            var wrappedValue = new CacheEntryWrapper<T>
+            {
+                Value = value,
+                Origin = CacheProviderType.Redis
+            };
+
+            await _memoryStorage.SetAsync(key, wrappedValue, exp, tags, ct);
+        }
     }
 
     public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
-    {
-        if (IsRedisHealthy)
-        {
-            try { return await _redis.ExistsAsync(key, ct); }
-            catch { _isRedisHealthy = false; }
-        }
-        return await _memory.ExistsAsync(key, ct);
-    }
-
-    public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
-    {
-        if (IsRedisHealthy)
-        {
-            try { await _redis.InvalidateByTagAsync(tag, ct); return; }
-            catch { _isRedisHealthy = false; }
-        }
-        await _memory.InvalidateByTagAsync(tag, ct);
-    }
+        => await ExecuteAsync(() => _redisStorage.ExistsAsync(key, ct), () => _memoryStorage.ExistsAsync(key, ct));
 
     public async Task RemoveAsync(string key, CancellationToken ct = default)
-    {
-        if (IsRedisHealthy)
-        {
-            try { await _redis.RemoveAsync(key, ct); }
-            catch { _isRedisHealthy = false; }
-        }
-        await _memory.RemoveAsync(key, ct);
-    }
+        => await ExecuteActionAsync(() => 
+        _redisStorage.RemoveAsync(key, ct), () => _memoryStorage.RemoveAsync(key, ct));
+
+    public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
+        => await ExecuteActionAsync(() => 
+        _redisStorage.InvalidateByTagAsync(tag, ct), () => _memoryStorage.InvalidateByTagAsync(tag, ct));
 
     public async Task<T?> GetOrAddAsync<T>(string key, Func<CancellationToken, Task<T>> factory, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
+        => await ExecuteAsync(() => 
+        _redisStorage.GetOrAddAsync(key, factory, expiration, tags, ct), () => _memoryStorage.GetOrAddAsync(key, factory, expiration, tags, ct));
+
+    private async Task ExecuteActionAsync(Func<Task> redisAction, Func<Task> fallbackAction)
     {
-        if (IsRedisHealthy)
+        try
         {
-            try { return await _redis.GetOrAddAsync<T>(key, factory, expiration, tags, ct); }
-            catch { _isRedisHealthy = false; }
+            await _circuitBreaker.ExecuteAsync(redisAction);
         }
-        return await _memory.GetOrAddAsync<T>(key, factory, expiration, tags, ct);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Redis operation failed. Falling back to MemoryCache.");
+            await fallbackAction();
+        }
     }
 
-    public void Dispose()
+    private async Task<T?> ExecuteAsync<T>(
+    Func<Task<T?>> redisAction,
+    Func<Task<T?>> fallbackAction)
     {
-        _healthCheckTimer?.Dispose();
-
-        GC.SuppressFinalize(this);
+        try
+        {
+            return await _circuitBreaker.ExecuteAsync(redisAction);
+        }
+        catch (Exception ex) when (ex is BrokenCircuitException or RedisException or TimeoutException)
+        {
+            _logger.LogWarning(ex, "Redis unavailable. Using MemoryCache fallback.");
+            return await fallbackAction();
+        }
     }
 }

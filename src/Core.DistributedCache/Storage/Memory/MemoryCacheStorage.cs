@@ -1,19 +1,25 @@
 ﻿using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.Storage.Memory.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Concurrent;
 
 namespace Core.DistributedCache.Storage.Memory;
 
-internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
+internal class MemoryCacheStorage(IMemoryCache memoryCache, IMemoryTagIndex tagIndex,
+    IMemoryKeyTracker tracker, IKeyLockProvider keyLock) : ICoreCacheService
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
-    private readonly ConcurrentDictionary<string, ConcurrentHashSet<string>> _tagIndex = new();
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
+    private readonly IMemoryTagIndex _tagIndex = tagIndex;
+    private readonly IMemoryKeyTracker _tracker = tracker;
+    private readonly IKeyLockProvider _keyLock = keyLock;
 
-    public Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
+    public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
-        _memoryCache.TryGetValue(key, out T? value);
-        return Task.FromResult(value);
+        if (_memoryCache.TryGetValue(key, out CacheEntryWrapper<T>? wrapper) && wrapper != null)
+        {
+            return wrapper.Value;
+        }
+
+        return default;
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
@@ -23,38 +29,41 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
         if (expiration.HasValue)
             options.SetAbsoluteExpiration(expiration.Value);
 
-        if (tags != null && tags.Length > 0)
+        options.RegisterPostEvictionCallback((evictedKey, _, reason, _) =>
         {
-            options.RegisterPostEvictionCallback((evictedKey, _, reason, _) =>
-            {
-                if (reason != EvictionReason.Removed)
-                {
-                    foreach (var tag in tags)
-                    {
-                        if (_tagIndex.TryGetValue(tag, out var keys))
-                        {
-                            keys.TryRemove((string)evictedKey, out _);
+            if (reason != EvictionReason.Removed)
+                _tagIndex.RemoveKey((string)evictedKey);
+        });
 
-                            if (keys.IsEmpty)
-                            {
-                                _tagIndex.TryRemove(tag, out _);
-                            }
-                        }
-                    }
-                }
-            });
+
+        CacheEntryWrapper<T> wrapper;
+        var isRedis = false;
+
+        if (value is CacheEntryWrapper<T> wrapped)
+        {
+            wrapper = wrapped;
+
+            if (wrapped.Origin == CacheProviderType.Redis)
+                isRedis = true;
+        }
+        else
+        {
+            wrapper = new CacheEntryWrapper<T>
+            {
+                Value = value,
+                Origin = CacheProviderType.Memory,
+            };
         }
 
-        _memoryCache.Set(key, value, options);
+        _memoryCache.Set(key, wrapper, options);
 
-        if (tags != null)
-        {
-            foreach (var tag in tags)
-            {
-                var keys = _tagIndex.GetOrAdd(tag, _ => []);
-                keys.Add(key);
-            }
-        }
+        if(isRedis)
+            _tracker.Track(key);
+        
+        if (tags != null) 
+            _tagIndex.AddTags(key, tags);
+
+
         await Task.CompletedTask;
     }
 
@@ -66,13 +75,7 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
 
     public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
     {
-        if (_tagIndex.TryRemove(tag, out var keys))
-        {
-            foreach (var key in keys)
-            {
-                _memoryCache.Remove(key);
-            }
-        }
+        _tagIndex.RemoveByTag(tag, key => _memoryCache.Remove(key));
         await Task.CompletedTask;
     }
 
@@ -91,32 +94,26 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache) : ICoreCacheService
         if (_memoryCache.TryGetValue(key, out T? value))
             return value;
 
-        var myLock = _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
-        await myLock.WaitAsync(ct);
-
-        try
+        using (await _keyLock.AcquireAsync(key, ct))
         {
             if (_memoryCache.TryGetValue(key, out value))
                 return value;
 
             value = await factory(ct);
-
             if (value != null)
-            {
                 await SetAsync(key, value, expiration, tags, ct);
-            }
 
             return value;
-        }
-        finally
-        {
-            myLock.Release();
-        }
+        } 
     }
-}
 
-internal class ConcurrentHashSet<T> : ConcurrentDictionary<T, byte> where T : notnull
-{
-    public void Add(T item) => TryAdd(item, 0);
-    public new IEnumerator<T> GetEnumerator() => Keys.GetEnumerator();
+    public IEnumerable<string> GetTrackedKeys()
+    {
+        return _tracker.GetAllTrackedKeys();
+    }
+
+    internal CacheEntryWrapper<T>? GetWrapper<T>(string key)
+    {
+        return _memoryCache.TryGetValue(key, out CacheEntryWrapper<T>? wrapper) ? wrapper : null;
+    }
 }
