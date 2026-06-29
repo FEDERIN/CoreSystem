@@ -4,8 +4,8 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Core.DistributedCache.Storage.Memory;
 
-internal class MemoryCacheStorage(IMemoryCache memoryCache, IMemoryTagIndex tagIndex,
-    IMemoryKeyTracker tracker, IKeyLockProvider keyLock) : ICoreCacheService
+internal class MemoryStorage(IMemoryCache memoryCache, IMemoryTagIndex tagIndex,
+    IMemoryKeyTracker tracker, IKeyLockProvider keyLock) : ICacheStorage
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
     private readonly IMemoryTagIndex _tagIndex = tagIndex;
@@ -29,12 +29,13 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache, IMemoryTagIndex tagI
         if (expiration.HasValue)
             options.SetAbsoluteExpiration(expiration.Value);
 
-        options.RegisterPostEvictionCallback((evictedKey, _, reason, _) =>
+        options.RegisterPostEvictionCallback((evictedKey, _, _, _) =>
         {
-            if (reason != EvictionReason.Removed)
-                _tagIndex.RemoveKey((string)evictedKey);
-        });
+            var key = (string)evictedKey;
 
+            _tagIndex.RemoveKey(key);
+            _tracker.Untrack(key);
+        });
 
         CacheEntryWrapper<T> wrapper;
         var isRedis = false;
@@ -57,10 +58,10 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache, IMemoryTagIndex tagI
 
         _memoryCache.Set(key, wrapper, options);
 
-        if(isRedis)
+        if (isRedis)
             _tracker.Track(key);
-        
-        if (tags != null) 
+
+        if (tags != null)
             _tagIndex.AddTags(key, tags);
 
 
@@ -70,6 +71,7 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache, IMemoryTagIndex tagI
     public Task RemoveAsync(string key, CancellationToken ct = default)
     {
         _memoryCache.Remove(key);
+        _tracker.Untrack(key);
         return Task.CompletedTask;
     }
 
@@ -104,7 +106,7 @@ internal class MemoryCacheStorage(IMemoryCache memoryCache, IMemoryTagIndex tagI
                 await SetAsync(key, value, expiration, tags, ct);
 
             return value;
-        } 
+        }
     }
 
     public IEnumerable<string> GetTrackedKeys()

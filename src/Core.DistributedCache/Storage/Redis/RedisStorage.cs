@@ -4,10 +4,10 @@ using StackExchange.Redis;
 
 namespace Core.DistributedCache.Storage.Redis;
 
-internal class RedisCacheStorage(
+internal class RedisStorage(
     IConnectionMultiplexer redis,
     CacheOptions options,
-    ICacheSerializerFactory serializerFactory) : ICoreCacheService
+    ICacheSerializerFactory serializerFactory) : ICacheStorage
 {
     private readonly IDatabase _database = redis.GetDatabase();
     private readonly ICacheSerializerFactory _serializerFactory = serializerFactory;
@@ -16,25 +16,21 @@ internal class RedisCacheStorage(
         : $"{options.InstanceName}:";
 
     private string GetFullKey(string key) => $"{_prefix}{key}";
-    public IDatabase GetDatabase() => _database;
-
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
         byte[]? buffer = await _database.StringGetAsync($"{_prefix}{key}");
         if (buffer == null || buffer.Length == 0) return default;
 
-        // 1. Detección inteligente: ¿El primer byte es un tipo válido?
         if (Enum.IsDefined(typeof(SerializerType), buffer[0]))
         {
             SerializerType type = (SerializerType)buffer[0];
             return _serializerFactory.GetSerializer(type).Deserialize<T>(buffer.AsSpan(1).ToArray());
         }
 
-        // 2. Fallback para datos legados (JSON puro)
         return _serializerFactory.GetSerializer(SerializerType.Json).Deserialize<T>(buffer);
     }
-    
+
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
         var serializer = _serializerFactory.GetSerializer(options.SerializerType);
@@ -107,13 +103,13 @@ internal class RedisCacheStorage(
             {
                 cachedValue = await GetAsync<T>(key, ct);
 
-                if (cachedValue is not null) 
+                if (cachedValue is not null)
                     return cachedValue;
 
-                
+
                 var value = await factory(ct);
 
-                if (value is not null) 
+                if (value is not null)
                     await SetAsync(key, value, expiration, tags, ct);
 
                 return value;

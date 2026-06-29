@@ -22,7 +22,7 @@ internal class CacheMiddleware(
     {
         var endpoint = context.GetEndpoint();
         var cacheAttribute = endpoint?.Metadata.GetMetadata<CacheableAttribute>();
-    
+
         if (cacheAttribute == null)
         {
             await _next(context);
@@ -33,7 +33,7 @@ internal class CacheMiddleware(
                 ? TimeSpan.FromSeconds(cacheAttribute.ExpirationSeconds.Value)
                 : _options.DefaultExpiration;
 
-        var cacheKey = context.Request.GenerateCacheKey(_options.InstanceName ??"api_cache");
+        var cacheKey = context.Request.GenerateCacheKey(_options.InstanceName ?? "api_cache");
 
         var cachedResponse = await _cache.GetAsync<string>(cacheKey);
 

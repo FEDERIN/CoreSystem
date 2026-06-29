@@ -1,4 +1,5 @@
 using Core.DistributedCache;
+using Core.DistributedCache.Abstractions;
 using Core.DistributedCache.Options;
 using Core.Idempotency;
 using Core.Observability;
@@ -21,7 +22,7 @@ builder.Services.AddCoreDistributedCache(options =>
 {
     builder.Configuration.GetSection("DistributedCache").Bind(options);
 
-    if (options.DefaultProvider == "Redis")
+    if (options.DefaultProvider == CacheProviderType.Redis)
     {
         options.Redis = new RedisOptions
         {

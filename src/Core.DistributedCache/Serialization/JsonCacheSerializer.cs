@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Abstractions;
+using System.Text.Json;
 
 namespace Core.DistributedCache.Serialization;
 
@@ -15,7 +15,7 @@ public class JsonCacheSerializer : ICacheSerializer
             PropertyNameCaseInsensitive = true
         };
     }
-    
+
     public byte[] Serialize<T>(T value)
     {
         return JsonSerializer.SerializeToUtf8Bytes(value, _options);

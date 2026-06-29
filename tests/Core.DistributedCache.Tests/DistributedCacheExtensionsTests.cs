@@ -1,4 +1,5 @@
 ﻿using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.Behaviors;
 using Core.DistributedCache.Options;
 using Core.DistributedCache.Storage.Memory;
 using FluentAssertions;
@@ -40,6 +41,6 @@ public class DistributedCacheExtensionsTests
 
         var provider = services.BuildServiceProvider();
 
-        provider.GetRequiredService<ICoreCacheService>().Should().BeOfType<MemoryCacheStorage>();
+        provider.GetRequiredService<ICoreCacheService>().Should().BeOfType<MemoryStorage>();
     }
 }

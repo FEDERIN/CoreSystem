@@ -18,9 +18,6 @@ public class MemoryTagIndex : IMemoryTagIndex
         }
     }
 
-    public IEnumerable<string> GetKeysByTag(string tag) =>
-        _tagToKeys.TryGetValue(tag, out var keys) ? keys.Keys : Enumerable.Empty<string>();
-
     public void RemoveKey(string key)
     {
         if (_keyToTags.TryRemove(key, out var tags))

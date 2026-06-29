@@ -1,34 +1,44 @@
 ﻿using Core.DistributedCache.Abstractions;
 using Core.DistributedCache.Storage.Memory;
+using Core.DistributedCache.Storage.Redis;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Core.DistributedCache.Services;
 
-internal class RedisRehydrationBackgroundService(
+internal sealed class RedisRehydrationBackgroundService(
     HealthCheckService healthCheckService,
-    MemoryCacheStorage memoryCache,
-    ICoreCacheService redisCache,
-    ILogger<RedisRehydrationBackgroundService> logger) : BackgroundService
+    MemoryStorage memoryStorage,
+    RedisStorage redisStorage,
+    ILogger<RedisRehydrationBackgroundService> logger)
+    : BackgroundService
 {
-    private bool _wasRedisDown = false;
+    private bool _wasRedisDown;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
             var report = await healthCheckService.CheckHealthAsync(stoppingToken);
-            bool isRedisHealthy = report.Entries.TryGetValue("redis_cache", out var entry)
-                                  && entry.Status == HealthStatus.Healthy;
 
-            if (isRedisHealthy && _wasRedisDown)
+            bool redisHealthy =
+                report.Entries.TryGetValue("redis_cache", out var entry) &&
+                entry.Status == HealthStatus.Healthy;
+
+            if (redisHealthy)
             {
-                logger.LogInformation("Redis recovered. Starting rehydration...");
-                await RehydrateAsync();
-                _wasRedisDown = false;
+                if (_wasRedisDown)
+                {
+                    logger.LogInformation(
+                        "Redis recovered. Starting cache rehydration.");
+
+                    await RehydrateAsync(stoppingToken);
+
+                    _wasRedisDown = false;
+                }
             }
-            else if (!isRedisHealthy)
+            else
             {
                 _wasRedisDown = true;
             }
@@ -37,33 +47,47 @@ internal class RedisRehydrationBackgroundService(
         }
     }
 
-    private async Task RehydrateAsync()
+    private async Task RehydrateAsync(CancellationToken ct)
     {
-        const int batchSize = 100;
-        var keys = memoryCache.GetTrackedKeys().ToList();
+        const int BatchSize = 100;
 
-        foreach (var chunk in keys.Chunk(batchSize))
+        var keys = memoryStorage.GetTrackedKeys().ToList();
+
+        foreach (var batch in keys.Chunk(BatchSize))
         {
-            foreach (var key in chunk)
+            foreach (var key in batch)
             {
-                var wrapper = memoryCache.GetWrapper<object>(key);
+                ct.ThrowIfCancellationRequested();
 
-                // Only migrate data that was originally intended for Redis
-                if (wrapper?.Origin == CacheProviderType.Redis)
+                var wrapper = memoryStorage.GetWrapper<object>(key);
+
+                if (wrapper is null)
+                    continue;
+
+                if (wrapper.Origin != CacheProviderType.Redis)
+                    continue;
+
+                try
                 {
-                    try
-                    {
-                        await redisCache.SetAsync(key, wrapper.Value);
-                        await memoryCache.RemoveAsync(key);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "Error rehydrating key {Key}. It will be kept in memory for the next attempt.", key);
-                    }
+                    await redisStorage.SetAsync(
+                        key,
+                        wrapper.Value,
+                        ct: ct);
+
+                    await memoryStorage.RemoveAsync(
+                        key,
+                        ct);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(
+                        ex,
+                        "Unable to rehydrate cache key '{Key}'. It will be retried later.",
+                        key);
                 }
             }
-            // Small throttle to avoid overwhelming Redis during recovery
-            await Task.Delay(100);
+
+            await Task.Delay(100, ct);
         }
     }
 }
