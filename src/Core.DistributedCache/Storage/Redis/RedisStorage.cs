@@ -1,69 +1,47 @@
 ﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Options;
+using Core.DistributedCache.Storage.Abstractions;
 using StackExchange.Redis;
 
 namespace Core.DistributedCache.Storage.Redis;
 
 internal class RedisStorage(
-    IConnectionMultiplexer redis,
-    CacheOptions options,
-    ICacheSerializerFactory serializerFactory) : ICacheStorage
+    IConnectionMultiplexer redis, 
+    IPayloadSerializer payloadSerializer,
+    IKeyBuilder keyBuilder,
+    ICacheTagIndex tagIndex,
+    ICacheLockProvider lockProvider) : ICacheStorage
 {
     private readonly IDatabase _database = redis.GetDatabase();
-    private readonly ICacheSerializerFactory _serializerFactory = serializerFactory;
-    private readonly string _prefix = string.IsNullOrWhiteSpace(options.InstanceName)
-        ? string.Empty
-        : $"{options.InstanceName}:";
+    private readonly ICacheTagIndex _tagIndex = tagIndex;
+    private readonly IKeyBuilder _keyBuilder = keyBuilder;
+    private readonly IPayloadSerializer _payloadSerializer = payloadSerializer;
+    private readonly ICacheLockProvider _lockProvider = lockProvider;
 
-    private string GetFullKey(string key) => $"{_prefix}{key}";
+    private string GetFullKey(string key) => _keyBuilder.BuildCacheKey(key);
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
-        byte[]? buffer = await _database.StringGetAsync($"{_prefix}{key}");
-        if (buffer == null || buffer.Length == 0) return default;
+        var payload = await _database.StringGetAsync(GetFullKey(key));
 
-        if (Enum.IsDefined(typeof(SerializerType), buffer[0]))
-        {
-            SerializerType type = (SerializerType)buffer[0];
-            return _serializerFactory.GetSerializer(type).Deserialize<T>(buffer.AsSpan(1).ToArray());
-        }
+        if (payload.IsNullOrEmpty)
+            return default;
 
-        return _serializerFactory.GetSerializer(SerializerType.Json).Deserialize<T>(buffer);
+        return _payloadSerializer.Deserialize<T>(payload);
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
-        var serializer = _serializerFactory.GetSerializer(options.SerializerType);
-
-        byte[] payload = serializer.Serialize(value);
-
-        byte[] dataToStore;
-
-        if (serializer.RequiresHeader)
-        {
-            dataToStore = new byte[payload.Length + 1];
-            dataToStore[0] = (byte)options.SerializerType;
-            payload.AsSpan().CopyTo(dataToStore.AsSpan(1));
-        }
-        else
-        {
-            dataToStore = payload;
-        }
+        var payload =
+            _payloadSerializer.Serialize(value);
 
         Expiration expiry = expiration.HasValue ? new Expiration(expiration.Value) : default;
 
-        await _database.StringSetAsync(GetFullKey(key), dataToStore, expiry);
+        await _database.StringSetAsync(GetFullKey(key), payload, expiry);
 
-        if (tags != null && tags.Length > 0)
-        {
-            var batch = _database.CreateBatch();
-            foreach (var tag in tags)
-            {
-                var tagKey = $"{_prefix}tag:{tag}";
-                _ = batch.SetAddAsync(tagKey, key);
-            }
-            batch.Execute();
-        }
+        if (tags is null || tags.Length == 0)
+            return;
+
+        await _tagIndex.AddAsync(key, tags, ct);
     }
 
     public async Task RemoveAsync(string key, CancellationToken ct = default)
@@ -71,17 +49,14 @@ internal class RedisStorage(
 
     public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
     {
-        var tagKey = $"{_prefix}tag:{tag}";
-
-        var keys = await _database.SetMembersAsync(tagKey);
-
-        if (keys.Length > 0)
-        {
-            var keysToDelete = keys.Select(k => (RedisKey)GetFullKey(k!)).ToArray();
-            await _database.KeyDeleteAsync(keysToDelete);
-
-            await _database.KeyDeleteAsync(tagKey);
-        }
+        await _tagIndex.InvalidateTagAsync(
+            tag,
+            (key, _) =>
+            {
+                _database.KeyDeleteAsync(key);
+                return Task.CompletedTask;
+            },
+            ct);
     }
 
     public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
@@ -94,35 +69,19 @@ internal class RedisStorage(
         if (cachedValue is not null)
             return cachedValue;
 
-        var lockKey = $"{GetFullKey(key)}:lock";
-        var token = Guid.NewGuid().ToString();
-
-        if (await _database.LockTakeAsync(lockKey, token, TimeSpan.FromSeconds(10)))
+        using (await _lockProvider.AcquireAsync(key, ct))
         {
-            try
-            {
-                cachedValue = await GetAsync<T>(key, ct);
+            cachedValue = await GetAsync<T>(key, ct);
 
-                if (cachedValue is not null)
-                    return cachedValue;
+            if (cachedValue is not null)
+                return cachedValue;
 
+            var value = await factory(ct);
 
-                var value = await factory(ct);
+            if (value is not null)
+                await SetAsync(key, value, expiration, tags, ct);
 
-                if (value is not null)
-                    await SetAsync(key, value, expiration, tags, ct);
-
-                return value;
-            }
-            finally
-            {
-                await _database.LockReleaseAsync(lockKey, token);
-            }
-        }
-        else
-        {
-            await Task.Delay(100, ct);
-            return await GetAsync<T>(key, ct);
+            return value;
         }
     }
 }

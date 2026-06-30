@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Storage.Memory.Abstractions;
+﻿using Core.DistributedCache.Storage.Abstractions;
 using System.Collections.Concurrent;
 
 namespace Core.DistributedCache.Storage.Memory;
 
-public class MemoryKeyTracker : IMemoryKeyTracker
+public class MemoryKeyTracker : ICacheKeyTracker
 {
     private readonly ConcurrentDictionary<string, byte> _trackedKeys = new();
 

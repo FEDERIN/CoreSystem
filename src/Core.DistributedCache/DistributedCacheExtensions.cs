@@ -1,5 +1,4 @@
 ﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Behaviors;
 using Core.DistributedCache.Diagnostics;
 using Core.DistributedCache.Middleware;
 using Core.DistributedCache.Options;
@@ -7,8 +6,8 @@ using Core.DistributedCache.Pipeline;
 using Core.DistributedCache.Serialization;
 using Core.DistributedCache.Services;
 using Core.DistributedCache.Storage;
+using Core.DistributedCache.Storage.Abstractions;
 using Core.DistributedCache.Storage.Memory;
-using Core.DistributedCache.Storage.Memory.Abstractions;
 using Core.DistributedCache.Storage.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,9 +43,10 @@ public static class DistributedCacheExtensions
 
         // Memory infrastructure
         services.AddMemoryCache();
-        services.AddSingleton<IMemoryTagIndex, MemoryTagIndex>();
-        services.AddSingleton<IMemoryKeyTracker, MemoryKeyTracker>();
-        services.AddSingleton<IKeyLockProvider, KeyLockProvider>();
+        services.AddSingleton<MemoryTagIndex>();
+        services.AddSingleton<ICacheKeyTracker, MemoryKeyTracker>();
+        services.AddSingleton<MemoryLockProvider>();
+        services.AddSingleton<ICacheEntryFactory, CacheEntryFactory>();
         services.AddSingleton<MemoryStorage>();
 
         // Redis
@@ -63,13 +63,37 @@ public static class DistributedCacheExtensions
 
             var connection = ConnectionMultiplexer.Connect(redisConfig);
 
+            services.AddSingleton<IKeyBuilder, RedisKeyBuilder>();
+            services.AddSingleton<IPayloadSerializer, PayloadSerializer>();
+
             services.AddSingleton<IConnectionMultiplexer>(connection);
 
+            services.AddSingleton<RedisTagIndex>(sp =>
+            {
+                var db = sp.GetRequiredService<IConnectionMultiplexer>()
+                           .GetDatabase();
+
+                return new RedisTagIndex(
+                    db,
+                    sp.GetRequiredService<IKeyBuilder>());
+            });
+
+            services.AddSingleton<RedisLockProvider>(sp =>
+            {
+                return new RedisLockProvider(
+                    sp.GetRequiredService<IConnectionMultiplexer>(),
+                    sp.GetRequiredService<IKeyBuilder>());
+            });
+
+            
             services.AddSingleton<RedisStorage>(sp =>
                 new RedisStorage(
                     sp.GetRequiredService<IConnectionMultiplexer>(),
-                    options,
-                    sp.GetRequiredService<ICacheSerializerFactory>()));
+                    sp.GetRequiredService<IPayloadSerializer>(),
+                    sp.GetRequiredService<IKeyBuilder>(),
+                    sp.GetRequiredService<RedisTagIndex>(),
+                    sp.GetRequiredService<RedisLockProvider>()
+                    ));
 
             services.AddHostedService<RedisRehydrationBackgroundService>();
         }

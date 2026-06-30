@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿namespace Core.DistributedCache.Contexts;
 
 public sealed class SetCacheContext<T> : CacheContext
 {

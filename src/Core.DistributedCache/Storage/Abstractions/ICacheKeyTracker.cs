@@ -1,6 +1,6 @@
-﻿namespace Core.DistributedCache.Storage.Memory.Abstractions;
+﻿namespace Core.DistributedCache.Storage.Abstractions;
 
-public interface IMemoryKeyTracker
+public interface ICacheKeyTracker
 {
     void Track(string key);
     void Untrack(string key);

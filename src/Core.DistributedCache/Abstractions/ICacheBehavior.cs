@@ -1,4 +1,6 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Contexts;
+
+namespace Core.DistributedCache.Abstractions;
 
 /// <summary>
 /// Defines a behavior that can be used to intercept and process cache operations.

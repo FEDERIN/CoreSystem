@@ -1,4 +1,6 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Abstractions;
+
+namespace Core.DistributedCache.Contexts;
 
 public sealed class GetCacheContext<T> : CacheContext, ICacheMetricContext
 {

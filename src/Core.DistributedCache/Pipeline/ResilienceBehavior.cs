@@ -1,7 +1,8 @@
 ﻿using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.Contexts;
 using Polly;
 
-namespace Core.DistributedCache.Behaviors;
+namespace Core.DistributedCache.Pipeline;
 
 internal sealed class ResilienceBehavior(
     ResiliencePipeline pipeline,

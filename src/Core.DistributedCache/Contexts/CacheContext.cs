@@ -1,4 +1,6 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Abstractions;
+
+namespace Core.DistributedCache.Contexts;
 
 public abstract class CacheContext
 {

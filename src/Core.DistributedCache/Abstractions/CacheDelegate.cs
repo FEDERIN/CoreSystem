@@ -1,4 +1,6 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Contexts;
+
+namespace Core.DistributedCache.Abstractions;
 
 /// <summary>
 /// Defines a delegate that represents the next step in the cache pipeline.

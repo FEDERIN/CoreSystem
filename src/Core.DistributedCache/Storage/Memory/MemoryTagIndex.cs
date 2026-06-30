@@ -1,53 +1,94 @@
-﻿using Core.DistributedCache.Storage.Memory.Abstractions;
+﻿using Core.DistributedCache.Storage.Abstractions;
 using System.Collections.Concurrent;
+using StringSet = System.Collections.Concurrent.ConcurrentDictionary<string, byte>;
 
 namespace Core.DistributedCache.Storage.Memory;
 
-public class MemoryTagIndex : IMemoryTagIndex
+internal sealed class MemoryTagIndex : ICacheTagIndex
 {
-    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _tagToKeys = new();
-    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _keyToTags = new();
+    private readonly ConcurrentDictionary<string, StringSet> _tagKeys = new();
+    private readonly ConcurrentDictionary<string, StringSet> _keyTags = new();
 
-    public void AddTags(string key, string[] tags)
+    public Task AddAsync(
+        string key,
+        IReadOnlyCollection<string> tags,
+        CancellationToken cancellationToken = default)
     {
-        var keyTags = _keyToTags.GetOrAdd(key, _ => new());
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var keyTags = _keyTags.GetOrAdd(key, static _ => CreateSet());
+
         foreach (var tag in tags)
         {
-            _tagToKeys.GetOrAdd(tag, _ => new())[key] = 1;
-            keyTags[tag] = 1;
+            _tagKeys.GetOrAdd(tag, static _ => CreateSet())[key] = 0;
+            keyTags[tag] = 0;
         }
+
+        return Task.CompletedTask;
     }
 
-    public void RemoveKey(string key)
+    public async Task InvalidateTagAsync(
+        string tag,
+        Func<string, CancellationToken, Task> removeEntry,
+        CancellationToken cancellationToken = default)
     {
-        if (_keyToTags.TryRemove(key, out var tags))
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (!_tagKeys.TryRemove(tag, out var keys))
         {
-            foreach (var tag in tags.Keys)
+            return;
+        }
+
+        foreach (var key in keys.Keys)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
             {
-                if (_tagToKeys.TryGetValue(tag, out var keys))
-                    keys.TryRemove(key, out _);
+                await removeEntry(key.ToString(), cancellationToken);
             }
-        }
-    }
-
-    public void RemoveByTag(string tag, Action<string> onKeyRemoved)
-    {
-        if (_tagToKeys.TryRemove(tag, out var keys))
-        {
-            foreach (var key in keys.Keys)
+            finally
             {
-                onKeyRemoved(key);
-
-                if (_keyToTags.TryGetValue(key, out var tags))
+                if (_keyTags.TryGetValue(key, out var tags))
                 {
                     tags.TryRemove(tag, out _);
 
                     if (tags.IsEmpty)
                     {
-                        _keyToTags.TryRemove(key, out _);
+                        _keyTags.TryRemove(key, out _);
                     }
                 }
             }
         }
     }
+
+    public Task RemoveKeyAsync(
+        string key,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (!_keyTags.TryRemove(key, out var tags))
+        {
+            return Task.CompletedTask;
+        }
+
+        foreach (var tag in tags.Keys)
+        {
+            if (_tagKeys.TryGetValue(tag, out var keys))
+            {
+                keys.TryRemove(key, out _);
+
+                if (keys.IsEmpty)
+                {
+                    _tagKeys.TryRemove(tag, out _);
+                }
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static ConcurrentDictionary<string, byte> CreateSet()
+    => new();
 }

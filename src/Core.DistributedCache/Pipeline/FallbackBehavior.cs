@@ -1,7 +1,8 @@
 ﻿using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.Contexts;
 using Microsoft.Extensions.Logging;
 
-namespace Core.DistributedCache.Behaviors;
+namespace Core.DistributedCache.Pipeline;
 
 public sealed class FallbackBehavior(
     ICacheStorageResolver resolver,
