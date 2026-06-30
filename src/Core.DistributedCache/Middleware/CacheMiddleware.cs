@@ -4,6 +4,7 @@ using Core.DistributedCache.Diagnostics;
 using Core.DistributedCache.Extensions;
 using Core.DistributedCache.Options;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace Core.DistributedCache.Middleware;
 
@@ -23,7 +24,13 @@ internal class CacheMiddleware(
         var endpoint = context.GetEndpoint();
         var cacheAttribute = endpoint?.Metadata.GetMetadata<CacheableAttribute>();
 
-        if (cacheAttribute == null)
+        if (cacheAttribute is null)
+        {
+            await _next(context);
+            return;
+        }
+
+        if (!CanCacheRequest(context))
         {
             await _next(context);
             return;
@@ -33,14 +40,17 @@ internal class CacheMiddleware(
                 ? TimeSpan.FromSeconds(cacheAttribute.ExpirationSeconds.Value)
                 : _options.DefaultExpiration;
 
-        var cacheKey = context.Request.GenerateCacheKey(_options.InstanceName ?? "api_cache");
+        var cacheKey = context.Request.GenerateCacheKey(_options.InstanceName ??"api_cache");
 
         var cachedResponse = await _cache.GetAsync<string>(cacheKey);
 
-        if (cachedResponse != null)
+        if (cachedResponse is not null)
         {
             _metrics.RecordHit();
+
+            context.Response.StatusCode = StatusCodes.Status200OK;
             context.Response.ContentType = "application/json";
+
             await context.Response.WriteAsync(cachedResponse);
             return;
         }
@@ -55,19 +65,28 @@ internal class CacheMiddleware(
         {
             await _next(context);
 
-            if (context.Response.StatusCode == StatusCodes.Status200OK && memoryStream.Length <= _options.MaxCacheableSize)
+            if (!CanCacheResponse(context))
             {
-                memoryStream.Position = 0;
-                var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
-
-                string[]? tags = cacheAttribute.Tag != null ? [cacheAttribute.Tag] : null;
-
-                await _cache.SetAsync(
-                    cacheKey,
-                    responseBody,
-                    expiration,
-                    tags);
+                return;
             }
+
+            if (memoryStream.Length > _options.MaxCacheableSize)
+            {
+                return;
+            }
+
+            memoryStream.Position = 0;
+            var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
+
+            string[]? tags = cacheAttribute.Tag is not null
+                ? [cacheAttribute.Tag]
+                : null;
+
+            await _cache.SetAsync(
+                cacheKey,
+                responseBody,
+                expiration,
+                tags);
         }
         finally
         {
@@ -75,5 +94,43 @@ internal class CacheMiddleware(
             await memoryStream.CopyToAsync(originalBodyStream);
             context.Response.Body = originalBodyStream;
         }
+    }
+
+    private static bool CanCacheRequest(HttpContext context)
+    {
+        if (!HttpMethods.IsGet(context.Request.Method) &&
+            !HttpMethods.IsHead(context.Request.Method))
+        {
+            return false;
+        }
+
+        if (context.Request.Headers.ContainsKey(HeaderNames.Authorization))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool CanCacheResponse(HttpContext context)
+    {
+        if (context.Response.StatusCode != StatusCodes.Status200OK)
+            return false;
+
+        if (context.Response.Headers.ContainsKey(HeaderNames.SetCookie))
+            return false;
+
+        if (context.Response.Headers.TryGetValue(HeaderNames.CacheControl, out var cacheControl))
+        {
+            var value = cacheControl.ToString();
+
+            if (value.Contains("no-store", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (value.Contains("private", StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        return true;
     }
 }
