@@ -1,4 +1,5 @@
 ﻿using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.DependencyInjection;
 using Core.DistributedCache.Options;
 using Core.DistributedCache.Storage.Memory;
 using FluentAssertions;

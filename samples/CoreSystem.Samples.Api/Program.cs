@@ -1,5 +1,5 @@
-using Core.DistributedCache;
 using Core.DistributedCache.Abstractions;
+using Core.DistributedCache.DependencyInjection;
 using Core.DistributedCache.Options;
 using Core.Idempotency;
 using Core.Observability;

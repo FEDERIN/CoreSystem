@@ -23,7 +23,7 @@ internal sealed class RedisLockProvider(
             if (await _database.LockTakeAsync(
                     lockKey,
                     token,
-                    TimeSpan.FromSeconds(10)))
+                    TimeSpan.FromSeconds(30)))
             {
                 return new RedisLock(
                     _database,
