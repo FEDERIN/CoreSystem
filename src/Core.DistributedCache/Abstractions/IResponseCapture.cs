@@ -1,4 +1,4 @@
-﻿using Core.DistributedCache.Http;
+﻿using Core.DistributedCache.Http.Caching;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.DistributedCache.Abstractions;

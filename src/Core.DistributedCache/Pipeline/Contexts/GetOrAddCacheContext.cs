@@ -1,6 +1,6 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Pipeline.Interfaces;
 
-namespace Core.DistributedCache.Contexts;
+namespace Core.DistributedCache.Pipeline.Contexts;
 
 public sealed class GetOrAddCacheContext<T> : CacheContext, ICacheMetricContext
 {

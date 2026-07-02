@@ -1,7 +1,7 @@
 ﻿using Core.DistributedCache.Abstractions;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.DistributedCache.Http;
+namespace Core.DistributedCache.Http.Caching;
 
 internal sealed class HttpResponseWriter
     : IHttpResponseWriter

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
-namespace Core.DistributedCache.Http;
+namespace Core.DistributedCache.Http.Caching;
 
 internal sealed class DefaultRequestCachePolicy
     : IRequestCachePolicy

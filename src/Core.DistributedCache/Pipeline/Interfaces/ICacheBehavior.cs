@@ -1,6 +1,7 @@
-﻿using Core.DistributedCache.Contexts;
+﻿using Core.DistributedCache.Pipeline.Contexts;
+using Core.DistributedCache.Pipeline.Delegates;
 
-namespace Core.DistributedCache.Abstractions;
+namespace Core.DistributedCache.Pipeline.Interfaces;
 
 /// <summary>
 /// Defines a behavior that can be used to intercept and process cache operations.

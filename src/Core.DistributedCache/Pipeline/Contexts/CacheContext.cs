@@ -1,6 +1,6 @@
 ﻿using Core.DistributedCache.Abstractions;
 
-namespace Core.DistributedCache.Contexts;
+namespace Core.DistributedCache.Pipeline.Contexts;
 
 public abstract class CacheContext
 {

@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿namespace Core.DistributedCache.Pipeline.Interfaces;
 
 public interface ICacheMetricContext
 {

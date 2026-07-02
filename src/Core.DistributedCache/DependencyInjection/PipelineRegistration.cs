@@ -1,5 +1,6 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Pipeline;
+﻿using Core.DistributedCache.Pipeline;
+using Core.DistributedCache.Pipeline.Behaviors;
+using Core.DistributedCache.Pipeline.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.DistributedCache.DependencyInjection;

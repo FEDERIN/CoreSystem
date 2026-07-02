@@ -1,5 +1,6 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Contexts;
+﻿using Core.DistributedCache.Pipeline.Contexts;
+using Core.DistributedCache.Pipeline.Delegates;
+using Core.DistributedCache.Pipeline.Interfaces;
 
 namespace Core.DistributedCache.Pipeline;
 

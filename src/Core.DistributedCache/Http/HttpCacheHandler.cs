@@ -1,5 +1,6 @@
 ﻿using Core.DistributedCache.Abstractions;
 using Core.DistributedCache.Attributes;
+using Core.DistributedCache.Http.Caching;
 using Core.DistributedCache.Options;
 using Microsoft.AspNetCore.Http;
 

@@ -1,8 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Contexts;
+﻿using Core.DistributedCache.Pipeline.Contexts;
+using Core.DistributedCache.Pipeline.Delegates;
+using Core.DistributedCache.Pipeline.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Core.DistributedCache.Pipeline;
+namespace Core.DistributedCache.Pipeline.Behaviors;
 
 public sealed class LoggingBehavior(
     ILogger<LoggingBehavior> logger)

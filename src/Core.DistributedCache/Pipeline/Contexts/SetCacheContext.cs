@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Contexts;
+﻿namespace Core.DistributedCache.Pipeline.Contexts;
 
 public sealed class SetCacheContext<T> : CacheContext
 {
