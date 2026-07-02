@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.DistributedCache.Pipeline.Behaviors;
 
-public sealed class FallbackBehavior(
+internal sealed class FallbackBehavior(
     ICacheStorageResolver resolver,
     ILogger<FallbackBehavior> logger) : ICacheBehavior
 {

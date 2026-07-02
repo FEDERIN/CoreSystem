@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Core.DistributedCache.Serialization;
 
-public class JsonCacheSerializer : ICacheSerializer
+internal sealed class JsonCacheSerializer : ICacheSerializer
 {
     private readonly JsonSerializerOptions _options;
 

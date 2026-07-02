@@ -5,7 +5,7 @@ using MessagePack.Resolvers;
 
 namespace Core.DistributedCache.Serialization;
 
-public class MessagePackCacheSerializer : ICacheSerializer
+internal sealed class MessagePackCacheSerializer : ICacheSerializer
 {
     private readonly MessagePackSerializerOptions _options =
         MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance);

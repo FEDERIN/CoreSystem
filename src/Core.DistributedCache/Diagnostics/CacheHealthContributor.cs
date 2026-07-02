@@ -5,7 +5,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Core.DistributedCache.Diagnostics;
 
-internal class CacheHealthContributor : IHealthCheckContributor
+internal sealed class CacheHealthContributor : IHealthCheckContributor
 {
     public void RegisterHealthChecks(IHealthChecksBuilder builder, IConfiguration configuration)
     {

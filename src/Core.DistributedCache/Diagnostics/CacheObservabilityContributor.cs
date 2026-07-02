@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.DistributedCache.Diagnostics;
 
-internal class CacheObservabilityContributor : IObservabilityContributor
+internal sealed class CacheObservabilityContributor : IObservabilityContributor
 {
     public IEnumerable<string> GetActivitySources()
         => ["Core.DistributedCache"];

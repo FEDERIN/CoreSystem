@@ -4,7 +4,7 @@ using StackExchange.Redis;
 
 namespace Core.DistributedCache.Storage.Redis;
 
-internal class RedisStorage(
+internal sealed class RedisStorage(
     IConnectionMultiplexer redis, 
     IPayloadSerializer payloadSerializer,
     IKeyBuilder keyBuilder,

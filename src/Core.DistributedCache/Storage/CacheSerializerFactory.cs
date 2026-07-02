@@ -4,7 +4,7 @@ using Core.DistributedCache.Serialization;
 
 namespace Core.DistributedCache.Storage;
 
-internal class CacheSerializerFactory(
+internal sealed class CacheSerializerFactory(
     JsonCacheSerializer json,
     MessagePackCacheSerializer msgPack,
     ProtobufCacheSerializer proto) : ICacheSerializerFactory

@@ -3,7 +3,7 @@ using ProtoBuf;
 
 namespace Core.DistributedCache.Serialization;
 
-public class ProtobufCacheSerializer : ICacheSerializer
+internal sealed class ProtobufCacheSerializer : ICacheSerializer
 {
     public bool RequiresHeader => true;
 

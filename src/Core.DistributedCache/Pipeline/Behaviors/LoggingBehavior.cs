@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.DistributedCache.Pipeline.Behaviors;
 
-public sealed class LoggingBehavior(
+internal sealed class LoggingBehavior(
     ILogger<LoggingBehavior> logger)
     : ICacheBehavior
 {
