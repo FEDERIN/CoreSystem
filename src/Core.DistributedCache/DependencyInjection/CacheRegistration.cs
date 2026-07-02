@@ -22,6 +22,7 @@ public static class CacheRegistration
             .AddCacheRedis(options)
             .AddCacheResilience()
             .AddCachePipeline()
+            .AddCacheHttp()
             .AddCacheServices();
 
         return services;
