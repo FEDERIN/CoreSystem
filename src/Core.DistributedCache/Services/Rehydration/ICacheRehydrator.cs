@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Services.Rehydration;
+﻿namespace Core.Cache.Services.Rehydration;
 
 internal interface ICacheRehydrator
 {

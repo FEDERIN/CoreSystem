@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Pipeline;
-using Core.DistributedCache.Pipeline.Abstractions;
-using Core.DistributedCache.Pipeline.Behaviors;
+﻿using Core.Cache.Pipeline.Abstractions;
+using Core.Cache.Pipeline.Behaviors;
+using Core.Cache.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 internal static class PipelineRegistration
 {

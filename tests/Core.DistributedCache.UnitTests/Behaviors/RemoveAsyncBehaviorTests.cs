@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 
 
-namespace Core.DistributedCache.UnitTests.Behaviors;
+namespace Core.Cache.UnitTests.Behaviors;
 
 public class RemoveAsyncBehaviorTests : MemoryCacheTestBase
 {

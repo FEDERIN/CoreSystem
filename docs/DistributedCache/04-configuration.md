@@ -1,7 +1,7 @@
 # ⚙️ Configuration
 
 This guide describes every configuration option available in
-**FGutierrez.Core.DistributedCache**.
+**CoreSystem.Cache**.
 
 You'll learn how to configure:
 

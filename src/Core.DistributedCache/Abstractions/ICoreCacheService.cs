@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿namespace Core.Cache.Abstractions;
 
 /// <summary>
 /// Provides a unified abstraction for distributed caching operations.

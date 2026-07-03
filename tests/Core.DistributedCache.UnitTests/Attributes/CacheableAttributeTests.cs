@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Attributes;
+﻿using Core.Cache.Attributes;
 using FluentAssertions;
 
-namespace Core.DistributedCache.UnitTests.Attributes;
+namespace Core.Cache.UnitTests.Attributes;
 
 public sealed class CacheableAttributeTests
 {

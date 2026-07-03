@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Core.DistributedCache.Abstractions;
+namespace Core.Cache.Abstractions;
 
 internal interface IHttpCacheHandler
 {

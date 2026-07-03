@@ -1,10 +1,10 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Storage;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Storage;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
-namespace Core.DistributedCache.UnitTests.Storage;
+namespace Core.Cache.UnitTests.Storage;
 
 public sealed class CacheServiceFactoryTests
 {

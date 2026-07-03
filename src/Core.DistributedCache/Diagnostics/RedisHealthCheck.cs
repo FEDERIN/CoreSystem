@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.Diagnostics;
+namespace Core.Cache.Diagnostics;
 
 internal sealed class RedisHealthCheck(
     IConnectionMultiplexer redis,

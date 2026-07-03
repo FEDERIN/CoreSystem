@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using Polly;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.Options;
+namespace Core.Cache.Options;
 
 /// <summary>
 /// Represents the configuration options for the distributed cache.

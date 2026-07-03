@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Pipeline.Behaviors;
-using Core.DistributedCache.Pipeline.Contexts;
+﻿using Core.Cache.Pipeline.Behaviors;
+using Core.Cache.Pipeline.Contexts;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Core.DistributedCache.UnitTests.Pipeline;
+namespace Core.Cache.UnitTests.Pipeline;
 
 public sealed class LoggingBehaviorTests
 {

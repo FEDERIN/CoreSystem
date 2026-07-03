@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Options;
-using Core.DistributedCache.Services;
-using Core.DistributedCache.Services.Rehydration;
+﻿using Core.Cache.Options;
+using Core.Cache.Services.Rehydration;
+using Core.Cache.Services;
 using Moq;
 
-namespace Core.DistributedCache.UnitTests.Services;
+namespace Core.Cache.UnitTests.Services;
 
 public sealed class RedisRehydrationBackgroundServiceTests
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Core.DistributedCache.IntegrationTests.Fixtures;
+namespace Core.Cache.IntegrationTests.Fixtures;
 
 internal sealed class SequenceHealthCheckService(params HealthStatus[] statuses) : HealthCheckService
 {

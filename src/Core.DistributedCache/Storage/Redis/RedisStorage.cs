@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Storage.Abstractions;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.Storage.Redis;
+namespace Core.Cache.Storage.Redis;
 
 internal sealed class RedisStorage(
     IConnectionMultiplexer redis, 

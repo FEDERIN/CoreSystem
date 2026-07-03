@@ -1,8 +1,8 @@
 
-# ⚡ FGutierrez.Core.DistributedCache
+# ⚡ CoreSystem.Cache
 
-![NuGet](https://img.shields.io/nuget/v/FGutierrez.Core.DistributedCache?style=for-the-badge)
-![Downloads](https://img.shields.io/nuget/dt/FGutierrez.Core.DistributedCache?style=for-the-badge)
+![NuGet](https://img.shields.io/nuget/v/CoreSystem.Cache?style=for-the-badge)
+![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Cache?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![Storage](https://img.shields.io/badge/Storage-Memory%20%7C%20Redis-green?style=for-the-badge)
@@ -27,7 +27,7 @@
 
 # 🚀 Getting Started
 
-Welcome to **FGutierrez.Core.DistributedCache**, a production-ready distributed caching framework for **.NET 8**.
+Welcome to **CoreSystem.Cache**, a production-ready distributed caching framework for **.NET 8**.
 
 In this guide you'll learn how to:
 
@@ -55,7 +55,7 @@ Before getting started, ensure you have:
 Install the NuGet package.
 
 ```bash
-dotnet add package FGutierrez.Core.DistributedCache
+dotnet add package CoreSystem.Cache
 ```
 
 ---
@@ -184,7 +184,7 @@ However, as distributed systems grow in complexity, caching becomes much more th
 
 Production applications often require resilience, observability, cache invalidation, distributed locking, HTTP response caching, and operational insights. These concerns are typically implemented separately in every project, leading to duplicated infrastructure code and inconsistent implementations.
 
-**FGutierrez.Core.DistributedCache** was created to solve these challenges by providing a production-ready caching framework instead of just another cache provider.
+**CoreSystem.Cache** was created to solve these challenges by providing a production-ready caching framework instead of just another cache provider.
 
 ---
 
@@ -208,7 +208,7 @@ Most teams end up implementing these features independently, increasing maintena
 
 # The Solution
 
-FGutierrez.Core.DistributedCache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
+CoreSystem.Cache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
 
 Rather than coupling cache operations directly to a storage provider, every operation passes through a configurable pipeline where cross-cutting concerns are executed before the selected storage provider.
 
@@ -218,7 +218,7 @@ This architecture keeps business code focused on application logic while the fra
 
 # Feature Comparison
 
-| Capability | `IDistributedCache` | `FGutierrez.Core.DistributedCache` |
+| Capability | `IDistributedCache` | `CoreSystem.Cache` |
 |------------|:-------------------:|:----------------------------------:|
 | Unified Cache API | ✅ | ✅ |
 | Memory Provider | ❌ | ✅ |
@@ -288,7 +288,7 @@ Examples include:
 
 # When Should You Use This Library?
 
-FGutierrez.Core.DistributedCache is a good fit when your application requires one or more of the following:
+CoreSystem.Cache is a good fit when your application requires one or more of the following:
 
 - High-performance APIs
 - Microservices
@@ -306,7 +306,7 @@ FGutierrez.Core.DistributedCache is a good fit when your application requires on
 
 If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellentoice.
 
-FGutierrez.Core.DistributedCache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
+CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
 
 ---
 
@@ -330,7 +330,7 @@ Most teams end up implementing these features independently, increasing maintena
 
 # The Solution
 
-FGutierrez.Core.DistributedCache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
+CoreSystem.Cache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
 
 Rather than coupling cache operations directly to a storage provider, every operation passes through a configurable pipeline where cross-cutting concerns are executed before the selected storage provider.
 
@@ -340,7 +340,7 @@ This architecture keeps business code focused on application logic while the fra
 
 # Feature Comparison
 
-| Capability | `IDistributedCache` | `FGutierrez.Core.DistributedCache` |
+| Capability | `IDistributedCache` | `CoreSystem.Cache` |
 |------------|:-------------------:|:----------------------------------:|
 | Unified Cache API | ✅ | ✅ |
 | Memory Provider | ❌ | ✅ |
@@ -410,7 +410,7 @@ Examples include:
 
 # When Should You Use This Library?
 
-FGutierrez.Core.DistributedCache is a good fit when your application requires one or more of the following:
+CoreSystem.Cache is a good fit when your application requires one or more of the following:
 
 - High-performance APIs
 - Microservices
@@ -428,7 +428,7 @@ FGutierrez.Core.DistributedCache is a good fit when your application requires on
 
 If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellent choice.
 
-FGutierrez.Core.DistributedCache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
+CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
 
 ---
 
@@ -436,7 +436,7 @@ FGutierrez.Core.DistributedCache is intended for applications that require produ
 
 # 🏗️ Architecture
 
-`FGutierrez.Core.DistributedCache` is built around a composable pipeline architecture that separates cache operations from storage implementations.
+`CoreSystem.Cache` is built around a composable pipeline architecture that separates cache operations from storage implementations.
 
 Instead of interacting directly with Redis or Memory, every cache operation is represented by a `CacheContext` and executed through the `CachePipeline`. During execution, cross-cutting concerns such as logging, metrics, resilience, and automatic fallback are applied before the operation reaches the selected storage provider.
 
@@ -486,7 +486,7 @@ The framework is designed around a few core architectural principles:
 
 # 🏛️ Architectural Patterns
 
-`FGutierrez.Core.DistributedCache` is built on a combination of well-established architectural and design patterns. Each pattern addresses a specific concern while keeping the framework modular, extensible, and maintainable.
+`CoreSystem.Cache` is built on a combination of well-established architectural and design patterns. Each pattern addresses a specific concern while keeping the framework modular, extensible, and maintainable.
 
 | Pattern | Purpose |
 |----------|---------|
@@ -699,7 +699,7 @@ Because every cache operation shares the same execution pipeline, cross-cutting 
 # ⚙️ Configuration
 
 This guide describes every configuration option available in
-**FGutierrez.Core.DistributedCache**.
+**CoreSystem.Cache**.
 
 You'll learn how to configure:
 
@@ -1199,7 +1199,7 @@ This is the recommended way to integrate the framework into application services
 
 # 🌐 HTTP Response Caching
 
-`FGutierrez.Core.DistributedCache` provides declarative HTTP response caching for ASP.NET Core applications.
+`CoreSystem.Cache` provides declarative HTTP response caching for ASP.NET Core applications.
 
 Instead of implementing cache management logic inside controllers or Minimal APIs, the framework automatically handles cache lookup, storage, expiration, and invalidation through middleware.
 
@@ -1464,7 +1464,7 @@ HTTP response caching should not be used for:
 
 # 📊 Observability
 
-`FGutierrez.Core.DistributedCache` includes built-in observability based on **OpenTelemetry Metrics**.
+`CoreSystem.Cache` includes built-in observability based on **OpenTelemetry Metrics**.
 
 Every cache operation automatically emits metrics that can be consumed by any OpenTelemetry-compatible backend, allowing you to monitor cache performance without modifying your application code.
 
@@ -1608,7 +1608,7 @@ Simply create a custom pipeline behavior.
 
 # 🩺 Health Checks
 
-FGutierrez.Core.DistributedCache integrates with the ASP.NET Core Health Checks infrastructure to provide visibility into the operational state of the cache layer.
+CoreSystem.Cache integrates with the ASP.NET Core Health Checks infrastructure to provide visibility into the operational state of the cache layer.
 
 Unlike a simple Redis connectivity check, the framework reports the actual health of the caching infrastructure, including whether the application is currently operating with the primary provider or using the configured fallback storage.
 
@@ -1791,7 +1791,7 @@ Continue with:
 
 # 🧩 Extensibility
 
-One of the main goals of **FGutierrez.Core.DistributedCache** is to provide a caching framework that can evolve without requiring modifications to existing application code.
+One of the main goals of **CoreSystem.Cache** is to provide a caching framework that can evolve without requiring modifications to existing application code.
 
 Rather than embedding infrastructure concerns directly into the cache service, the framework exposes extensibility points that allow new behaviors, storage providers, serializers, and other components to be added independently.
 
@@ -2026,7 +2026,7 @@ When extending the framework, follow these principles:
 
 # 🗺️ Roadmap
 
-This document outlines the planned evolution of **FGutierrez.Core.DistributedCache**.
+This document outlines the planned evolution of **CoreSystem.Cache**.
 
 The roadmap is intended to provide visibility into the long-term direction of the project. Features may evolve based on community feedback and real-world adoption.
 

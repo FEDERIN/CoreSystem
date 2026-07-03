@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.Storage;
+namespace Core.Cache.Storage;
 
 internal sealed class CacheServiceFactory(
     IServiceProvider serviceProvider,

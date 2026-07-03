@@ -1,10 +1,10 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Http;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Http;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
-namespace Core.DistributedCache.UnitTests.Middleware;
+namespace Core.Cache.UnitTests.Middleware;
 
 public sealed class CacheMiddlewareTests
 {

@@ -1,10 +1,10 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.DependencyInjection;
-using Core.DistributedCache.Options;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
+using Core.Cache.Options;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.UnitTests.DependencyInjection;
+namespace Core.Cache.UnitTests.DependencyInjection;
 
 public class CacheRegistrationTests
 {

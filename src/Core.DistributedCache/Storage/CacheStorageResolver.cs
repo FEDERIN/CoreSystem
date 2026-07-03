@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Storage.Memory;
-using Core.DistributedCache.Storage.Redis;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Storage.Memory;
+using Core.Cache.Storage.Redis;
 
-namespace Core.DistributedCache.Storage;
+namespace Core.Cache.Storage;
 
 internal sealed class CacheStorageResolver : ICacheStorageResolver
 {

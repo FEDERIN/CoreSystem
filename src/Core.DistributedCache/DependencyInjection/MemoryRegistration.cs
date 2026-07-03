@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Storage.Abstractions;
-using Core.DistributedCache.Storage.Memory;
+﻿using Core.Cache.Storage.Abstractions;
+using Core.Cache.Storage.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 internal static class MemoryRegistration
 {

@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Storage.Abstractions;
 using System.Collections.Concurrent;
 
-namespace Core.DistributedCache.Storage.Memory;
+namespace Core.Cache.Storage.Memory;
 
 public class MemoryLockProvider : ICacheLockProvider<MemoryStorage>
 {

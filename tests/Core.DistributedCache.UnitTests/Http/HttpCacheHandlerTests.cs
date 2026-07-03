@@ -1,13 +1,13 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Attributes;
-using Core.DistributedCache.Http;
-using Core.DistributedCache.Http.Caching;
-using Core.DistributedCache.Options;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Http;
+using Core.Cache.Http.Caching;
+using Core.Cache.Options;
+using Core.Cache.Attributes;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
-namespace Core.DistributedCache.UnitTests.Http;
+namespace Core.Cache.UnitTests.Http;
 
 public sealed class HttpCacheHandlerTests
 {

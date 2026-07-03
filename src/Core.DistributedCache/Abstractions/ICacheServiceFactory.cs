@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿namespace Core.Cache.Abstractions;
 
 /// <summary>
 /// Provides access to cache services and storage providers registered

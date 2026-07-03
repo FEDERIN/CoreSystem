@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Services.Rehydration;
+﻿namespace Core.Cache.Services.Rehydration;
 
 public interface IRedisRehydrationService
 {

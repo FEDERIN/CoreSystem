@@ -1,12 +1,12 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.DependencyInjection;
-using Core.DistributedCache.Diagnostics;
-using Core.DistributedCache.IntegrationTests.Fixtures;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
+using Core.Cache.Diagnostics;
+using Core.Cache.IntegrationTests.Fixtures;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Core.DistributedCache.IntegrationTests.Diagnostics;
+namespace Core.Cache.IntegrationTests.Diagnostics;
 
 public sealed class RedisHealthCheckTests(RedisContainerFixture fixture)
     : IClassFixture<RedisContainerFixture>

@@ -1,11 +1,11 @@
-﻿using Core.DistributedCache.Options;
-using Core.DistributedCache.Services.Rehydration;
-using Core.DistributedCache.Storage.Abstractions;
-using Core.DistributedCache.Storage.Redis;
+﻿using Core.Cache.Options;
+using Core.Cache.Services.Rehydration;
+using Core.Cache.Storage.Abstractions;
+using Core.Cache.Storage.Redis;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 internal static class RedisRegistration
 {

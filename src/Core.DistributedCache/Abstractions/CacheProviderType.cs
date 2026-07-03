@@ -1,5 +1,4 @@
-﻿
-namespace Core.DistributedCache.Abstractions;
+﻿namespace Core.Cache.Abstractions;
 
 /// <summary>
 /// Specifies the cache provider used to store and retrieve cached entries.

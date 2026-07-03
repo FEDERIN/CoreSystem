@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DistributedCache", "src\Core.DistributedCache\Core.DistributedCache.csproj", "{05DC2865-9DAD-4837-A61D-0254EA44AC20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache", "src\Core.DistributedCache\Core.Cache.csproj", "{05DC2865-9DAD-4837-A61D-0254EA44AC20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.Abstractions", "src\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj", "{D5D8670A-7C9E-4893-8B3E-23782A01D780}"
 EndProject

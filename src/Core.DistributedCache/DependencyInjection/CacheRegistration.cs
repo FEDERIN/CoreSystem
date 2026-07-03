@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Http;
-using Core.DistributedCache.Options;
+﻿using Core.Cache.Http;
+using Core.Cache.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 public static class CacheRegistration
 {

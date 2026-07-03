@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Pipeline.Abstractions;
-using Core.DistributedCache.Pipeline.Contexts;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Pipeline.Abstractions;
+using Core.Cache.Pipeline.Contexts;
 
-namespace Core.DistributedCache.Services;
+namespace Core.Cache.Services;
 
 internal sealed class CoreCacheService(
     ICachePipeline pipeline,

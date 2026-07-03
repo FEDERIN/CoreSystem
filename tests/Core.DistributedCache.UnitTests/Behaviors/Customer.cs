@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.UnitTests.Behaviors
+﻿namespace Core.Cache.UnitTests.Behaviors
 {
     internal class CustomerDto
     {

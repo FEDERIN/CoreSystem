@@ -1,6 +1,6 @@
 # 🚀 Getting Started
 
-Welcome to **FGutierrez.Core.DistributedCache**, a production-ready distributed caching framework for **.NET 8**.
+Welcome to **CoreSystem.Cache**, a production-ready distributed caching framework for **.NET 8**.
 
 In this guide you'll learn how to:
 
@@ -28,7 +28,7 @@ Before getting started, ensure you have:
 Install the NuGet package.
 
 ```bash
-dotnet add package FGutierrez.Core.DistributedCache
+dotnet add package CoreSystem.Cache
 ```
 
 ---

@@ -1,6 +1,6 @@
-using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.DependencyInjection;
-using Core.DistributedCache.Options;
+using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
+using Core.Cache.Options;
 using Core.Idempotency;
 using Core.Observability;
 using CoreSystem.Samples.Core.Services;

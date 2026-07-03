@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Core.DistributedCache.Diagnostics;
+namespace Core.Cache.Diagnostics;
 
 internal sealed class CacheHealthContributor : IHealthCheckContributor
 {

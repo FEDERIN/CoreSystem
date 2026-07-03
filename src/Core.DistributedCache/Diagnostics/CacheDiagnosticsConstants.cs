@@ -1,6 +1,6 @@
-﻿namespace Core.DistributedCache.Diagnostics;
+﻿namespace Core.Cache.Diagnostics;
 
 internal static class CacheDiagnosticsConstants
 {
-    public const string MeterName = "Core.DistributedCache";
+    public const string MeterName = "Core.Cache";
 }

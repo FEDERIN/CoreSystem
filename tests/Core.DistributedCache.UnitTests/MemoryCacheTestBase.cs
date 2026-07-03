@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.DependencyInjection;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.UnitTests;
+namespace Core.Cache.UnitTests;
 
 public abstract class MemoryCacheTestBase
 {

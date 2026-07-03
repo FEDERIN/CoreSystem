@@ -1,8 +1,9 @@
-﻿using Core.DistributedCache.Http.Caching;
+﻿using Core.Cache.Http.Caching;
+using Core.Cache.Http.Caching;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.DistributedCache.UnitTests.Http;
+namespace Core.Cache.UnitTests.Http;
 
 public sealed class HttpResponseWriterTests
 {

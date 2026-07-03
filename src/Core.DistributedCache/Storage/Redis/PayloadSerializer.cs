@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Options;
-using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Options;
+using Core.Cache.Storage.Abstractions;
 
-namespace Core.DistributedCache.Storage.Redis;
+namespace Core.Cache.Storage.Redis;
 
 internal sealed class PayloadSerializer(
     CacheOptions options,

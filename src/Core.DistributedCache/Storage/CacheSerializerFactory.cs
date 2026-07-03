@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Options;
-using Core.DistributedCache.Serialization;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Options;
+using Core.Cache.Serialization;
 
-namespace Core.DistributedCache.Storage;
+namespace Core.Cache.Storage;
 
 internal sealed class CacheSerializerFactory(
     JsonCacheSerializer json,

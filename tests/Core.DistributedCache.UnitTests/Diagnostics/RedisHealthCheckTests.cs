@@ -1,11 +1,11 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Diagnostics;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Diagnostics;
 using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.UnitTests.Diagnostics;
+namespace Core.Cache.UnitTests.Diagnostics;
 
 public sealed class RedisHealthCheckTests
 {

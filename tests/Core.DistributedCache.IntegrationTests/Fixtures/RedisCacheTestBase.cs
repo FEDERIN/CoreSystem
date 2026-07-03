@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.DependencyInjection;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.IntegrationTests.Fixtures;
+namespace Core.Cache.IntegrationTests.Fixtures;
 
 public abstract class RedisCacheTestBase
 {

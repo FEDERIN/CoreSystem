@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.IntegrationTests.Fixtures;
+﻿using Core.Cache.IntegrationTests.Fixtures;
 using FluentAssertions;
 
-namespace Core.DistributedCache.IntegrationTests.Cache;
+namespace Core.Cache.IntegrationTests.Cache;
 
 public sealed class GetOrAddAsyncTests(RedisContainerFixture fixture)
     : RedisCacheTestBase(fixture),

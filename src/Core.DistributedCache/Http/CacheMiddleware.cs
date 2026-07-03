@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.DistributedCache.Http;
+namespace Core.Cache.Http;
 
 internal sealed class CacheMiddleware(
     RequestDelegate next,

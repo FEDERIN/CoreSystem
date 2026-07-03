@@ -1,6 +1,6 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 
-namespace Core.DistributedCache.Diagnostics;
+namespace Core.Cache.Diagnostics;
 
 internal sealed class RedisHealthState : IRedisHealthState
 {

@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
-namespace Core.DistributedCache.Http.Caching;
+namespace Core.Cache.Http.Caching;
 
 internal sealed class ResponseCapture
     : IResponseCapture

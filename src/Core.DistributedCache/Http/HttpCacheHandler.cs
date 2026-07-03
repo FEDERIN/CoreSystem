@@ -1,10 +1,10 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Attributes;
-using Core.DistributedCache.Http.Caching;
-using Core.DistributedCache.Options;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Attributes;
+using Core.Cache.Http.Caching;
+using Core.Cache.Options;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.DistributedCache.Http;
+namespace Core.Cache.Http;
 
 internal sealed class HttpCacheHandler(
     ICoreCacheService cache,

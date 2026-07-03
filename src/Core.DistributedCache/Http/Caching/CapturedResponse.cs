@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Http.Caching;
+﻿namespace Core.Cache.Http.Caching;
 
 public sealed record CapturedResponse
 {

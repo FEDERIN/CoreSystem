@@ -1,8 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Storage;
+using Core.Cache.Storage.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Core.DistributedCache.Storage.Memory;
+namespace Core.Cache.Storage.Memory;
 
 internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<MemoryStorage> tagIndex,
     ICacheKeyTracker tracker, ICacheLockProvider<MemoryStorage> lockProvider, ICacheEntryFactory entryFactory) : ICacheStorage

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
-namespace Core.DistributedCache.Services.Rehydration;
+namespace Core.Cache.Services.Rehydration;
 
 internal sealed class RedisRehydrationService(
     HealthCheckService healthCheckService,

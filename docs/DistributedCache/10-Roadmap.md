@@ -1,6 +1,6 @@
 # 🗺️ Roadmap
 
-This document outlines the planned evolution of **FGutierrez.Core.DistributedCache**.
+This document outlines the planned evolution of **CoreSystem.Cache**.
 
 The roadmap is intended to provide visibility into the long-term direction of the project. Features may evolve based on community feedback and real-world adoption.
 

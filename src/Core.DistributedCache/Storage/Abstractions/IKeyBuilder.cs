@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Storage.Abstractions;
+﻿namespace Core.Cache.Storage.Abstractions;
 
 internal interface IKeyBuilder
 {

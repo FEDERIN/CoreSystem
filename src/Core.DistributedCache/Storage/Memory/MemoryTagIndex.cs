@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Storage.Abstractions;
 using System.Collections.Concurrent;
 using StringSet = System.Collections.Concurrent.ConcurrentDictionary<string, byte>;
 
-namespace Core.DistributedCache.Storage.Memory;
+namespace Core.Cache.Storage.Memory;
 
 internal sealed class MemoryTagIndex : ICacheTagIndex<MemoryStorage>
 {

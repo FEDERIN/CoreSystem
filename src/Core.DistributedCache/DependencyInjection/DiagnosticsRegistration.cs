@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Diagnostics;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Diagnostics;
 using Core.Observability.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 internal static class DiagnosticsRegistration
 {

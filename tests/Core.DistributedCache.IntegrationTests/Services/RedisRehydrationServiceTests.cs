@@ -1,14 +1,14 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.DependencyInjection;
-using Core.DistributedCache.IntegrationTests.Cache;
-using Core.DistributedCache.IntegrationTests.Fixtures;
-using Core.DistributedCache.Services.Rehydration;
-using Core.DistributedCache.Storage.Memory;
-using Core.DistributedCache.Storage.Redis;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
+using Core.Cache.Services.Rehydration;
+using Core.Cache.Storage.Memory;
+using Core.Cache.Storage.Redis;
+using Core.Cache.IntegrationTests.Cache;
+using Core.Cache.IntegrationTests.Fixtures;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.IntegrationTests.Services;
+namespace Core.Cache.IntegrationTests.Services;
 
 public sealed class RedisRehydrationServiceTests(
     RedisContainerFixture fixture)

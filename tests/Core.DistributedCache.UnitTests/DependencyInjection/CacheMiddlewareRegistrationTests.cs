@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Core.DistributedCache.DependencyInjection;
 using Microsoft.AspNetCore.TestHost;
+using Core.Cache.DependencyInjection;
 
 
-namespace Core.DistributedCache.UnitTests.DependencyInjection;
+namespace Core.Cache.UnitTests.DependencyInjection;
 
 public class CacheMiddlewareRegistrationTests
 {

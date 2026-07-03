@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Pipeline.Contexts;
-using Core.DistributedCache.Pipeline.Delegates;
+﻿using Core.Cache.Pipeline.Contexts;
+using Core.Cache.Pipeline.Delegates;
 
-namespace Core.DistributedCache.Pipeline.Abstractions;
+namespace Core.Cache.Pipeline.Abstractions;
 
 public interface ICachePipeline
 {

@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Services.Rehydration;
-using Core.DistributedCache.Storage.Memory;
-using Core.DistributedCache.Storage.Redis;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Services.Rehydration;
+using Core.Cache.Storage.Memory;
+using Core.Cache.Storage.Redis;
 using Microsoft.Extensions.Logging;
 
 internal sealed class CacheRehydrator(

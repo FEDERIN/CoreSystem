@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Serialization;
+﻿using Core.Cache.Serialization;
 using FluentAssertions;
 
-namespace Core.DistributedCache.UnitTests.Serialization;
+namespace Core.Cache.UnitTests.Serialization;
 
 public sealed partial class JsonCacheSerializerTests
 {

@@ -1,6 +1,6 @@
 ﻿using Testcontainers.Redis;
 
-namespace Core.DistributedCache.IntegrationTests.Fixtures;
+namespace Core.Cache.IntegrationTests.Fixtures;
 
 public sealed class RedisContainerFixture : IAsyncLifetime
 {

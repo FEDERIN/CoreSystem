@@ -1,4 +1,4 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 
 namespace CoreSystem.Samples.Core.Services;
 

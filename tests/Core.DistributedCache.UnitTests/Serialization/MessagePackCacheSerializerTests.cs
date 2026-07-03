@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Serialization;
+﻿using Core.Cache.Serialization;
 using FluentAssertions;
 using MessagePack;
 
-namespace Core.DistributedCache.UnitTests.Serialization;
+namespace Core.Cache.UnitTests.Serialization;
 
 public sealed class MessagePackCacheSerializerTests
 {

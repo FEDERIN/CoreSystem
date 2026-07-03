@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Services;
-using Core.DistributedCache.Storage;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Services;
+using Core.Cache.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 internal static class ServiceRegistration
 {

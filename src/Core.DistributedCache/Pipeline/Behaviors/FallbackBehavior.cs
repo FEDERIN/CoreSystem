@@ -1,10 +1,10 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Pipeline.Abstractions;
-using Core.DistributedCache.Pipeline.Contexts;
-using Core.DistributedCache.Pipeline.Delegates;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Pipeline.Abstractions;
+using Core.Cache.Pipeline.Contexts;
+using Core.Cache.Pipeline.Delegates;
 using Microsoft.Extensions.Logging;
 
-namespace Core.DistributedCache.Pipeline.Behaviors;
+namespace Core.Cache.Pipeline.Behaviors;
 
 internal sealed class FallbackBehavior(
     ICacheStorageResolver resolver,

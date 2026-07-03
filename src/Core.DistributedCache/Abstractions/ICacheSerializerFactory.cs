@@ -1,6 +1,6 @@
-﻿using Core.DistributedCache.Options;
+﻿using Core.Cache.Options;
 
-namespace Core.DistributedCache.Abstractions;
+namespace Core.Cache.Abstractions;
 
 internal interface ICacheSerializerFactory
 {

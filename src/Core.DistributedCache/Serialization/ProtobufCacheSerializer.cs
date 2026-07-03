@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using ProtoBuf;
 
-namespace Core.DistributedCache.Serialization;
+namespace Core.Cache.Serialization;
 
 internal sealed class ProtobufCacheSerializer : ICacheSerializer
 {

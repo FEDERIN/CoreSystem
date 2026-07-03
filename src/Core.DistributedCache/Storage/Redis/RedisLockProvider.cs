@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Storage.Abstractions;
 using StackExchange.Redis;
 
-namespace Core.DistributedCache.Storage.Redis;
+namespace Core.Cache.Storage.Redis;
 
 internal sealed class RedisLockProvider(
     IConnectionMultiplexer connection,

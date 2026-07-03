@@ -1,4 +1,4 @@
-﻿using Core.DistributedCache.Attributes;
+﻿using Core.Cache.Attributes;
 using CoreSystem.Samples.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
-﻿using Core.DistributedCache.Pipeline.Abstractions;
+﻿using Core.Cache.Pipeline.Abstractions;
 
-namespace Core.DistributedCache.Pipeline.Contexts;
+namespace Core.Cache.Pipeline.Contexts;
 
 public sealed class GetCacheContext<T> : CacheContext, ICacheMetricContext
 {

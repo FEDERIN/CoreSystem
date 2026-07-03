@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Storage.Abstractions;
 
-namespace Core.DistributedCache.Storage.Memory;
+namespace Core.Cache.Storage.Memory;
 
 internal sealed class CacheEntryFactory : ICacheEntryFactory
 {

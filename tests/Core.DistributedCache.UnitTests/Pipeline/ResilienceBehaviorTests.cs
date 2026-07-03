@@ -1,11 +1,11 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Pipeline.Behaviors;
-using Core.DistributedCache.Pipeline.Contexts;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Pipeline.Contexts;
+using Core.Cache.Pipeline.Behaviors;
 using FluentAssertions;
 using Moq;
 using Polly;
 
-namespace Core.DistributedCache.UnitTests.Pipeline;
+namespace Core.Cache.UnitTests.Pipeline;
 
 public sealed class ResilienceBehaviorTests
 {

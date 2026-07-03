@@ -1,11 +1,11 @@
-﻿using Core.DistributedCache.Diagnostics;
+﻿using Core.Cache.Diagnostics;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
-namespace Core.DistributedCache.UnitTests.Diagnostics;
+namespace Core.Cache.UnitTests.Diagnostics;
 
 public sealed class CacheHealthContributorTests
 {

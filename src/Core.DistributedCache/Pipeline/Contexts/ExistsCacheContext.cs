@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Pipeline.Contexts;
+﻿namespace Core.Cache.Pipeline.Contexts;
 
 public sealed class ExistsCacheContext : CacheContext
 {

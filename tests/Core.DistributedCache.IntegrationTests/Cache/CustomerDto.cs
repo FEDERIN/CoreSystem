@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.IntegrationTests.Cache
+﻿namespace Core.Cache.IntegrationTests.Cache
 {
     internal class CustomerDto
     {

@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Abstractions;
+﻿namespace Core.Cache.Abstractions;
 
 public interface ICacheStorage
 {

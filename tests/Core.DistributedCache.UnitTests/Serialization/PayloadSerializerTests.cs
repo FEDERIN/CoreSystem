@@ -1,11 +1,11 @@
-﻿using Core.DistributedCache.Options;
-using Core.DistributedCache.Serialization;
-using Core.DistributedCache.Storage;
-using Core.DistributedCache.Storage.Redis;
+﻿using Core.Cache.Options;
+using Core.Cache.Storage.Redis;
+using Core.Cache.Serialization;
+using Core.Cache.Storage;
 using FluentAssertions;
 using MessagePack;
 
-namespace Core.DistributedCache.UnitTests.Serialization;
+namespace Core.Cache.UnitTests.Serialization;
 
 public class PayloadSerializerTests
 {

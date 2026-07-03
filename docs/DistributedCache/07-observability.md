@@ -1,6 +1,6 @@
 # 📊 Observability
 
-`FGutierrez.Core.DistributedCache` includes built-in observability based on **OpenTelemetry Metrics**.
+`CoreSystem.Cache` includes built-in observability based on **OpenTelemetry Metrics**.
 
 Every cache operation automatically emits metrics that can be consumed by any OpenTelemetry-compatible backend, allowing you to monitor cache performance without modifying your application code.
 

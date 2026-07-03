@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 
-namespace Core.DistributedCache.Diagnostics;
+namespace Core.Cache.Diagnostics;
 
 public class CacheMetrics
 {

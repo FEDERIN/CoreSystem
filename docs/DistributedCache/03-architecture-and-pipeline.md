@@ -1,6 +1,6 @@
 # 🏗️ Architecture
 
-`FGutierrez.Core.DistributedCache` is built around a composable pipeline architecture that separates cache operations from storage implementations.
+`CoreSystem.Cache` is built around a composable pipeline architecture that separates cache operations from storage implementations.
 
 Instead of interacting directly with Redis or Memory, every cache operation is represented by a `CacheContext` and executed through the `CachePipeline`. During execution, cross-cutting concerns such as logging, metrics, resilience, and automatic fallback are applied before the operation reaches the selected storage provider.
 
@@ -50,7 +50,7 @@ The framework is designed around a few core architectural principles:
 
 # 🏛️ Architectural Patterns
 
-`FGutierrez.Core.DistributedCache` is built on a combination of well-established architectural and design patterns. Each pattern addresses a specific concern while keeping the framework modular, extensible, and maintainable.
+`CoreSystem.Cache` is built on a combination of well-established architectural and design patterns. Each pattern addresses a specific concern while keeping the framework modular, extensible, and maintainable.
 
 | Pattern | Purpose |
 |----------|---------|

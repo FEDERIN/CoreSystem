@@ -1,6 +1,6 @@
-﻿using Core.DistributedCache.Pipeline.Contexts;
+﻿using Core.Cache.Pipeline.Contexts;
 
-namespace Core.DistributedCache.Pipeline.Delegates;
+namespace Core.Cache.Pipeline.Delegates;
 
 /// <summary>
 /// Defines a delegate that represents the next step in the cache pipeline.

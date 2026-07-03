@@ -1,4 +1,6 @@
-﻿namespace Core.DistributedCache.Storage.Abstractions;
+﻿using Core.Cache.Storage;
+
+namespace Core.Cache.Storage.Abstractions;
 
 internal interface ICacheEntryFactory
 {

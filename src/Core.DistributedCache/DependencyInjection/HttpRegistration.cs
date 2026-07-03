@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Http;
-using Core.DistributedCache.Http.Caching;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Http;
+using Core.Cache.Http.Caching;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.DistributedCache.DependencyInjection;
+namespace Core.Cache.DependencyInjection;
 
 internal static class HttpRegistration
 {

@@ -1,6 +1,6 @@
 # 🌐 HTTP Response Caching
 
-`FGutierrez.Core.DistributedCache` provides declarative HTTP response caching for ASP.NET Core applications.
+`CoreSystem.Cache` provides declarative HTTP response caching for ASP.NET Core applications.
 
 Instead of implementing cache management logic inside controllers or Minimal APIs, the framework automatically handles cache lookup, storage, expiration, and invalidation through middleware.
 

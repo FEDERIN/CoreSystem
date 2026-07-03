@@ -6,7 +6,7 @@ However, as distributed systems grow in complexity, caching becomes much more th
 
 Production applications often require resilience, observability, cache invalidation, distributed locking, HTTP response caching, and operational insights. These concerns are typically implemented separately in every project, leading to duplicated infrastructure code and inconsistent implementations.
 
-**FGutierrez.Core.DistributedCache** was created to solve these challenges by providing a production-ready caching framework instead of just another cache provider.
+**CoreSystem.Cache** was created to solve these challenges by providing a production-ready caching framework instead of just another cache provider.
 
 ---
 
@@ -30,7 +30,7 @@ Most teams end up implementing these features independently, increasing maintena
 
 # The Solution
 
-FGutierrez.Core.DistributedCache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
+CoreSystem.Cache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
 
 Rather than coupling cache operations directly to a storage provider, every operation passes through a configurable pipeline where cross-cutting concerns are executed before the selected storage provider.
 
@@ -40,7 +40,7 @@ This architecture keeps business code focused on application logic while the fra
 
 # Feature Comparison
 
-| Capability | `IDistributedCache` | `FGutierrez.Core.DistributedCache` |
+| Capability | `IDistributedCache` | `CoreSystem.Cache` |
 |------------|:-------------------:|:----------------------------------:|
 | Unified Cache API | ✅ | ✅ |
 | Memory Provider | ❌ | ✅ |
@@ -110,7 +110,7 @@ Examples include:
 
 # When Should You Use This Library?
 
-FGutierrez.Core.DistributedCache is a good fit when your application requires one or more of the following:
+CoreSystem.Cache is a good fit when your application requires one or more of the following:
 
 - High-performance APIs
 - Microservices
@@ -128,7 +128,7 @@ FGutierrez.Core.DistributedCache is a good fit when your application requires on
 
 If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellentoice.
 
-FGutierrez.Core.DistributedCache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
+CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
 
 ---
 
@@ -152,7 +152,7 @@ Most teams end up implementing these features independently, increasing maintena
 
 # The Solution
 
-FGutierrez.Core.DistributedCache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
+CoreSystem.Cache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
 
 Rather than coupling cache operations directly to a storage provider, every operation passes through a configurable pipeline where cross-cutting concerns are executed before the selected storage provider.
 
@@ -162,7 +162,7 @@ This architecture keeps business code focused on application logic while the fra
 
 # Feature Comparison
 
-| Capability | `IDistributedCache` | `FGutierrez.Core.DistributedCache` |
+| Capability | `IDistributedCache` | `CoreSystem.Cache` |
 |------------|:-------------------:|:----------------------------------:|
 | Unified Cache API | ✅ | ✅ |
 | Memory Provider | ❌ | ✅ |
@@ -232,7 +232,7 @@ Examples include:
 
 # When Should You Use This Library?
 
-FGutierrez.Core.DistributedCache is a good fit when your application requires one or more of the following:
+CoreSystem.Cache is a good fit when your application requires one or more of the following:
 
 - High-performance APIs
 - Microservices
@@ -250,6 +250,6 @@ FGutierrez.Core.DistributedCache is a good fit when your application requires on
 
 If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellent choice.
 
-FGutierrez.Core.DistributedCache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
+CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
 
 ---

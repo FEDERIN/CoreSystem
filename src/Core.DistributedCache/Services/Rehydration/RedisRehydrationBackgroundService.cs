@@ -1,7 +1,7 @@
-﻿using Core.DistributedCache.Options;
+﻿using Core.Cache.Options;
 using Microsoft.Extensions.Hosting;
 
-namespace Core.DistributedCache.Services.Rehydration;
+namespace Core.Cache.Services.Rehydration;
 
 internal sealed class RedisRehydrationBackgroundService(
     IRedisRehydrationService service,

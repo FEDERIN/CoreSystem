@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\Core.DistributedCache\Core.DistributedCache.csproj" />
+	  <ProjectReference Include="..\..\src\Core.DistributedCache\Core.Cache.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

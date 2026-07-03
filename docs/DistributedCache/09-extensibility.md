@@ -1,6 +1,6 @@
 # 🧩 Extensibility
 
-One of the main goals of **FGutierrez.Core.DistributedCache** is to provide a caching framework that can evolve without requiring modifications to existing application code.
+One of the main goals of **CoreSystem.Cache** is to provide a caching framework that can evolve without requiring modifications to existing application code.
 
 Rather than embedding infrastructure concerns directly into the cache service, the framework exposes extensibility points that allow new behaviors, storage providers, serializers, and other components to be added independently.
 

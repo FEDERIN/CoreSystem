@@ -1,4 +1,4 @@
-﻿namespace Core.DistributedCache.Attributes;
+﻿namespace Core.Cache.Attributes;
 
 /// <summary>
 /// Indicates that the result of an HTTP endpoint should be cached.

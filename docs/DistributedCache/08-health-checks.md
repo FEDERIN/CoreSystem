@@ -1,6 +1,6 @@
 # 🩺 Health Checks
 
-FGutierrez.Core.DistributedCache integrates with the ASP.NET Core Health Checks infrastructure to provide visibility into the operational state of the cache layer.
+CoreSystem.Cache integrates with the ASP.NET Core Health Checks infrastructure to provide visibility into the operational state of the cache layer.
 
 Unlike a simple Redis connectivity check, the framework reports the actual health of the caching infrastructure, including whether the application is currently operating with the primary provider or using the configured fallback storage.
 

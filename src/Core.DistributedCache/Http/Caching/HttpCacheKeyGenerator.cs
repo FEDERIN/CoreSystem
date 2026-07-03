@@ -1,8 +1,8 @@
-﻿using Core.DistributedCache.Abstractions;
-using Core.DistributedCache.Options;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Options;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.DistributedCache.Http.Caching;
+namespace Core.Cache.Http.Caching;
 
 internal sealed class HttpCacheKeyGenerator(
     CacheOptions options)

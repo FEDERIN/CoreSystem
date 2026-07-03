@@ -1,6 +1,6 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 
-namespace Core.DistributedCache.Storage;
+namespace Core.Cache.Storage;
 
 internal record CacheEntryWrapper<T>
 {

@@ -1,9 +1,9 @@
-﻿using Core.DistributedCache.Abstractions;
+﻿using Core.Cache.Abstractions;
 using MessagePack;
 using MessagePack.Resolvers;
 
 
-namespace Core.DistributedCache.Serialization;
+namespace Core.Cache.Serialization;
 
 internal sealed class MessagePackCacheSerializer : ICacheSerializer
 {
