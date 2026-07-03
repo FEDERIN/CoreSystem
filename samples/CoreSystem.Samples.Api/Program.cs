@@ -18,9 +18,9 @@ builder.AddObservability(
 
 builder.Services.AddIdempotencyProvider(builder.Configuration);
 
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
-    builder.Configuration.GetSection("DistributedCache").Bind(options);
+    builder.Configuration.GetSection("Cache").Bind(options);
 
     if (options.DefaultProvider == CacheProviderType.Redis)
     {
@@ -40,7 +40,7 @@ var app = builder.Build();
 
 app.UseObservabilityEndpoints();
 app.UseIdempotency();
-app.UseCoreDistributedCache();
+app.UseCoreCache();
 
 
 try

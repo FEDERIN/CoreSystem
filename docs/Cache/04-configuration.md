@@ -18,10 +18,10 @@ You'll learn how to configure:
 
 # Configuration Overview
 
-The framework is configured through the `AddCoreDistributedCache()` extension.
+The framework is configured through the `AddCoreCache()` extension.
 
 ```csharp
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
     // Configure the framework here
 });
@@ -51,7 +51,7 @@ The framework supports multiple cache providers.
 Recommended for production workloads.
 
 ```csharp
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
     options.Redis.Configuration = redis =>
     {
@@ -78,7 +78,7 @@ Ideal for:
 - Small applications
 
 ```csharp
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
     options.Redis.Enabled = false;
 });
@@ -238,7 +238,7 @@ options.RehydrationInterval =
 
 ```json
 {
-  "DistributedCache": {
+  "Cache": {
     "DefaultProvider": "Redis",
 
     "InstanceName": "CatalogApi",
@@ -260,9 +260,9 @@ Bind the configuration:
 
 ```csharp
 var section =
-    builder.Configuration.GetSection("DistributedCache");
+    builder.Configuration.GetSection("Cache");
 
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
     section.Bind(options);
 

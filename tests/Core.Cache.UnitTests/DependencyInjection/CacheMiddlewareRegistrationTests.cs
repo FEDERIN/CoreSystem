@@ -9,15 +9,15 @@ namespace Core.Cache.UnitTests.DependencyInjection;
 public class CacheMiddlewareRegistrationTests
 {
     [Fact]
-    public async Task UseCoreDistributedCache_RegistersMiddlewareInPipeline()
+    public async Task UseCoreCache_RegistersMiddlewareInPipeline()
     {
         var builder = new WebHostBuilder()
             .ConfigureServices(services => {
                 services.AddLogging();
-                services.AddCoreDistributedCache(options => { });
+                services.AddCoreCache(options => { });
             })
             .Configure(app => {
-                app.UseCoreDistributedCache();
+                app.UseCoreCache();
             });
 
         using var server = new TestServer(builder);

@@ -9,11 +9,11 @@ namespace Core.Cache.UnitTests.DependencyInjection;
 public class CacheRegistrationTests
 {
     [Fact]
-    public void AddCoreDistributedCache_RegistersAllRequiredServicesPerProviderMemory()
+    public void AddCoreCache_RegistersAllRequiredServicesPerProviderMemory()
     {
         var services = new ServiceCollection();
 
-        services.AddCoreDistributedCache(options => {
+        services.AddCoreCache(options => {
             options.DefaultProvider = CacheProviderType.Memory;
         });
 
@@ -25,11 +25,11 @@ public class CacheRegistrationTests
     }
 
     [Fact]
-    public void AddCoreDistributedCache_RegistersAllRequiredServicesPerProviderRedis()
+    public void AddCoreCache_RegistersAllRequiredServicesPerProviderRedis()
     {
         var services = new ServiceCollection();
 
-        services.AddCoreDistributedCache(options => {
+        services.AddCoreCache(options => {
             options.DefaultProvider = CacheProviderType.Redis;
             options.Redis = new RedisOptions
             {

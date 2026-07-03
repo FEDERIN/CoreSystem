@@ -4,7 +4,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace Core.Cache.Http.Caching;
 
-internal sealed class DefaultRequestCachePolicy
+public sealed class DefaultRequestCachePolicy
     : IRequestCachePolicy
 {
     public bool CanCache(HttpContext context)

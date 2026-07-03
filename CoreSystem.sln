@@ -32,44 +32,47 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache", "src\Core.DistributedCache\Core.Cache.csproj", "{05DC2865-9DAD-4837-A61D-0254EA44AC20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache", "src\Core.Cache\Core.Cache.csproj", "{05DC2865-9DAD-4837-A61D-0254EA44AC20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.Abstractions", "src\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj", "{D5D8670A-7C9E-4893-8B3E-23782A01D780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DistributedCache.UnitTests", "tests\Core.DistributedCache.UnitTests\Core.DistributedCache.UnitTests.csproj", "{931FB173-4045-4E8F-903B-234BE742B5F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.UnitTests", "tests\Core.Cache.UnitTests\Core.Cache.UnitTests.csproj", "{931FB173-4045-4E8F-903B-234BE742B5F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreSystem.Samples.Core", "samples\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj", "{25A1B931-D216-44FC-958B-D8797AD39E08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DistributedCache.IntegrationTests", "tests\Core.DistributedCache.IntegrationTests\Core.DistributedCache.IntegrationTests.csproj", "{DD079F51-F056-464F-AA2B-AA252E3DA38E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.IntegrationTests", "tests\Core.Cache.IntegrationTests\Core.Cache.IntegrationTests.csproj", "{DD079F51-F056-464F-AA2B-AA252E3DA38E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedCache", "DistributedCache", "{EF9B0CA0-5268-4D9A-A85C-7966829B1033}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{EF9B0CA0-5268-4D9A-A85C-7966829B1033}"
 	ProjectSection(SolutionItems) = preProject
-		docs\DistributedCache\00-README.md = docs\DistributedCache\00-README.md
-		docs\DistributedCache\01-getting-started.md = docs\DistributedCache\01-getting-started.md
-		docs\DistributedCache\02-Why.md = docs\DistributedCache\02-Why.md
-		docs\DistributedCache\03-architecture-and-pipeline.md = docs\DistributedCache\03-architecture-and-pipeline.md
-		docs\DistributedCache\04-configuration.md = docs\DistributedCache\04-configuration.md
-		docs\DistributedCache\05-basic-usage.md = docs\DistributedCache\05-basic-usage.md
-		docs\DistributedCache\06-http-cache.md = docs\DistributedCache\06-http-cache.md
-		docs\DistributedCache\07-observability.md = docs\DistributedCache\07-observability.md
-		docs\DistributedCache\08-health-checks.md = docs\DistributedCache\08-health-checks.md
-		docs\DistributedCache\09-extensibility.md = docs\DistributedCache\09-extensibility.md
-		docs\DistributedCache\10-Roadmap.md = docs\DistributedCache\10-Roadmap.md
+		docs\Cache\00-README.md = docs\Cache\00-README.md
+		docs\Cache\01-getting-started.md = docs\Cache\01-getting-started.md
+		docs\Cache\02-Why.md = docs\Cache\02-Why.md
+		docs\Cache\03-architecture-and-pipeline.md = docs\Cache\03-architecture-and-pipeline.md
+		docs\Cache\04-configuration.md = docs\Cache\04-configuration.md
+		docs\Cache\05-basic-usage.md = docs\Cache\05-basic-usage.md
+		docs\Cache\06-http-cache.md = docs\Cache\06-http-cache.md
+		docs\Cache\07-observability.md = docs\Cache\07-observability.md
+		docs\Cache\08-health-checks.md = docs\Cache\08-health-checks.md
+		docs\Cache\09-extensibility.md = docs\Cache\09-extensibility.md
+		docs\Cache\10-Roadmap.md = docs\Cache\10-Roadmap.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{82C00201-5B4D-466F-AF60-CB4729ED69D9}"
 	ProjectSection(SolutionItems) = preProject
-		docs\DistributedCache\images\Architecture.mmd = docs\DistributedCache\images\Architecture.mmd
-		docs\DistributedCache\images\Architecture.svg = docs\DistributedCache\images\Architecture.svg
-		docs\DistributedCache\images\GetOrAddAsync Cache-Aside Pattern.mmd = docs\DistributedCache\images\GetOrAddAsync Cache-Aside Pattern.mmd
-		docs\DistributedCache\images\GetOrAddAsync Cache-Aside Pattern.svg = docs\DistributedCache\images\GetOrAddAsync Cache-Aside Pattern.svg
-		docs\DistributedCache\images\HTTP Cache Middleware Lifecycle.mmd = docs\DistributedCache\images\HTTP Cache Middleware Lifecycle.mmd
-		docs\DistributedCache\images\HTTP Cache Middleware Lifecycle.svg = docs\DistributedCache\images\HTTP Cache Middleware Lifecycle.svg
-		docs\DistributedCache\images\Resilience Flow.mmd = docs\DistributedCache\images\Resilience Flow.mmd
-		docs\DistributedCache\images\Resilience Flow.svg = docs\DistributedCache\images\Resilience Flow.svg
+		docs\Cache\images\Architecture.mmd = docs\Cache\images\Architecture.mmd
+		docs\Cache\images\Architecture.svg = docs\Cache\images\Architecture.svg
+		docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.mmd = docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.mmd
+		docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.svg = docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.svg
+		docs\Cache\images\HTTP Cache Middleware Lifecycle.mmd = docs\Cache\images\HTTP Cache Middleware Lifecycle.mmd
+		docs\Cache\images\HTTP Cache Middleware Lifecycle.svg = docs\Cache\images\HTTP Cache Middleware Lifecycle.svg
+		docs\Cache\images\Resilience Flow.mmd = docs\Cache\images\Resilience Flow.mmd
+		docs\Cache\images\Resilience Flow.svg = docs\Cache\images\Resilience Flow.svg
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{DBC21C0A-969B-4484-B169-AB48D4E4DEC9}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\build-readme.ps1 = scripts\build-readme.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

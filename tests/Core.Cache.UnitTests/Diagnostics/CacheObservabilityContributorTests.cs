@@ -9,7 +9,7 @@ namespace Core.Cache.UnitTests.Diagnostics;
 public sealed class CacheObservabilityContributorTests
 {
     [Fact]
-    public void GetActivitySources_ShouldReturnDistributedCacheSource()
+    public void GetActivitySources_ShouldReturnCacheSource()
     {
         // Arrange
         var contributor = new CacheObservabilityContributor();

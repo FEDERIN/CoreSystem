@@ -1,6 +1,6 @@
 $repoRoot = Resolve-Path "$PSScriptRoot\.."
-$docsPath = Join-Path $repoRoot "docs\DistributedCache"
-$outputFile = Join-Path $repoRoot "src\Core.DistributedCache\README.md"
+$docsPath = Join-Path $repoRoot "docs\Cache"
+$outputFile = Join-Path $repoRoot "src\Core.Cache\README.md"
 
 Write-Host "Generating README.md..."
 

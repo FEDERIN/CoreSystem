@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Added
-- **Declarative Caching Support**: Introduced `[Cacheable]` attribute in `Core.DistributedCache.Attributes` for declarative caching at the method level.
+- **Declarative Caching Support**: Introduced `[Cacheable]` attribute in `Core.Cache.Attributes` for declarative caching at the method level.
 - **Aspect-Oriented Caching**: Implemented infrastructure to support automatic caching via reflection-based interception, enabling seamless integration with services and repositories beyond just API controllers.
 - **Default Attribute Behavior**: Configured default expiration (60 seconds) for `[Cacheable]` attribute when `expirationSeconds` is not explicitly provided.
 

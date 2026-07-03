@@ -25,9 +25,9 @@
     </PackageReference>
     <PackageReference Include="xunit.v3" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core.DistributedCache\Core.Cache.csproj" />
+    <ProjectReference Include="..\..\src\Core.Cache\Core.Cache.csproj" />
   </ItemGroup>
 
   <ItemGroup>

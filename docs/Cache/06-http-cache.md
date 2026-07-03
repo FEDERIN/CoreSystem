@@ -60,7 +60,7 @@ Register the middleware.
 ```csharp
 var app = builder.Build();
 
-app.UseCoreDistributedCache();
+app.UseCoreCache();
 
 app.Run();
 ```

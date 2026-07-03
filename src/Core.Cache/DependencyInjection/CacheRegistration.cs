@@ -7,7 +7,7 @@ namespace Core.Cache.DependencyInjection;
 
 public static class CacheRegistration
 {
-    public static IServiceCollection AddCoreDistributedCache(
+    public static IServiceCollection AddCoreCache(
         this IServiceCollection services,
         Action<CacheOptions> configure)
     {
@@ -29,7 +29,7 @@ public static class CacheRegistration
         return services;
     }
 
-    public static IApplicationBuilder UseCoreDistributedCache(this IApplicationBuilder app)
+    public static IApplicationBuilder UseCoreCache(this IApplicationBuilder app)
     {
         return app.UseMiddleware<CacheMiddleware>();
     }

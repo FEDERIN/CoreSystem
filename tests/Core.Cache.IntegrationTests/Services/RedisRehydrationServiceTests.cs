@@ -71,7 +71,7 @@ public sealed class RedisRehydrationServiceTests(
     {
         var services = new ServiceCollection();
 
-        services.AddCoreDistributedCache(options =>
+        services.AddCoreCache(options =>
         {
             options.DefaultProvider = CacheProviderType.Redis;
 

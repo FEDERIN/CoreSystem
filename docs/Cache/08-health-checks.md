@@ -27,7 +27,7 @@ Register the ASP.NET Core Health Checks service.
 builder.Services.AddHealthChecks();
 ```
 
-When `AddCoreDistributedCache()` is called, the framework automatically registers its own health check.
+When `AddCoreCache()` is called, the framework automatically registers its own health check.
 
 No additional configuration is required.
 

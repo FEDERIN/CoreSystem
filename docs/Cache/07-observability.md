@@ -64,7 +64,7 @@ The framework publishes the following metrics.
 The package automatically registers the following meter.
 
 ```text
-Core.DistributedCache
+Core.Cache
 ```
 
 Applications only need to add the meter to OpenTelemetry.
@@ -74,7 +74,7 @@ builder.Services
     .AddOpenTelemetry()
     .WithMetrics(metrics =>
     {
-        metrics.AddMeter("Core.DistributedCache");
+        metrics.AddMeter("Core.Cache");
 
         metrics.AddPrometheusExporter();
     });

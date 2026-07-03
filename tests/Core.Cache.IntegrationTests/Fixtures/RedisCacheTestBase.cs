@@ -28,7 +28,7 @@ public abstract class RedisCacheTestBase
 
         var services = new ServiceCollection();
 
-        services.AddCoreDistributedCache(options =>
+        services.AddCoreCache(options =>
         {
             options.DefaultProvider = CacheProviderType.Redis;
 

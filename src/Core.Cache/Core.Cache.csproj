@@ -21,7 +21,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
-		<PackageReference Include="FGutierrez.Core.Observability.Abstractions" />
 		<PackageReference Include="MessagePack" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
@@ -43,8 +42,12 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<InternalsVisibleTo Include="Core.DistributedCache.UnitTests" />
-		<InternalsVisibleTo Include="Core.DistributedCache.IntegrationTests" />
+		<InternalsVisibleTo Include="Core.Cache.UnitTests" />
+		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj" />
 	</ItemGroup>
 </Project>

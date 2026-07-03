@@ -1,6 +1,6 @@
 # ❓ Why Another Distributed Cache?
 
-`IDistributedCache` is an excellent abstraction for storing and retrieving data from distributed cache providers. It offers a simple and provider-agnostic API that works well for many applications.
+`ICache` is an excellent abstraction for storing and retrieving data from distributed cache providers. It offers a simple and provider-agnostic API that works well for many applications.
 
 However, as distributed systems grow in complexity, caching becomes much more than reading and writing key/value pairs.
 
@@ -40,7 +40,7 @@ This architecture keeps business code focused on application logic while the fra
 
 # Feature Comparison
 
-| Capability | `IDistributedCache` | `CoreSystem.Cache` |
+| Capability | `ICache` | `CoreSystem.Cache` |
 |------------|:-------------------:|:----------------------------------:|
 | Unified Cache API | ✅ | ✅ |
 | Memory Provider | ❌ | ✅ |
@@ -124,9 +124,9 @@ CoreSystem.Cache is a good fit when your application requires one or more of the
 
 ---
 
-# When Is `IDistributedCache` Enough?
+# When Is `ICache` Enough?
 
-If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellentoice.
+If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `ICache` abstraction is an excellentoice.
 
 CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
 
@@ -162,7 +162,7 @@ This architecture keeps business code focused on application logic while the fra
 
 # Feature Comparison
 
-| Capability | `IDistributedCache` | `CoreSystem.Cache` |
+| Capability | `ICache` | `CoreSystem.Cache` |
 |------------|:-------------------:|:----------------------------------:|
 | Unified Cache API | ✅ | ✅ |
 | Memory Provider | ❌ | ✅ |
@@ -246,9 +246,9 @@ CoreSystem.Cache is a good fit when your application requires one or more of the
 
 ---
 
-# When Is `IDistributedCache` Enough?
+# When Is `ICache` Enough?
 
-If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellent choice.
+If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `ICache` abstraction is an excellent choice.
 
 CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
 

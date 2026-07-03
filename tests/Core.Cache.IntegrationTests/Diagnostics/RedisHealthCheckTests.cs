@@ -74,7 +74,7 @@ public sealed class RedisHealthCheckTests(RedisContainerFixture fixture)
     {
         var services = new ServiceCollection();
 
-        services.AddCoreDistributedCache(options =>
+        services.AddCoreCache(options =>
         {
             options.DefaultProvider = CacheProviderType.Redis;
 

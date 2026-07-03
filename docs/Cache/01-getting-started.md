@@ -38,7 +38,7 @@ dotnet add package CoreSystem.Cache
 Register the framework in your application's dependency injection container.
 
 ```csharp
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
     options.Redis.Configuration = redis =>
     {
@@ -116,7 +116,7 @@ If you want to cache HTTP responses, register the middleware.
 ```csharp
 var app = builder.Build();
 
-app.UseCoreDistributedCache();
+app.UseCoreCache();
 
 app.Run();
 ```
