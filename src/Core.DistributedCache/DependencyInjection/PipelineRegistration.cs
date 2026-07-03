@@ -1,0 +1,29 @@
+﻿using Core.DistributedCache.Pipeline;
+using Core.DistributedCache.Pipeline.Abstractions;
+using Core.DistributedCache.Pipeline.Behaviors;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Core.DistributedCache.DependencyInjection;
+
+internal static class PipelineRegistration
+{
+    public static IServiceCollection AddCachePipeline(
+        this IServiceCollection services)
+    {
+        services.AddSingleton<LoggingBehavior>();
+        services.AddSingleton<MetricsBehavior>();
+        services.AddSingleton<FallbackBehavior>();
+        services.AddSingleton<ResilienceBehavior>();
+
+        services.AddSingleton<ICachePipeline>(sp =>
+            new CachePipeline(
+            [
+                sp.GetRequiredService<LoggingBehavior>(),
+                sp.GetRequiredService<MetricsBehavior>(),
+                sp.GetRequiredService<FallbackBehavior>(),
+                sp.GetRequiredService<ResilienceBehavior>()
+            ]));
+
+        return services;
+    }
+}

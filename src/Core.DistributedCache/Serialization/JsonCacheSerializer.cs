@@ -1,10 +1,31 @@
-﻿using System.Text.Json;
-using Core.DistributedCache.Abstractions;
+﻿using Core.DistributedCache.Abstractions;
+using System.Text.Json;
 
 namespace Core.DistributedCache.Serialization;
 
-internal class JsonCacheSerializer : ICacheSerializer
+internal sealed class JsonCacheSerializer : ICacheSerializer
 {
-    public string Serialize<T>(T value) => JsonSerializer.Serialize(value);
-    public T? Deserialize<T>(string value) => JsonSerializer.Deserialize<T>(value);
+    private readonly JsonSerializerOptions _options;
+
+    public JsonCacheSerializer(JsonSerializerOptions? options = null)
+    {
+        _options = options ?? new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
+        };
+    }
+
+    public byte[] Serialize<T>(T value)
+    {
+        return JsonSerializer.SerializeToUtf8Bytes(value, _options);
+    }
+
+    public T? Deserialize<T>(byte[] bytes)
+    {
+        if (bytes.Length == 0)
+            return default;
+
+        return JsonSerializer.Deserialize<T>(bytes, _options);
+    }
 }

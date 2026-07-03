@@ -2,6 +2,7 @@
 
 internal interface ICacheSerializer
 {
-    string Serialize<T>(T value);
-    T? Deserialize<T>(string value);
+    byte[] Serialize<T>(T value);
+    T? Deserialize<T>(byte[] bytes);
+    bool RequiresHeader => false;
 }

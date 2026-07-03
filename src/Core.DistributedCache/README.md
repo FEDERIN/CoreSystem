@@ -1,3 +1,4 @@
+
 # ⚡ FGutierrez.Core.DistributedCache
 
 ![NuGet](https://img.shields.io/nuget/v/FGutierrez.Core.DistributedCache?style=for-the-badge)
@@ -7,475 +8,268 @@
 ![Storage](https://img.shields.io/badge/Storage-Memory%20%7C%20Redis-green?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
 
----
-
-# 🚀 Overview
-
-**FGutierrez.Core.DistributedCache** is a high-performance distributed caching library for **.NET 8** designed to provide a unified abstraction over multiple cache providers.
-
-The library simplifies cache integration by providing:
-
-* In-memory caching
-* Redis distributed caching
-* Automatic resilience and fallback strategies
-* HTTP response caching middleware
-* OpenTelemetry metrics
-* Health checks
-* Provider-based extensibility
-* Declarative method-level caching
-
-Built following **cloud-native architecture principles**, applications can consume caching capabilities without being coupled to a specific infrastructure provider.
-
----
-
-# ✨ Features
-
-| Feature                 | Description                                              |
-| ----------------------- | -------------------------------------------------------- |
-| 🧩 Unified API          | Single abstraction over multiple cache providers         |
-| ⚡ High Performance      | Optimized cache access patterns                          |
-| 🔄 Resilience           | Automatic fallback when distributed cache is unavailable |
-| 🧠 Cache Aside Pattern  | Built-in `GetOrAddAsync` workflow                        |
-| 🌐 HTTP Middleware      | API response caching support                             |
-| 📊 Observability        | OpenTelemetry metrics integration                        |
-| 🩺 Health Checks        | Provider availability monitoring                         |
-| 🏷️ Declarative Caching | Attribute-based caching using `[Cacheable]`              |
 
 ---
 
 # 🏗️ Architecture
 
-The library follows a provider-based architecture where the application consumes a single abstraction while the infrastructure layer decides the cache implementation.
+`FGutierrez.Core.DistributedCache` is built around a composable pipeline architecture that separates cache operations from storage implementations.
+
+Instead of interacting directly with Redis or Memory, every cache operation is represented by a `CacheContext` and executed through the `CachePipeline`. During execution, cross-cutting concerns such as logging, metrics, resilience, and automatic fallback are applied before the operation reaches the selected storage provider.
+
+This architecture keeps business code independent from infrastructure concerns while allowing new behaviors and storage providers to be introduced without changing the public API.
 
 ```mermaid
 graph TD
 
-    App[Application] --> Cache[ICoreCacheService]
+    App["Application"]
 
-    Cache --> Decorator[Resilient Cache Decorator]
+    App --> Service["ICoreCacheService"]
 
-    Decorator --> Redis[RedisCacheStorage]
-    Decorator --> Memory[MemoryCacheStorage]
+    Service --> Context["Create CacheContext"]
 
-    Redis --> RedisServer[(Redis Server)]
-    Memory --> Runtime[(Application Memory)]
+    Context --> Pipeline["CachePipeline"]
+
+    Pipeline --> Logging["LoggingBehavior"]
+
+    Logging --> Metrics["MetricsBehavior"]
+
+    Metrics --> Fallback["FallbackBehavior"]
+
+    Fallback --> Resilience["ResilienceBehavior"]
+
+    Resilience --> Execute["CacheContext.ExecuteAsync()"]
+
+    Execute --> Resolver["ICacheStorageResolver"]
+
+    Resolver --> Redis["RedisStorage"]
+
+    Resolver --> Memory["MemoryStorage"]
 ```
 
 ---
 
-# 🏭 Cache Provider Factory
+## 🎯 Design Goals
 
-When an application requires explicit provider selection, the library exposes `ICacheServiceFactory`.
+The framework is designed around a few core architectural principles:
+
+- Keep business code independent from storage providers.
+- Centralize cross-cutting concerns through a composable execution pipeline.
+- Support multiple cache providers behind a single abstraction.
+- Allow new behaviors to be introduced without modifying the cache service.
+- Keep storage implementations isolated from application code.
+
+---
+
+# 🏛️ Architectural Patterns
+
+`FGutierrez.Core.DistributedCache` is built on a combination of well-established architectural and design patterns. Each pattern addresses a specific concern while keeping the framework modular, extensible, and maintainable.
+
+| Pattern | Purpose |
+|----------|---------|
+| **Pipeline** | Executes every cache operation through a configurable chain of reusable behaviors. |
+| **Chain of Responsibility** | Allows each behavior to observe, enrich, or modify an operation before delegating to the next behavior. |
+| **Strategy** | Enables interchangeable implementations for storage providers, serializers, and distributed locks. |
+| **Factory** | Creates operation-specific `CacheContext` instances that encapsulate the execution state for each cache operation. |
+| **Provider Pattern** | Abstracts Memory and Redis behind a common `ICacheStorage` interface. |
+| **Cache-Aside** | Simplifies cache population through the built-in `GetOrAddAsync()` workflow. |
+
+These patterns work together to separate business logic from infrastructure concerns while allowing new behaviors and storage providers to be introduced without changing the public API.
+
+---
+
+# 🧩 Core Components
+
+The framework is composed of a small set of components, each with a clearly defined responsibility.
+
+| Component | Responsibility |
+|-----------|----------------|
+| **ICoreCacheService** | Public entry point for all cache operations. Creates the appropriate `CacheContext` and delegates execution to the pipeline. |
+| **CacheContext** | Represents a single cache operation. Encapsulates its state, execution logic, and selected storage provider. |
+| **CachePipeline** | Coordinates the execution of every cache operation through a chain of reusable behaviors before delegating to the selected storage provider. |
+| **ICacheBehavior** | Defines reusable cross-cutting behaviors such as logging, metrics, resilience, and fallback. |
+| **ICacheStorageResolver** | Resolves the primary and fallback storage providers for the current operation. |
+| **ICacheStorage** | Provider-agnostic abstraction implemented by every storage provider. |
+
+The interaction between these components keeps the public API small while allowing the infrastructure to evolve independently.
+
+---
+
+# 🔄 Execution Lifecycle
+
+Every cache operation follows the same execution lifecycle regardless of the operation type or selected storage provider.
+
+The application communicates only with `ICoreCacheService`. A specialized `CacheContext` is created for the requested operation, then executed through the `CachePipeline`. Each registered behavior may observe, enrich, or modify the execution before the operation reaches the selected storage provider.
+
+```mermaid
+flowchart LR
+
+    Request["Application Request"]
+
+    Request
+        --> Service["ICoreCacheService"]
+
+    Service
+        --> Context["Create CacheContext"]
+
+    Context
+        --> Pipeline["CachePipeline"]
+
+    Pipeline
+        --> Execute["CacheContext.ExecuteAsync()"]
+
+    Execute
+        --> Resolver["ICacheStorageResolver"]
+
+    Resolver
+        --> Primary["Primary Storage"]
+
+    Resolver
+        --> Secondary["Fallback Storage"]
+
+    Primary
+        --> Redis["RedisStorage"]
+
+    Secondary
+        --> Memory["MemoryStorage"]
+
+    Redis --> Result["Operation Result"]
+    Memory --> Result
+```
+
+During execution, behaviors such as logging, metrics, resilience policies, and automatic fallback are applied transparently.
+
+Because these concerns are implemented as reusable pipeline behaviors, additional capabilities such as compression, encryption, tracing, or auditing can be introduced without modifying either the cache service or the storage providers.
+
+---
+
+# ⚙️ Pipeline Behaviors
+
+The `CachePipeline` executes each registered behavior sequentially before delegating the operation to the selected storage provider.
+
+Each behavior has a single responsibility.
+
+| Behavior | Responsibility |
+|----------|----------------|
+| **LoggingBehavior** | Logs cache operations and failures. |
+| **MetricsBehavior** | Records cache metrics using OpenTelemetry. |
+| **FallbackBehavior** | Switches to the fallback provider when the primary provider becomes unavailable. |
+| **ResilienceBehavior** | Executes cache operations through configured Polly resilience policies. |
+
+Because behaviors are independent, the pipeline can evolve without changing the public API.
+
+Potential future behaviors include:
+
+- Compression
+- Encryption
+- Tracing
+- Auditing
+- Validation
+- Rate limiting
+
+---
+
+# 🗄️ Storage Layer
+
+The storage layer is completely independent from the execution pipeline.
+
+Every storage provider implements the same `ICacheStorage` abstraction, allowing providers to be exchanged transparently during execution.
+
+```mermaid
+graph LR
+
+    Resolver["ICacheStorageResolver"]
+
+    Resolver --> Primary["Primary Storage"]
+
+    Resolver --> Secondary["Fallback Storage"]
+
+    Primary --> Redis["RedisStorage"]
+
+    Secondary --> Memory["MemoryStorage"]
+```
+
+### Redis Storage
+
+```text
+RedisStorage
+│
+├── PayloadSerializer
+├── RedisTagIndex
+├── RedisLockProvider
+└── RedisKeyBuilder
+```
+
+### Memory Storage
+
+```text
+MemoryStorage
+│
+├── MemoryTagIndex
+├── MemoryLockProvider
+├── MemoryKeyTracker
+└── CacheEntryFactory
+```
+
+Because both providers implement the same abstraction, the pipeline can switch providers transparently without affecting application code.
+
+---
+
+# ⚡ Cache-Aside Execution
+
+The framework provides a built-in implementation of the Cache-Aside pattern through `GetOrAddAsync()`.
 
 ```mermaid
 sequenceDiagram
 
-    participant C as Client (Repository)
-    participant F as ICacheServiceFactory
-    participant DI as IServiceProvider
-    participant D as ResilientCacheDecorator
-    participant R as RedisCacheStorage
-    participant M as MemoryCacheStorage
+    actor Client
 
-    C->>F: GetCacheService(ProviderType)
-
-    F->>DI: Resolve(ICoreCacheService)
-
-    Note over DI: Configuration injects the<br/>ResilientCacheDecorator by default
-
-    DI-->>F: Returns ResilientCacheDecorator
-
-    F-->>C: Returns ICoreCacheService
-
-    C->>D: GetAsync(key)
-
-    alt Redis is Healthy
-
-        D->>R: Execute operation
-        R-->>D: Return value
-
-    else Redis is unavailable
-
-        Note over D: Apply fallback strategy
-
-        D->>M: Execute operation
-        M-->>D: Return value
-
-    end
-
-    D-->>C: Return final result
-```
-
----
-
-# 🛡️ Resilience Strategy
-
-The default implementation uses a resilient decorator that automatically falls back to memory cache when Redis becomes unavailable.
-
-```mermaid
-flowchart TD
-
-    Request([Cache Request])
-
-    Request --> RedisCheck{Redis Available?}
-
-    RedisCheck -- Yes --> RedisAccess[Attempt Redis Access]
-
-    RedisAccess --> Success{Operation Successful?}
-
-    Success -- Yes --> Return([Return Cached Data])
-
-    Success -- No --> Fallback[Log Error + Memory Fallback]
-
-    RedisCheck -- No --> Fallback
-
-    Fallback --> MemoryAccess[Query Memory Cache]
-
-    MemoryAccess --> Return
-```
-
----
-
-# ⚡ Cache Aside Pattern
-
-The library provides a built-in `GetOrAddAsync` workflow.
-
-```mermaid
-sequenceDiagram
-
-    participant App as Application
     participant Cache as ICoreCacheService
-    participant DB as Data Source
+    participant Pipeline as CachePipeline
+    participant Resolver as ICacheStorageResolver
+    participant Storage as ICacheStorage
+    participant Factory as Data Factory
 
-    App->>Cache: GetOrAddAsync(key, factory)
+    Client->>Cache: GetOrAddAsync(key, factory)
 
-    Cache->>Cache: Check cache entry
+    Cache->>Pipeline: Execute(GetCacheContext)
+
+    Pipeline->>Resolver: Resolve Storage
+
+    Resolver->>Storage: GetAsync(key)
 
     alt Cache Hit
 
-        Cache-->>App: Return cached value
+        Storage-->>Pipeline: Cached Value
+        Pipeline-->>Cache: Return Value
+        Cache-->>Client: Cached Value
 
     else Cache Miss
 
-        Cache->>DB: Execute factory()
+        Pipeline-->>Cache: Not Found
 
-        DB-->>Cache: Return data
+        Cache->>Factory: Execute factory()
 
-        Cache->>Cache: Store value
+        Factory-->>Cache: Data
 
-        Cache-->>App: Return new value
+        Cache->>Pipeline: Execute(SetCacheContext)
+
+        Pipeline->>Resolver: Resolve Storage
+
+        Resolver->>Storage: SetAsync(key, value)
+
+        Storage-->>Pipeline: Stored
+
+        Pipeline-->>Cache: Completed
+
+        Cache-->>Client: Fresh Value
 
     end
 ```
 
----
-
-# 🌐 HTTP Cache Middleware
-
-Provides transparent response caching capabilities for API endpoints.
-
-```mermaid
-sequenceDiagram
-
-    participant Client as HTTP Client
-    participant MW as Cache Middleware
-    participant API as API Endpoint
-
-    Client->>MW: GET /api/resource
-
-    MW->>MW: Check cache
-
-    alt Cache Hit
-
-        MW-->>Client: Cached Response
-
-    else Cache Miss
-
-        MW->>API: Execute Request
-
-        API-->>MW: Response
-
-        MW->>MW: Store Response
-
-        MW-->>Client: Original Response
-
-    end
-```
+Because every cache operation shares the same execution pipeline, cross-cutting concerns such as logging, metrics, resilience, fallback, and future behaviors are applied consistently across the entire framework.
 
 ---
 
-# 📦 Installation
-
-Install the package using NuGet:
-
-```bash
-dotnet add package FGutierrez.Core.DistributedCache
-```
-
 ---
 
-# ⚙️ Configuration
-
-## appsettings.json
-
-```json
-{
-  "DistributedCache": {
-    "Provider": "Redis",
-    "InstanceName": "MySystem",
-    "Redis": {
-      "Enabled": true,
-      "Host": "localhost:6379",
-      "Password": "your-password"
-    }
-  }
-}
-```
-
----
-
-## Redis Setup
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-
-var distributedCache = config.GetSection("DistributedCache");
-
-if (distributedCache.Exists())
-{
-    builder.Services.AddCoreDistributedCache(options =>
-    {
-        distributedCache.Bind(options);
-
-        if (options.Redis.Enabled)
-        {
-            var redisSection =
-                config.GetSection("DistributedCache:Redis");
-
-            var host =
-                redisSection["Host"] ?? "localhost:6379";
-
-            var password =
-                redisSection["Password"];
-
-            options.Redis.Configuration = redisConfig =>
-            {
-                redisConfig.EndPoints.Add(host);
-
-                if (!string.IsNullOrEmpty(password))
-                {
-                    redisConfig.Password = password;
-                }
-
-                redisConfig.AbortOnConnectFail = false;
-            };
-        }
-    });
-}
-
-var app = builder.Build();
-app.UseCoreDistributedCache();
-app.Run();
-```
-
----
-
-# 🧑‍💻 Basic Usage
-
-Inject `ICoreCacheService` into your services.
-
-```csharp
-public class ProductService
-{
-    private readonly ICoreCacheService _cache;
-
-    public ProductService(ICoreCacheService cache)
-    {
-        _cache = cache;
-    }
-
-    public async Task<Product> GetAsync(Guid id)
-    {
-        return await _cache.GetOrAddAsync(
-            $"product:{id}",
-            async () =>
-            {
-                return await LoadFromDatabase(id);
-            });
-    }
-}
-```
-
----
-
-# 🎯 Advanced Usage: Provider Selection
-
-```csharp
-public class MyBusinessService(ICacheServiceFactory cacheFactory)
-{
-    public async Task SaveAsync(bool forceRedis)
-    {
-        var provider =
-            forceRedis
-            ? CacheProviderType.Redis
-            : CacheProviderType.Memory;
-
-        var cache =
-            cacheFactory.GetCache(provider);
-
-        await cache.SetAsync(
-            "my_key",
-            myData,
-            TimeSpan.FromMinutes(5));
-    }
-
-
-    public async Task DefaultAsync()
-    {
-        var cache =
-            cacheFactory.GetDefaultCache();
-
-        await cache.GetOrAddAsync(
-            "default_key",
-            async () => GetData());
-    }
-}
-```
-
----
-
-# 🏷️ Declarative Caching
-
-Caching logic can be applied declaratively using the `[Cacheable]` attribute.
-
-This removes repetitive cache handling code from business services.
-
-Example:
-
-```csharp
-[HttpGet("data/{id}")]
-[Cacheable(
-    tag: "Order",
-    expirationSeconds: 300)]
-public async Task<IActionResult> GetData(string id)
-{
-    var result =
-        await myService.GetDataAsync(id);
-
-    return Ok(result);
-}
-```
-
----
-
-# 📊 Observability
-
-The library integrates with **OpenTelemetry Metrics**.
-
-| Metric                        | Description                    |
-| ----------------------------- | ------------------------------ |
-| `cache.distributed.hits`      | Successful cache retrievals    |
-| `cache.distributed.misses`    | Cache lookup misses            |
-| `cache.distributed.errors`    | Provider errors                |
-| `cache.distributed.fallbacks` | Resilience fallback executions |
-
-Compatible with:
-
-* Grafana
-* Prometheus
-* Jaeger
-* Azure Monitor
-* Elastic Observability
-* Any OTLP-compatible backend
-
----
-
-# 🩺 Health Checks
-
-The package integrates with:
-
-```csharp
-builder.Services.AddHealthChecks();
-```
-
-Provides monitoring for:
-
-* Redis availability
-* Memory cache status
-* Provider connectivity
-
----
-
-# 🛠️ Requirements
-
-* .NET 8 SDK
-* Microsoft.Extensions.Caching.Memory
-* StackExchange.Redis
-* OpenTelemetry
-* Microsoft.Extensions.Diagnostics.HealthChecks
-
----
-
-# 🏗️ Design Principles
-
-FGutierrez.Core.DistributedCache follows:
-
-* Clean Architecture principles
-* Provider-based extensibility
-* High cohesion / low coupling
-* Cloud-native patterns
-* Resilient infrastructure design
-* Observability-first development
-
----
-
-# 🗺️ Roadmap
-
-## Completed
-
-* [x] Memory Cache provider
-* [x] Redis provider
-* [x] Cache Aside pattern
-* [x] Resilience fallback
-* [x] OpenTelemetry metrics
-* [x] Health checks
-* [x] Declarative caching
-
-## Future
-
-* [ ] SQL Server cache provider
-* [ ] PostgreSQL cache provider
-* [ ] Multi-level distributed cache
-* [ ] Cache invalidation events
-* [ ] Cache warming strategies
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-Steps:
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a Pull Request
-
----
-
-# 📄 License
-
-MIT License
-
-© Federin Pastor Gutierrez Ortiz
-
-See the `LICENSE` file for details.
-
----
-
-# ⭐ Support
-
-If this ecosystem helps you build modern .NET distributed systems, consider giving the repository a star on GitHub.
-
-Building reusable cloud-native components, one package at a time.

@@ -8,12 +8,16 @@ public class MyService(ICoreCacheService cache) : IMyService
     {
         string key = $"product_{id}";
 
-        var resultado = await cache.GetOrAddAsync(key, async () =>
-        {
-            await Task.Delay(500);
-            return $"Datos reales para el ID: {id} obtenidos a las {DateTime.Now:HH:mm:ss}";
-        }, TimeSpan.FromMinutes(5));
+        var result = await cache.GetOrAddAsync(
+                    key,
+                    async ct =>
+                    {
+                        await Task.Delay(500, ct);
+                        return $"Datos reales para el ID: {id} obtenidos a las {DateTime.Now:HH:mm:ss}";
+                    },
+                    TimeSpan.FromMinutes(5)
+                );
 
-        return resultado ?? "Valor por defecto o vacío";
+        return result ?? "Valor por defecto o vacío";
     }
 }
