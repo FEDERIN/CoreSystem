@@ -7,3 +7,17 @@
 ![Storage](https://img.shields.io/badge/Storage-Memory%20%7C%20Redis-green?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
 
+
+## 📚 Table of Contents
+
+- Getting Started
+- Why Another Distributed Cache?
+- Architecture
+- Configuration
+- Basic Usage
+- HTTP Response Caching
+- Observability
+- Health Checks
+- Extensibility
+- Roadmap
+

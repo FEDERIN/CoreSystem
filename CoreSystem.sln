@@ -45,7 +45,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedCache", "DistributedCache", "{EF9B0CA0-5268-4D9A-A85C-7966829B1033}"
 	ProjectSection(SolutionItems) = preProject
 		docs\DistributedCache\00-README.md = docs\DistributedCache\00-README.md
-		docs\DistributedCache\02-architecture-and-pipeline.md = docs\DistributedCache\02-architecture-and-pipeline.md
+		docs\DistributedCache\01-getting-started.md = docs\DistributedCache\01-getting-started.md
+		docs\DistributedCache\02-Why.md = docs\DistributedCache\02-Why.md
+		docs\DistributedCache\03-architecture-and-pipeline.md = docs\DistributedCache\03-architecture-and-pipeline.md
+		docs\DistributedCache\04-configuration.md = docs\DistributedCache\04-configuration.md
+		docs\DistributedCache\05-basic-usage.md = docs\DistributedCache\05-basic-usage.md
+		docs\DistributedCache\06-http-cache.md = docs\DistributedCache\06-http-cache.md
+		docs\DistributedCache\07-observability.md = docs\DistributedCache\07-observability.md
+		docs\DistributedCache\08-health-checks.md = docs\DistributedCache\08-health-checks.md
+		docs\DistributedCache\09-extensibility.md = docs\DistributedCache\09-extensibility.md
+		docs\DistributedCache\10-Roadmap.md = docs\DistributedCache\10-Roadmap.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{82C00201-5B4D-466F-AF60-CB4729ED69D9}"
