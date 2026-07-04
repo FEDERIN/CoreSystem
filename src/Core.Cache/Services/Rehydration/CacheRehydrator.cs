@@ -22,33 +22,38 @@ internal sealed class CacheRehydrator(
                 {
                     ct.ThrowIfCancellationRequested();
 
-                    var wrapper =
-                        memoryStorage.GetWrapper<object>(key);
+                var entry = memoryStorage.GetEntry(key);
 
-                    if (wrapper is null)
-                        continue;
+                if (entry is null)
+                    continue;
 
-                    if (wrapper.Origin != CacheProviderType.Redis)
-                        continue;
+                if (!memoryStorage.TryGetOrigin(entry, out var origin))
+                    continue;
 
-                    try
-                    {
-                        await redisStorage.SetAsync(
-                            key,
-                            wrapper.Value,
-                            ct: ct);
+                if (origin != CacheProviderType.Redis)
+                    continue;
 
-                        await memoryStorage.RemoveAsync(
-                            key,
-                            ct);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(
-                            ex,
-                            "Unable to rehydrate cache key '{Key}'. It will be retried later.",
-                            key);
-                    }
+                if (!memoryStorage.TryGetValue(entry, out var value))
+                    continue;
+
+                try
+                {
+                    await redisStorage.SetAsync(
+                        key,
+                        value,
+                        ct: ct);
+
+                    await memoryStorage.RemoveAsync(
+                        key,
+                        ct);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(
+                        ex,
+                        "Unable to rehydrate cache key '{Key}'. It will be retried later.",
+                        key);
+                }
                 }
 
                 await Task.Delay(100, ct);

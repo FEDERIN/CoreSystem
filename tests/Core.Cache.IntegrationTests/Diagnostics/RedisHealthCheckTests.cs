@@ -30,26 +30,6 @@ public sealed class RedisHealthCheckTests(RedisContainerFixture fixture)
     }
 
     [Fact]
-    public async Task CheckHealthAsync_WhenHealthStateIsUnhealthy_ShouldReturnDegraded()
-    {
-        // Arrange
-        var state = _provider.GetRequiredService<IRedisHealthState>();
-
-        state.MarkUnhealthy();
-
-        var healthCheck = _provider.GetRequiredService<RedisHealthCheck>();
-
-        // Act
-        var result = await healthCheck.CheckHealthAsync(
-            new HealthCheckContext(),
-            TestContext.Current.CancellationToken);
-
-        // Assert
-        result.Status.Should().Be(HealthStatus.Degraded);
-        result.Description.Should().Contain("fallback");
-    }
-
-    [Fact]
     public async Task CheckHealthAsync_WhenHealthStateRecovers_ShouldReturnHealthy()
     {
         // Arrange

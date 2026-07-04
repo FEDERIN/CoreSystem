@@ -113,7 +113,68 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
 
     internal CacheEntryWrapper<T>? GetWrapper<T>(string key)
     {
-        return _memoryCache.TryGetValue(key, out CacheEntryWrapper<T>? wrapper) ? wrapper : null;
+        return _memoryCache.TryGetValue(key, out CacheEntryWrapper<T>? wrapper)
+            ? wrapper
+            : null;
+    }
+
+    internal object? GetEntry(string key)
+    {
+        _memoryCache.TryGetValue(key, out object? entry);
+        return entry;
+    }
+
+
+    public bool TryGetOrigin(
+    object? entry,
+    out CacheProviderType origin)
+    {
+        if (entry is null)
+        {
+            origin = default;
+            return false;
+        }
+
+        var type = entry.GetType();
+
+        if (!type.IsGenericType ||
+            type.GetGenericTypeDefinition() != typeof(CacheEntryWrapper<>))
+        {
+            origin = default;
+            return false;
+        }
+
+        origin = (CacheProviderType)type
+            .GetProperty(nameof(CacheEntryWrapper<object>.Origin))!
+            .GetValue(entry)!;
+
+        return true;
+    }
+
+    public bool TryGetValue(
+        object? entry,
+        out object? value)
+    {
+        if (entry is null)
+        {
+            value = null;
+            return false;
+        }
+
+        var type = entry.GetType();
+
+        if (!type.IsGenericType ||
+            type.GetGenericTypeDefinition() != typeof(CacheEntryWrapper<>))
+        {
+            value = null;
+            return false;
+        }
+
+        value = type
+            .GetProperty(nameof(CacheEntryWrapper<object>.Value))!
+            .GetValue(entry);
+
+        return true;
     }
 
     private bool TryGetValue<T>(string key, out T? value)

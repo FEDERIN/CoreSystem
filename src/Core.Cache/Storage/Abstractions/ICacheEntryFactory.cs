@@ -6,11 +6,9 @@ internal interface ICacheEntryFactory
 {
     CacheEntryWrapper<T> Create<T>(T value, CacheEntryOptions options);
 
-    bool TryUnwrap<T>(
-    object? entry,
-    out T? value);
+    bool TryUnwrap<T>(object? entry, out T? value);
 
-    bool TryGetOrigin(
-    object? entry,
-    out CacheProviderType origin);
+    bool TryGetOrigin(object? entry, out CacheProviderType origin);
+
+    bool TryGetValue(object? entry, out object? value);
 }

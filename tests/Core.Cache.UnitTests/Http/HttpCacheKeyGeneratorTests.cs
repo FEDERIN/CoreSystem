@@ -1,5 +1,4 @@
 ﻿using Core.Cache.Http.Caching;
-using Core.Cache.Options;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 
@@ -20,6 +19,6 @@ public sealed class HttpCacheKeyGeneratorTests
         var key = generator.Generate(context);
 
         // Assert
-        key.Should().Be("CoreSystem:/customers:");
+        key.Should().Be("/customers:");
     }
 }

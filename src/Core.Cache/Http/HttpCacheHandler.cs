@@ -66,7 +66,12 @@ internal sealed class HttpCacheHandler(
 
         await cache.SetAsync(
             key,
-            CacheEntryOptions.Default,
+            new CachedHttpResponse
+            {
+                Body = response.Body,
+                StatusCode = response.StatusCode,
+                Headers = response.Headers
+            },
             expiration,
             tags);
     }

@@ -62,4 +62,30 @@ internal sealed class CacheEntryFactory : ICacheEntryFactory
 
         return true;
     }
+
+    public bool TryGetValue(
+        object? entry,
+        out object? value)
+    {
+        if (entry is null)
+        {
+            value = null;
+            return false;
+        }
+
+        var type = entry.GetType();
+
+        if (!type.IsGenericType ||
+            type.GetGenericTypeDefinition() != typeof(CacheEntryWrapper<>))
+        {
+            value = null;
+            return false;
+        }
+
+        value = type
+            .GetProperty(nameof(CacheEntryWrapper<object>.Value))!
+            .GetValue(entry);
+
+        return true;
+    }
 }

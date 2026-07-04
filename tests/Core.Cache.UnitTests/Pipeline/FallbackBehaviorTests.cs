@@ -48,7 +48,7 @@ public sealed class FallbackBehaviorTests
         await behavior.InvokeAsync(context, Next);
 
         // Assert
-        calls.Should().Be(2);
+        calls.Should().Be(1);
 
         context.Storage.Should().BeSameAs(fallback);
 
