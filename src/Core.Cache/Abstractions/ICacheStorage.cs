@@ -1,4 +1,6 @@
-﻿namespace Core.Cache.Abstractions;
+﻿using Core.Cache.Storage;
+
+namespace Core.Cache.Abstractions;
 
 public interface ICacheStorage
 {
@@ -9,6 +11,7 @@ public interface ICacheStorage
     Task SetAsync<T>(
         string key,
         T value,
+        CacheEntryOptions? options = null,
         TimeSpan? expiration = null,
         string[]? tags = null,
         CancellationToken ct = default);

@@ -21,14 +21,14 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
                 : default);
     }
 
-    public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
+    public async Task SetAsync<T>(string key, T value, CacheEntryOptions? options = null, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
-        var options = new MemoryCacheEntryOptions();
+        var cacheOptions = new MemoryCacheEntryOptions();
 
         if (expiration.HasValue)
-            options.SetAbsoluteExpiration(expiration.Value);
+            cacheOptions.SetAbsoluteExpiration(expiration.Value);
 
-        options.RegisterPostEvictionCallback((evictedKey, _, _, _) =>
+        cacheOptions.RegisterPostEvictionCallback((evictedKey, _, _, _) =>
         {
             var key = (string)evictedKey;
 
@@ -36,9 +36,9 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
             _tracker.Untrack(key);
         });
 
-        var wrapper = _entryFactory.Create(value, CacheProviderType.Memory);
-        
-        _memoryCache.Set(key, wrapper, options);
+        var wrapper = _entryFactory.Create(value, options ?? CacheEntryOptions.Default);
+
+        _memoryCache.Set(key, wrapper, cacheOptions);
 
         if (wrapper.Origin == CacheProviderType.Redis)
         {
@@ -100,7 +100,7 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
                 return default;
             }
 
-            await SetAsync(key, value, expiration, tags, ct);
+            await SetAsync(key, value, null, expiration, tags, ct);
 
             return value;
         }

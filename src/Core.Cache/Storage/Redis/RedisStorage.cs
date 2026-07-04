@@ -29,7 +29,7 @@ internal sealed class RedisStorage(
         return _payloadSerializer.Deserialize<T>(payload);
     }
 
-    public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
+    public async Task SetAsync<T>(string key, T value, CacheEntryOptions? options = null, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
     {
         var payload =
             _payloadSerializer.Serialize(value);
@@ -83,7 +83,7 @@ internal sealed class RedisStorage(
             var value = await factory(ct);
 
             if (value is not null)
-                await SetAsync(key, value, expiration, tags, ct);
+                await SetAsync(key, value, null, expiration, tags, ct);
 
             return value;
         }

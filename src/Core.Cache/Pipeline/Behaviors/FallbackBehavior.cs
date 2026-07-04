@@ -2,6 +2,7 @@
 using Core.Cache.Pipeline.Abstractions;
 using Core.Cache.Pipeline.Contexts;
 using Core.Cache.Pipeline.Delegates;
+using Core.Cache.Storage;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Cache.Pipeline.Behaviors;
@@ -26,6 +27,7 @@ internal sealed class FallbackBehavior(
 
             context.Exception = ex;
             context.Storage = _resolver.Fallback;
+            context.EntryOptions = CacheEntryOptions.Rehydrate;
             await context.ExecuteAsync();
         }
     }

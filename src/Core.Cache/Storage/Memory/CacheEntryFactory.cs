@@ -5,12 +5,16 @@ namespace Core.Cache.Storage.Memory;
 
 internal sealed class CacheEntryFactory : ICacheEntryFactory
 {
-    public CacheEntryWrapper<T> Create<T>(T value, CacheProviderType origin)
+    public CacheEntryWrapper<T> Create<T>(T value, CacheEntryOptions options)
     {
         if (value is CacheEntryWrapper<T> wrapper)
         {
             return wrapper;
         }
+
+        var origin = options.TrackForRehydration
+            ? CacheProviderType.Redis
+            : CacheProviderType.Memory;
 
         return new CacheEntryWrapper<T>
         {
@@ -31,5 +35,31 @@ internal sealed class CacheEntryFactory : ICacheEntryFactory
 
         value = default;
         return false;
+    }
+
+    public bool TryGetOrigin(
+    object? entry,
+    out CacheProviderType origin)
+    {
+        if (entry is null)
+        {
+            origin = default;
+            return false;
+        }
+
+        var type = entry.GetType();
+
+        if (!type.IsGenericType ||
+            type.GetGenericTypeDefinition() != typeof(CacheEntryWrapper<>))
+        {
+            origin = default;
+            return false;
+        }
+
+        origin = (CacheProviderType)type
+            .GetProperty(nameof(CacheEntryWrapper<object>.Origin))!
+            .GetValue(entry)!;
+
+        return true;
     }
 }

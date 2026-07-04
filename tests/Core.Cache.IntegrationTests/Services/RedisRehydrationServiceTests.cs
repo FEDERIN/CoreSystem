@@ -50,6 +50,7 @@ public sealed class RedisRehydrationServiceTests(
                 Id = 1,
                 Name = "Memory"
             },
+            null,
             TimeSpan.FromMilliseconds(300),
             ["customers"],
             TestContext.Current.CancellationToken);

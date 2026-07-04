@@ -1,4 +1,6 @@
-﻿namespace Core.Cache.Pipeline.Contexts;
+﻿using Core.Cache.Storage;
+
+namespace Core.Cache.Pipeline.Contexts;
 
 public sealed class SetCacheContext<T> : CacheContext
 {
@@ -13,6 +15,7 @@ public sealed class SetCacheContext<T> : CacheContext
         return Storage.SetAsync(
             Key,
             Value,
+            EntryOptions,
             Expiration,
             Tags,
             CancellationToken);
