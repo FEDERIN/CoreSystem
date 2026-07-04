@@ -11,12 +11,7 @@ public sealed class HttpCacheKeyGeneratorTests
     public void Generate_ShouldIncludeInstanceName()
     {
         // Arrange
-        var options = new CacheOptions
-        {
-            InstanceName = "CoreSystem"
-        };
-
-        var generator = new HttpCacheKeyGenerator(options);
+        var generator = new HttpCacheKeyGenerator();
 
         var context = new DefaultHttpContext();
         context.Request.Path = "/customers";

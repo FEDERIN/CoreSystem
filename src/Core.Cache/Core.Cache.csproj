@@ -8,15 +8,15 @@
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>FGutierrez.Core.DistributedCache</PackageId>
-		<Version>1.1.6</Version>
+		<PackageId>CoreSystem.Cache</PackageId>
+		<Version>1.0.0</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Distributed cache abstraction for .NET 8 supporting Redis and In-Memory providers, with native OpenTelemetry integration.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.DistributedCache</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Cache</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageTags>DistributedCache;Redis;MemoryCache;OpenTelemetry;Observability;CloudNative</PackageTags>
+		<PackageTags>Distributed;Redis;MemoryCache;OpenTelemetry;Observability;CloudNative</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

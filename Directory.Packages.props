@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
+    <PackageVersion Include="CoreSystem.Observability.Abstractions" Version="1.0.0" />
     <PackageVersion Include="Dapper" Version="2.1.79" />
     <PackageVersion Include="FGutierrez.Core.Observability.Abstractions" Version="1.0.0" />
     <PackageVersion Include="MessagePack" Version="3.1.7" />

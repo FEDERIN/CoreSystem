@@ -21,6 +21,7 @@
   </ItemGroup>
   
   <ItemGroup>
+	<PackageReference Include="CoreSystem.Observability.Abstractions" />
 	<PackageReference Include="Microsoft.Data.SqlClient" />
 	
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
@@ -32,9 +33,5 @@
 	<PackageReference Include="Serilog.AspNetCore" /> 
     <PackageReference Include="Serilog.Enrichers.Thread" />
 	<PackageReference Include="Serilog.Sinks.OpenTelemetry" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj" />
   </ItemGroup>
 </Project>

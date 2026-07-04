@@ -3,6 +3,7 @@ using Core.Cache.Attributes;
 using Core.Cache.Http.Caching;
 using Core.Cache.Options;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 namespace Core.Cache.Http;
 
@@ -38,12 +39,19 @@ internal sealed class HttpCacheHandler(
 
         var key = keyGenerator.Generate(context);
 
+        var sw = Stopwatch.StartNew();
+
         var cached =
             await cache.GetAsync<CachedHttpResponse>(key);
+
+        Console.WriteLine($"GetAsync: {sw.ElapsedMilliseconds} ms");
 
         if (cached is not null)
         {
             await responseWriter.WriteAsync(context, cached);
+
+            Console.WriteLine($"WriteAsync: {sw.ElapsedMilliseconds} ms");
+
             return;
         }
 

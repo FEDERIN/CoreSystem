@@ -1,6 +1,4 @@
-﻿using Core.Cache.Storage.Abstractions;
-using Core.Cache.Storage.Memory;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Retry;

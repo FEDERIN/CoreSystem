@@ -3,7 +3,7 @@
 ---
 
 
-**Core.Observability.Abstractions** is the modular observability core for the **CoreSystem** ecosystem. It provides the base contracts required to implement health checks and telemetry (**OpenTelemetry**) in a decoupled manner within **.NET 8.0** applications.
+**CoreSystem.Observability.Abstractions** is the modular observability core for the **CoreSystem** ecosystem. It provides the base contracts required to implement health checks and telemetry (**OpenTelemetry**) in a decoupled manner within **.NET 8.0** applications.
 
 ## 🚀 Purpose
 

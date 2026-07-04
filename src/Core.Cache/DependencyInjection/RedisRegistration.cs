@@ -20,9 +20,9 @@ internal static class RedisRegistration
             options.Redis.Configuration(redisConfig);
 
             redisConfig.AbortOnConnectFail = false;
-            redisConfig.ConnectRetry = 3;
-            redisConfig.ConnectTimeout = 5000;
-            redisConfig.ReconnectRetryPolicy = new ExponentialRetry(5000);
+            redisConfig.ConnectRetry = 1;
+            redisConfig.ConnectTimeout = 500;
+            redisConfig.ReconnectRetryPolicy = new ExponentialRetry(1000);
             redisConfig.KeepAlive = 60;
 
             var connection = ConnectionMultiplexer.Connect(redisConfig);

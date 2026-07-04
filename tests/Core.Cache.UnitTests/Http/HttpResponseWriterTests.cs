@@ -1,5 +1,4 @@
 ﻿using Core.Cache.Http.Caching;
-using Core.Cache.Http.Caching;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 

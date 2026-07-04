@@ -64,7 +64,7 @@ The framework publishes the following metrics.
 The package automatically registers the following meter.
 
 ```text
-Core.Cache
+CoreSystem.Cache
 ```
 
 Applications only need to add the meter to OpenTelemetry.
