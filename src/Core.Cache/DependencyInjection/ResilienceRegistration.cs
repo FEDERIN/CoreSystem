@@ -16,9 +16,9 @@ internal static class ResilienceRegistration
             new ResiliencePipelineBuilder()
                 .AddRetry(new RetryStrategyOptions
                 {
-                    MaxRetryAttempts = 3,
-                    Delay = TimeSpan.FromMilliseconds(200),
-                    BackoffType = DelayBackoffType.Exponential,
+                    MaxRetryAttempts = 1,
+                    Delay = TimeSpan.FromMilliseconds(100),
+                    BackoffType = DelayBackoffType.Constant,
                     ShouldHandle = new PredicateBuilder()
                         .Handle<RedisConnectionException>()
                         .Handle<RedisTimeoutException>()
@@ -28,7 +28,7 @@ internal static class ResilienceRegistration
                 {
                     FailureRatio = 0.5,
                     SamplingDuration = TimeSpan.FromSeconds(30),
-                    MinimumThroughput = 10,
+                    MinimumThroughput = 2,
                     BreakDuration = TimeSpan.FromSeconds(15),
                     ShouldHandle = new PredicateBuilder()
                         .Handle<RedisConnectionException>()

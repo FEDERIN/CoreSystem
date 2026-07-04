@@ -5,7 +5,7 @@ namespace Core.Cache.Storage.Memory;
 
 internal sealed class CacheEntryFactory : ICacheEntryFactory
 {
-    public CacheEntryWrapper<T> Create<T>(T value)
+    public CacheEntryWrapper<T> Create<T>(T value, CacheProviderType origin)
     {
         if (value is CacheEntryWrapper<T> wrapper)
         {
@@ -15,7 +15,7 @@ internal sealed class CacheEntryFactory : ICacheEntryFactory
         return new CacheEntryWrapper<T>
         {
             Value = value,
-            Origin = CacheProviderType.Memory
+            Origin = origin
         };
     }
 

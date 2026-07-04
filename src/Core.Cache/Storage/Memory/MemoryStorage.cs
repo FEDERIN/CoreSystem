@@ -36,8 +36,8 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
             _tracker.Untrack(key);
         });
 
-        var wrapper = _entryFactory.Create(value);
-
+        var wrapper = _entryFactory.Create(value, CacheProviderType.Memory);
+        
         _memoryCache.Set(key, wrapper, options);
 
         if (wrapper.Origin == CacheProviderType.Redis)

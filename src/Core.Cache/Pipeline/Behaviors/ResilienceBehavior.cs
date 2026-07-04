@@ -1,4 +1,5 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Cache.Options;
 using Core.Cache.Pipeline.Abstractions;
 using Core.Cache.Pipeline.Contexts;
 using Core.Cache.Pipeline.Delegates;
@@ -8,6 +9,7 @@ namespace Core.Cache.Pipeline.Behaviors;
 
 internal sealed class ResilienceBehavior(
     ResiliencePipeline pipeline,
+    CacheOptions options,
     IRedisHealthState healthState)
     : ICacheBehavior
 {
@@ -18,6 +20,12 @@ internal sealed class ResilienceBehavior(
     {
         try
         {
+            if (options.DefaultProvider != CacheProviderType.Redis)
+            {
+                await next(context);
+                return;
+            }
+
             await _pipeline.ExecuteAsync(
                 async token =>
                 {

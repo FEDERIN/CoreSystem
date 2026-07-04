@@ -21,7 +21,11 @@ internal static class RedisRegistration
 
             redisConfig.AbortOnConnectFail = false;
             redisConfig.ConnectRetry = 1;
+
             redisConfig.ConnectTimeout = 500;
+            redisConfig.AsyncTimeout = 500;
+            redisConfig.SyncTimeout = 500;
+
             redisConfig.ReconnectRetryPolicy = new ExponentialRetry(1000);
             redisConfig.KeepAlive = 60;
 

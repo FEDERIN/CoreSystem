@@ -26,8 +26,7 @@ internal sealed class FallbackBehavior(
 
             context.Exception = ex;
             context.Storage = _resolver.Fallback;
-
-            await next(context);
+            await context.ExecuteAsync();
         }
     }
 }

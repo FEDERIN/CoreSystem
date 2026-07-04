@@ -13,11 +13,25 @@ internal sealed class RedisHealthCheck(
         HealthCheckContext context,
         CancellationToken ct = default)
     {
+
+
         if (!healthState.IsRedisHealthy)
         {
-            return HealthCheckResult.Degraded(
-                "Redis is unavailable. Circuit breaker is open and the cache is operating with the fallback storage.");
+            try
+            {
+                await redis.GetDatabase().PingAsync();
+
+                healthState.MarkHealthy();
+
+                return HealthCheckResult.Healthy();
+            }
+            catch
+            {
+                return HealthCheckResult.Degraded(
+                    "Redis is unavailable. Circuit breaker is open and the cache is operating with the fallback storage.");
+            }
         }
+
 
         try
         {
