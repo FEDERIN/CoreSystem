@@ -1,62 +1,49 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Services.Rehydration;
-using Core.Cache.Storage.Memory;
-using Core.Cache.Storage.Redis;
+using Core.Cache.Storage.Rehydration;
 using Microsoft.Extensions.Logging;
 
 internal sealed class CacheRehydrator(
-        MemoryStorage memoryStorage,
-        RedisStorage redisStorage,
+    IRehydrationSource source,
+    IRehydrationTarget target,
         ILogger<CacheRehydrator> logger)
         : ICacheRehydrator
     {
-        public async Task RehydrateAsync(CancellationToken ct)
+    public async Task RehydrateAsync(CancellationToken ct)
+    {
+        const int BatchSize = 100;
+
+        var entries = source.GetEntries().ToList();
+
+        foreach (var batch in entries.Chunk(BatchSize))
         {
-            const int BatchSize = 100;
-
-            var keys = memoryStorage.GetTrackedKeys().ToList();
-
-            foreach (var batch in keys.Chunk(BatchSize))
+            foreach (var entry in batch)
             {
-                foreach (var key in batch)
-                {
-                    ct.ThrowIfCancellationRequested();
+                ct.ThrowIfCancellationRequested();
 
-                var entry = memoryStorage.GetEntry(key);
-
-                if (entry is null)
-                    continue;
-
-                if (!memoryStorage.TryGetOrigin(entry, out var origin))
-                    continue;
-
-                if (origin != CacheProviderType.Redis)
-                    continue;
-
-                if (!memoryStorage.TryGetValue(entry, out var value))
+                if (entry.Origin != CacheProviderType.Redis)
                     continue;
 
                 try
-                {
-                    await redisStorage.SetAsync(
-                        key,
-                        value,
-                        ct: ct);
+                    {
+                        await target.StoreAsync(
+                            entry,
+                            ct);
 
-                    await memoryStorage.RemoveAsync(
-                        key,
-                        ct);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(
-                        ex,
-                        "Unable to rehydrate cache key '{Key}'. It will be retried later.",
-                        key);
-                }
+                        await source.RemoveForRehydrationAsync(
+                            entry.Key,
+                            ct);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(
+                            ex,
+                            "Unable to rehydrate cache key '{Key}'. It will be retried later.",
+                            entry.Key);
+                    }
                 }
 
-                await Task.Delay(100, ct);
-            }
+            await Task.Delay(100, ct);
         }
     }
+}

@@ -2,6 +2,7 @@
 using Core.Cache.Services.Rehydration;
 using Core.Cache.Storage.Abstractions;
 using Core.Cache.Storage.Redis;
+using Core.Cache.Storage.Rehydration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
@@ -47,6 +48,8 @@ internal static class RedisRegistration
                     ));
 
 
+            services.AddSingleton<IRehydrationSource, MemoryRehydrationSource>();
+            services.AddSingleton<IRehydrationTarget, RedisRehydrationTarget>();
             services.AddSingleton<ICacheRehydrator, CacheRehydrator>();
             services.AddSingleton<IRedisRehydrationService, RedisRehydrationService>();
             services.AddHostedService<RedisRehydrationBackgroundService>();
