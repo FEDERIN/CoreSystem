@@ -10,6 +10,7 @@ internal sealed class MemoryStorage(
     ICacheTagIndex<MemoryStorage> tagIndex,
     ICacheLockProvider<MemoryStorage> lockProvider,
     ICacheEntryFactory entryFactory,
+    ICacheEntryInspector entryInspector,
     IRehydrationTracker rehydrationTracker)
     : ICacheStorage
 {
@@ -17,6 +18,7 @@ internal sealed class MemoryStorage(
     private readonly ICacheTagIndex<MemoryStorage> _tagIndex = tagIndex;
     private readonly ICacheLockProvider<MemoryStorage> _lockProvider = lockProvider;
     private readonly ICacheEntryFactory _entryFactory = entryFactory;
+    private readonly ICacheEntryInspector _entryInspector = entryInspector;
     private readonly IRehydrationTracker _rehydrationTracker = rehydrationTracker;
 
     public Task<T?> GetAsync<T>(
@@ -37,9 +39,18 @@ internal sealed class MemoryStorage(
         string[]? tags = null,
         CancellationToken ct = default)
     {
+        DateTimeOffset? absoluteExpiration = null;
+
+        if (expiration.HasValue)
+        {
+            absoluteExpiration =
+                DateTimeOffset.UtcNow.Add(expiration.Value);
+        }
+
         var wrapper = _entryFactory.Create(
             value,
-            options ?? CacheEntryOptions.Default);
+            options ?? CacheEntryOptions.Default,
+            absoluteExpiration);
 
         var cacheOptions = new MemoryCacheEntryOptions();
 
@@ -153,7 +164,7 @@ internal sealed class MemoryStorage(
         out T? value)
     {
         if (_memoryCache.TryGetValue(key, out object? entry) &&
-            _entryFactory.TryUnwrap(entry, out value))
+            _entryInspector.TryGetValue(entry, out value))
         {
             return true;
         }

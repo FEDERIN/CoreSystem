@@ -6,7 +6,7 @@ namespace Core.Cache.Storage.Rehydration;
 internal sealed class MemoryRehydrationSource(
     IMemoryCache memoryCache,
     ICacheKeyTracker tracker,
-    ICacheEntryFactory entryFactory)
+    ICacheEntryInspector entryInspector)
     : IRehydrationSource
 {
     public IEnumerable<CacheRehydrationEntry> GetEntries()
@@ -16,17 +16,28 @@ internal sealed class MemoryRehydrationSource(
             if (!memoryCache.TryGetValue(key, out object? entry))
                 continue;
 
-            if (!entryFactory.TryGetOrigin(entry, out var origin))
+            if (!entryInspector.TryGet(entry, out var wrapper))
                 continue;
 
-            if (!entryFactory.TryGetValue(entry, out var value))
+            if(wrapper == null)
                 continue;
+
+            TimeSpan? expiration = null;
+
+            if (wrapper.AbsoluteExpiration.HasValue)
+            {
+                expiration = wrapper.AbsoluteExpiration.Value - DateTimeOffset.UtcNow;
+
+                if (expiration <= TimeSpan.Zero)
+                    continue;
+            }
 
             yield return new CacheRehydrationEntry
             {
                 Key = key,
-                Origin = origin,
-                Value = value!
+                Origin = wrapper.Origin,
+                Value = wrapper.Value,
+                RemainingExpiration = expiration
             };
         }
     }

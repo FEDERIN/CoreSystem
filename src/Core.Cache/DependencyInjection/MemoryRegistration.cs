@@ -11,11 +11,22 @@ internal static class MemoryRegistration
         this IServiceCollection services)
     {
         services.AddMemoryCache();
+
+        // Entry
+        services.AddSingleton<ICacheEntryFactory, CacheEntryFactory>();
+        services.AddSingleton<ICacheEntryInspector, CacheEntryInspector>();
+
+        // Tags
         services.AddSingleton<ICacheTagIndex<MemoryStorage>, MemoryTagIndex>();
+
+        // Rehydration
         services.AddSingleton<ICacheKeyTracker, MemoryKeyTracker>();
         services.AddSingleton<IRehydrationTracker, RehydrationTracker>();
+
+        // Synchronization
         services.AddSingleton<ICacheLockProvider<MemoryStorage>, MemoryLockProvider>();
-        services.AddSingleton<ICacheEntryFactory, CacheEntryFactory>();
+
+        // Storage
         services.AddSingleton<MemoryStorage>();
 
         return services;

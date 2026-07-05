@@ -13,6 +13,7 @@ internal sealed class RedisRehydrationTarget(
         return redisStorage.SetAsync(
             entry.Key,
             entry.Value,
+            expiration: entry.RemainingExpiration,
             ct: ct);
     }
 }

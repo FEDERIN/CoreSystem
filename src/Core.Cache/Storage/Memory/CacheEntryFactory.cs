@@ -5,7 +5,7 @@ namespace Core.Cache.Storage.Memory;
 
 internal sealed class CacheEntryFactory : ICacheEntryFactory
 {
-    public CacheEntryWrapper<T> Create<T>(T value, CacheEntryOptions options)
+    public CacheEntryWrapper<T> Create<T>(T value, CacheEntryOptions options, DateTimeOffset? absoluteExpiration)
     {
         if (value is CacheEntryWrapper<T> wrapper)
         {
@@ -19,7 +19,8 @@ internal sealed class CacheEntryFactory : ICacheEntryFactory
         return new CacheEntryWrapper<T>
         {
             Value = value,
-            Origin = origin
+            Origin = origin,
+            AbsoluteExpiration = absoluteExpiration
         };
     }
 
