@@ -19,6 +19,6 @@ public sealed class HttpCacheKeyGeneratorTests
         var key = generator.Generate(context);
 
         // Assert
-        key.Should().Be("/customers:");
+        key.Should().Be("/customers");
     }
 }
