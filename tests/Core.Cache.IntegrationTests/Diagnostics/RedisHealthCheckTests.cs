@@ -33,7 +33,7 @@ public sealed class RedisHealthCheckTests(RedisContainerFixture fixture)
     public async Task CheckHealthAsync_WhenHealthStateRecovers_ShouldReturnHealthy()
     {
         // Arrange
-        var state = _provider.GetRequiredService<IRedisHealthState>();
+        var state = _provider.GetRequiredService<IHealthState>();
 
         state.MarkUnhealthy();
         state.MarkHealthy();

@@ -22,12 +22,19 @@ internal sealed class FallbackBehavior(
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex,
+            if (!_resolver.HasFallback)
+            {
+                throw;
+            }
+
+            _logger.LogWarning(
+                ex,
                 "Primary storage failed. Switching to fallback.");
 
             context.Exception = ex;
             context.Storage = _resolver.Fallback;
             context.EntryOptions = CacheEntryOptions.Rehydrate;
+
             await context.ExecuteAsync();
         }
     }

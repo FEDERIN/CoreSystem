@@ -1,5 +1,4 @@
-﻿using Core.Cache.Abstractions;
-using Core.Cache.Diagnostics;
+﻿using Core.Cache.Diagnostics;
 using Core.Observability.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,11 +10,11 @@ internal static class DiagnosticsRegistration
         this IServiceCollection services)
     {
         services.AddMetrics();
+
         services.AddSingleton<CacheMetrics>();
-        services.AddSingleton<RedisHealthCheck>();
-        services.AddSingleton<IRedisHealthState, RedisHealthState>();
-        services.AddSingleton<IHealthCheckContributor, CacheHealthContributor>();
-        services.AddSingleton<IObservabilityContributor, CacheObservabilityContributor>();
+
+        services.AddSingleton<IObservabilityContributor,
+            CacheObservabilityContributor>();
 
         return services;
     }

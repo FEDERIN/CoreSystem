@@ -10,17 +10,19 @@ namespace Core.Cache.Pipeline.Behaviors;
 internal sealed class ResilienceBehavior(
     ResiliencePipeline pipeline,
     CacheOptions options,
-    IRedisHealthState healthState)
+    IHealthState healthState)
     : ICacheBehavior
 {
     private readonly ResiliencePipeline _pipeline = pipeline;
-    private readonly IRedisHealthState _healthState = healthState;
+    private readonly IHealthState _healthState = healthState;
 
     public async Task InvokeAsync(CacheContext context, CacheDelegate next)
     {
         try
         {
-            if (options.DefaultProvider != CacheProviderType.Redis)
+            // Skip the resilience pipeline for the in-memory provider.
+            // Memory operations are local and do not require retries or circuit breakers.
+            if (options.DefaultProvider == CacheProviderType.Memory)
             {
                 await next(context);
                 return;

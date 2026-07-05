@@ -22,7 +22,7 @@ public sealed class ResilienceBehaviorTests
 
         var pipeline = new ResiliencePipelineBuilder().Build();
 
-        var healthState = new Mock<IRedisHealthState>();
+        var healthState = new Mock<IHealthState>();
 
         var behavior = new ResilienceBehavior(
             pipeline,

@@ -27,7 +27,7 @@ public sealed class RedisHealthCheckTests
             .Setup(x => x.GetDatabase(It.IsAny<int>(), It.IsAny<object>()))
             .Returns(database.Object);
 
-        var state = new Mock<IRedisHealthState>();
+        var state = new Mock<IHealthState>();
 
         state.SetupGet(x => x.IsRedisHealthy)
              .Returns(true);

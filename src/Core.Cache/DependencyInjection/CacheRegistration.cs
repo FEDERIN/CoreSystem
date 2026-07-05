@@ -20,9 +20,15 @@ public static class CacheRegistration
             .AddCacheSerialization()
             .AddCacheDiagnostics()
             .AddCacheMemory()
-            .AddCacheRedis(options)
-            .AddCacheResilience()
-            .AddCachePipeline()
+            .AddCacheRedis(options);
+        
+        if (options.Redis.Enabled)
+        {
+            services.AddCacheResilience();
+        }
+
+        services
+            .AddCachePipeline(options)
             .AddCacheHttp()
             .AddCacheServices();
 

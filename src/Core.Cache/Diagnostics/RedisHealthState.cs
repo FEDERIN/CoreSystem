@@ -2,7 +2,7 @@
 
 namespace Core.Cache.Diagnostics;
 
-internal sealed class RedisHealthState : IRedisHealthState
+internal sealed class RedisHealthState : IHealthState
 {
     private volatile bool _healthy = true;
     public bool IsRedisHealthy => _healthy;

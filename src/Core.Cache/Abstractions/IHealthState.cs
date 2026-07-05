@@ -1,6 +1,6 @@
 ﻿namespace Core.Cache.Abstractions;
 
-public interface IRedisHealthState
+public interface IHealthState
 {
     bool IsRedisHealthy { get; }
     void MarkHealthy();

@@ -21,7 +21,8 @@ public class CacheOptions
     /// If not specified, the library selects the appropriate provider
     /// based on the registered services.
     /// </remarks>
-    public CacheProviderType? DefaultProvider { get; set; }
+    public CacheProviderType DefaultProvider { get; set; }
+        = CacheProviderType.Memory;
 
     /// <summary>
     /// Gets or sets an optional prefix applied to all generated cache keys.
@@ -93,6 +94,11 @@ public class RedisOptions
     /// When disabled, the library uses the in-memory cache provider only.
     /// </remarks>
     public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the name of the configuration section used to configure Redis.
+    /// </summary>
+    public string? ConfigurationName { get; set; }
 }
 
 /// <summary>

@@ -6,7 +6,7 @@ namespace Core.Cache.Diagnostics;
 
 internal sealed class RedisHealthCheck(
     IConnectionMultiplexer redis,
-    IRedisHealthState healthState)
+    IHealthState healthState)
     : IHealthCheck
 {
     public async Task<HealthCheckResult> CheckHealthAsync(
