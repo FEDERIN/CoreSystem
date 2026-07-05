@@ -4,10 +4,10 @@ using Core.Cache.Pipeline.Contexts;
 
 namespace Core.Cache.Services;
 
-internal sealed class CoreCacheService(
+internal sealed class CoreCache(
     ICachePipeline pipeline,
     ICacheStorageResolver resolver)
-    : ICoreCacheService
+    : ICoreCache
 {
     public async Task<T?> GetAsync<T>(
         string key,

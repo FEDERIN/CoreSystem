@@ -6,7 +6,7 @@ namespace Core.Cache.UnitTests;
 
 public abstract class MemoryCacheTestBase
 {
-    protected static ICoreCacheService CreateCache()
+    protected static ICoreCache CreateCache()
     {
         var services = new ServiceCollection();
 
@@ -17,6 +17,6 @@ public abstract class MemoryCacheTestBase
 
         var provider = services.BuildServiceProvider();
 
-        return provider.GetRequiredService<ICoreCacheService>();
+        return provider.GetRequiredService<ICoreCache>();
     }
 }

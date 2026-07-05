@@ -19,7 +19,7 @@ public class CacheRegistrationTests
 
         var provider = services.BuildServiceProvider();
 
-        provider.GetService<ICoreCacheService>().Should().NotBeNull();
+        provider.GetService<ICoreCache>().Should().NotBeNull();
         provider.GetService<ICacheStorageResolver>().Should().NotBeNull();
         provider.GetService<CacheOptions>().Should().NotBeNull();
     }
@@ -44,7 +44,7 @@ public class CacheRegistrationTests
 
         var provider = services.BuildServiceProvider();
 
-        provider.GetService<ICoreCacheService>().Should().NotBeNull();
+        provider.GetService<ICoreCache>().Should().NotBeNull();
         provider.GetService<ICacheStorageResolver>().Should().NotBeNull();
         provider.GetService<CacheOptions>().Should().NotBeNull();
     }

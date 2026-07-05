@@ -11,7 +11,7 @@ internal static class ServiceRegistration
         this IServiceCollection services)
     {
         services.AddSingleton<ICacheStorageResolver, CacheStorageResolver>();
-        services.AddSingleton<ICoreCacheService, CoreCacheService>();
+        services.AddSingleton<ICoreCache, CoreCache>();
 
         return services;
     }

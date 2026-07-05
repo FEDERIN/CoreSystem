@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides a unified abstraction for distributed caching operations.
 /// </summary>
-public interface ICoreCacheService
+public interface ICoreCache
 {
     /// <summary>
     /// Retrieves an item from the cache.

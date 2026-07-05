@@ -50,4 +50,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Builders\" />
+	</ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 namespace Core.Cache.Http;
 
 internal sealed class HttpCacheHandler(
-    ICoreCacheService cache,
+    ICoreCache cache,
     CacheOptions options,
     IRequestCachePolicy requestPolicy,
     IResponseCachePolicy responsePolicy,

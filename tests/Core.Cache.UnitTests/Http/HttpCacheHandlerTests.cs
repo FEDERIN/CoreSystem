@@ -11,7 +11,7 @@ namespace Core.Cache.UnitTests.Http;
 
 public sealed class HttpCacheHandlerTests
 {
-    private readonly Mock<ICoreCacheService> _cache = new();
+    private readonly Mock<ICoreCache> _cache = new();
     private readonly Mock<IRequestCachePolicy> _requestPolicy = new();
     private readonly Mock<IResponseCachePolicy> _responsePolicy = new();
     private readonly Mock<ICacheKeyGenerator> _keyGenerator = new();

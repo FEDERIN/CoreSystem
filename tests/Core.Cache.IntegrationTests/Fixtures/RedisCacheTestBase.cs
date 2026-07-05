@@ -9,7 +9,7 @@ public abstract class RedisCacheTestBase
 {
     protected IServiceProvider Services { get; }
 
-    protected ICoreCacheService Cache { get; }
+    protected ICoreCache Cache { get; }
 
     protected IConnectionMultiplexer Connection { get; }
 
@@ -44,6 +44,6 @@ public abstract class RedisCacheTestBase
 
         Services = services.BuildServiceProvider();
 
-        Cache = Services.GetRequiredService<ICoreCacheService>();
+        Cache = Services.GetRequiredService<ICoreCache>();
     }
 }

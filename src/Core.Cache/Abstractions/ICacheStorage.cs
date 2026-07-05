@@ -2,7 +2,7 @@
 
 namespace Core.Cache.Abstractions;
 
-public interface ICacheStorage
+internal interface ICacheStorage
 {
     Task<T?> GetAsync<T>(
         string key,
