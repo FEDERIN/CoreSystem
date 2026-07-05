@@ -5,7 +5,8 @@ namespace Core.Cache.Storage.Redis;
 
 internal sealed class RedisTagIndex(
     IConnectionMultiplexer multiplexer,
-    IKeyBuilder keyBuilder) : ICacheTagIndex<RedisStorage>
+    IKeyBuilder keyBuilder)
+    : ICacheTagIndex<RedisStorage>
 {
     private readonly IDatabase _database = multiplexer.GetDatabase();
     private readonly IKeyBuilder _keyBuilder = keyBuilder;
@@ -17,23 +18,22 @@ internal sealed class RedisTagIndex(
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var batch = _database.CreateBatch();
         var tasks = new List<Task>(tags.Count * 2);
+
+        var fullKey = _keyBuilder.BuildCacheKey(key);
 
         foreach (var tag in tags)
         {
-            tasks.Add(batch.SetAddAsync(
+            tasks.Add(_database.SetAddAsync(
                 _keyBuilder.BuildTag(tag),
-                key));
+                fullKey));
 
-            tasks.Add(batch.SetAddAsync(
+            tasks.Add(_database.SetAddAsync(
                 _keyBuilder.BuildTagsIndex(key),
                 tag));
         }
 
-        batch.Execute();
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        await Task.WhenAll(tasks);
     }
 
     public async Task RemoveKeyAsync(
@@ -42,33 +42,28 @@ internal sealed class RedisTagIndex(
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var keyTagsKey = _keyBuilder.BuildTagsIndex(key);
+        var fullKey = _keyBuilder.BuildCacheKey(key);
 
-        var tags = await _database
-            .SetMembersAsync(keyTagsKey)
-            .ConfigureAwait(false);
+        var tagsKey = _keyBuilder.BuildTagsIndex(key);
+
+        var tags = await _database.SetMembersAsync(tagsKey);
 
         if (tags.Length == 0)
-        {
             return;
-        }
-
-        var batch = _database.CreateBatch();
 
         var tasks = new List<Task>(tags.Length + 1);
 
         foreach (var tag in tags)
         {
-            tasks.Add(batch.SetRemoveAsync(
-                _keyBuilder.BuildTag(tag.ToString()),
-                key));
+            tasks.Add(
+                _database.SetRemoveAsync(
+                    _keyBuilder.BuildTag(tag.ToString()),
+                    fullKey));
         }
 
-        tasks.Add(batch.KeyDeleteAsync(keyTagsKey));
+        tasks.Add(_database.KeyDeleteAsync(tagsKey));
 
-        batch.Execute();
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        await Task.WhenAll(tasks);
     }
 
     public async Task InvalidateTagAsync(
@@ -78,29 +73,51 @@ internal sealed class RedisTagIndex(
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var tagKey = _keyBuilder.BuildTag(tag);
+        var keys = await GetKeysAsync(tag, cancellationToken);
 
-        var keys = await _database
-            .SetMembersAsync(tagKey)
-            .ConfigureAwait(false);
-
-        if (keys.Length == 0)
-        {
+        if (keys.Count == 0)
             return;
-        }
 
-        var tasks = new List<Task>(keys.Length);
+        var tasks = keys
+            .Select(key => removeEntry(key, cancellationToken));
 
-        foreach (var key in keys)
-        {
-            tasks.Add(removeEntry(key.ToString(), cancellationToken));
-        }
+        await Task.WhenAll(tasks);
 
-        await Task
-            .WhenAll(tasks)
-            .ConfigureAwait(false);
+        await _database.KeyDeleteAsync(
+            _keyBuilder.BuildTag(tag));
+    }
 
-        await _database.KeyDeleteAsync(tagKey)
-            .ConfigureAwait(false);
+    public async Task<IReadOnlyCollection<string>> GetKeysAsync(
+        string tag,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var members = await _database.SetMembersAsync(
+            _keyBuilder.BuildTag(tag));
+
+        return members
+            .Select(x => x.ToString())
+            .ToArray();
+    }
+
+    public Task<long> CountAsync(
+        string tag,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return _database.SetLengthAsync(
+            _keyBuilder.BuildTag(tag));
+    }
+
+    public async Task<bool> ExistsAsync(
+        string tag,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return await _database.KeyExistsAsync(
+            _keyBuilder.BuildTag(tag));
     }
 }

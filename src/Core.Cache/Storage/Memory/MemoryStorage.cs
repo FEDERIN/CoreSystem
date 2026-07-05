@@ -1,19 +1,27 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Storage.Abstractions;
+using Core.Cache.Storage.Rehydration.Tracking;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Core.Cache.Storage.Memory;
 
-internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<MemoryStorage> tagIndex,
-    ICacheKeyTracker tracker, ICacheLockProvider<MemoryStorage> lockProvider, ICacheEntryFactory entryFactory) : ICacheStorage
+internal sealed class MemoryStorage(
+    IMemoryCache memoryCache,
+    ICacheTagIndex<MemoryStorage> tagIndex,
+    ICacheLockProvider<MemoryStorage> lockProvider,
+    ICacheEntryFactory entryFactory,
+    IRehydrationTracker rehydrationTracker)
+    : ICacheStorage
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
     private readonly ICacheTagIndex<MemoryStorage> _tagIndex = tagIndex;
-    private readonly ICacheKeyTracker _tracker = tracker;
     private readonly ICacheLockProvider<MemoryStorage> _lockProvider = lockProvider;
     private readonly ICacheEntryFactory _entryFactory = entryFactory;
+    private readonly IRehydrationTracker _rehydrationTracker = rehydrationTracker;
 
-    public Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
+    public Task<T?> GetAsync<T>(
+        string key,
+        CancellationToken ct = default)
     {
         return Task.FromResult(
             TryGetValue(key, out T? value)
@@ -21,57 +29,85 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
                 : default);
     }
 
-    public async Task SetAsync<T>(string key, T value, CacheEntryOptions? options = null, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
+    public async Task SetAsync<T>(
+        string key,
+        T value,
+        CacheEntryOptions? options = null,
+        TimeSpan? expiration = null,
+        string[]? tags = null,
+        CancellationToken ct = default)
     {
+        var wrapper = _entryFactory.Create(
+            value,
+            options ?? CacheEntryOptions.Default);
+
         var cacheOptions = new MemoryCacheEntryOptions();
 
         if (expiration.HasValue)
+        {
             cacheOptions.SetAbsoluteExpiration(expiration.Value);
+        }
 
         cacheOptions.RegisterPostEvictionCallback((evictedKey, _, _, _) =>
         {
-            var key = (string)evictedKey;
+            var cacheKey = (string)evictedKey;
 
-            _ = _tagIndex.RemoveKeyAsync(key);
-            _tracker.Untrack(key);
+            _ = _tagIndex.RemoveKeyAsync(cacheKey);
+
+            _rehydrationTracker.Untrack(cacheKey);
         });
-
-        var wrapper = _entryFactory.Create(value, options ?? CacheEntryOptions.Default);
 
         _memoryCache.Set(key, wrapper, cacheOptions);
 
-        if (wrapper.Origin == CacheProviderType.Redis)
+        _rehydrationTracker.Track(
+            key,
+            wrapper.Origin);
+
+        if (tags is { Length: > 0 })
         {
-            _tracker.Track(key);
+            await _tagIndex.AddAsync(
+                key,
+                tags,
+                ct);
         }
-
-        if (tags is null || tags.Length == 0)
-            return;
-
-        await _tagIndex.AddAsync(key, tags, ct);
     }
 
-    public Task RemoveAsync(string key, CancellationToken ct = default)
+    public async Task RemoveAsync(
+        string key,
+        CancellationToken ct = default)
     {
+        await _tagIndex.RemoveKeyAsync(
+            key,
+            ct);
+
+        _rehydrationTracker.Untrack(key);
+
         _memoryCache.Remove(key);
-        return Task.CompletedTask;
     }
 
-    public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
+    public Task<bool> ExistsAsync(
+        string key,
+        CancellationToken ct = default)
     {
-        await _tagIndex.InvalidateTagAsync(
+        return Task.FromResult(
+            _memoryCache.TryGetValue(key, out _));
+    }
+
+    public Task InvalidateByTagAsync(
+        string tag,
+        CancellationToken ct = default)
+    {
+        return _tagIndex.InvalidateTagAsync(
             tag,
             (key, _) =>
             {
+                _rehydrationTracker.Untrack(key);
+
                 _memoryCache.Remove(key);
+
                 return Task.CompletedTask;
             },
             ct);
-    }
-
-    public Task<bool> ExistsAsync(string key, CancellationToken ct = default)
-    {
-        return Task.FromResult(_memoryCache.TryGetValue(key, out _));
     }
 
     public async Task<T?> GetOrAddAsync<T>(
@@ -100,13 +136,21 @@ internal sealed class MemoryStorage(IMemoryCache memoryCache, ICacheTagIndex<Mem
                 return default;
             }
 
-            await SetAsync(key, value, null, expiration, tags, ct);
+            await SetAsync(
+                key,
+                value,
+                null,
+                expiration,
+                tags,
+                ct);
 
             return value;
         }
     }
 
-    private bool TryGetValue<T>(string key, out T? value)
+    private bool TryGetValue<T>(
+        string key,
+        out T? value)
     {
         if (_memoryCache.TryGetValue(key, out object? entry) &&
             _entryFactory.TryUnwrap(entry, out value))

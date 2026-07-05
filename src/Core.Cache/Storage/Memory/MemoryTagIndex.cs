@@ -20,7 +20,9 @@ internal sealed class MemoryTagIndex : ICacheTagIndex<MemoryStorage>
 
         foreach (var tag in tags)
         {
-            _tagKeys.GetOrAdd(tag, static _ => CreateSet())[key] = 0;
+            _tagKeys
+                .GetOrAdd(tag, static _ => CreateSet())[key] = 0;
+
             keyTags[tag] = 0;
         }
 
@@ -35,17 +37,15 @@ internal sealed class MemoryTagIndex : ICacheTagIndex<MemoryStorage>
         cancellationToken.ThrowIfCancellationRequested();
 
         if (!_tagKeys.TryRemove(tag, out var keys))
-        {
             return;
-        }
 
-        foreach (var key in keys.Keys)
+        var tasks = keys.Keys.Select(async key =>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             try
             {
-                await removeEntry(key.ToString(), cancellationToken);
+                await removeEntry(key, cancellationToken);
             }
             finally
             {
@@ -59,7 +59,9 @@ internal sealed class MemoryTagIndex : ICacheTagIndex<MemoryStorage>
                     }
                 }
             }
-        }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
     public Task RemoveKeyAsync(
@@ -69,26 +71,63 @@ internal sealed class MemoryTagIndex : ICacheTagIndex<MemoryStorage>
         cancellationToken.ThrowIfCancellationRequested();
 
         if (!_keyTags.TryRemove(key, out var tags))
-        {
             return Task.CompletedTask;
-        }
 
         foreach (var tag in tags.Keys)
         {
-            if (_tagKeys.TryGetValue(tag, out var keys))
-            {
-                keys.TryRemove(key, out _);
+            if (!_tagKeys.TryGetValue(tag, out var keys))
+                continue;
 
-                if (keys.IsEmpty)
-                {
-                    _tagKeys.TryRemove(tag, out _);
-                }
+            keys.TryRemove(key, out _);
+
+            if (keys.IsEmpty)
+            {
+                _tagKeys.TryRemove(tag, out _);
             }
         }
 
         return Task.CompletedTask;
     }
 
-    private static ConcurrentDictionary<string, byte> CreateSet()
-    => new();
+    public Task<IReadOnlyCollection<string>> GetKeysAsync(
+        string tag,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (!_tagKeys.TryGetValue(tag, out var keys))
+        {
+            return Task.FromResult<IReadOnlyCollection<string>>(Array.Empty<string>());
+        }
+
+        return Task.FromResult<IReadOnlyCollection<string>>(keys.Keys.ToArray());
+    }
+
+    public Task<long> CountAsync(
+        string tag,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        long count = _tagKeys.TryGetValue(tag, out var keys)
+            ? keys.Count
+            : 0;
+
+        return Task.FromResult(count);
+    }
+
+    public Task<bool> ExistsAsync(
+        string tag,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        bool exists =
+            _tagKeys.TryGetValue(tag, out var keys) &&
+            !keys.IsEmpty;
+
+        return Task.FromResult(exists);
+    }
+
+    private static StringSet CreateSet() => new();
 }

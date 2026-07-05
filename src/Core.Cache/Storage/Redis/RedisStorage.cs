@@ -51,14 +51,15 @@ internal sealed class RedisStorage(
         await _tagIndex.RemoveKeyAsync(key, ct);
     }
 
-    public async Task InvalidateByTagAsync(string tag, CancellationToken ct = default)
+    public async Task InvalidateByTagAsync(
+        string tag,
+        CancellationToken ct = default)
     {
         await _tagIndex.InvalidateTagAsync(
             tag,
-            (key, _) =>
+            async (key, _) =>
             {
-                _database.KeyDeleteAsync(key);
-                return Task.CompletedTask;
+                await _database.KeyDeleteAsync(key);
             },
             ct);
     }

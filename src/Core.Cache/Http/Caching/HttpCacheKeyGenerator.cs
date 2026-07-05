@@ -8,10 +8,13 @@ internal sealed class HttpCacheKeyGenerator()
 {
     public string Generate(HttpContext context)
     {
-        var query = context.Request.Query
-            .OrderBy(q => q.Key)
-            .Select(q => $"{q.Key}={q.Value}");
+        var query = string.Join("&",
+            context.Request.Query
+                .OrderBy(q => q.Key)
+                .Select(q => $"{q.Key}={q.Value}"));
 
-        return $"{context.Request.Path}:{string.Join("&", query)}";
+        return string.IsNullOrEmpty(query)
+            ? context.Request.Path.Value!
+            : $"{context.Request.Path}?{query}";
     }
 }
