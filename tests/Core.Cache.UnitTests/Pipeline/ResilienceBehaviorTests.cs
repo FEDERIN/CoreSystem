@@ -1,5 +1,4 @@
 ﻿using Core.Cache.Abstractions;
-using Core.Cache.Options;
 using Core.Cache.Pipeline.Behaviors;
 using Core.Cache.Pipeline.Contexts;
 using FluentAssertions;
@@ -10,11 +9,6 @@ namespace Core.Cache.UnitTests.Pipeline;
 
 public sealed class ResilienceBehaviorTests
 {
-    private readonly CacheOptions _options = new()
-    {
-        DefaultExpiration = TimeSpan.FromMinutes(30)
-    };
-
     [Fact]
     public async Task InvokeAsync_WhenPipelineThrows_ShouldMarkRedisAsUnhealthy_AndRethrow()
     {
@@ -26,7 +20,6 @@ public sealed class ResilienceBehaviorTests
 
         var behavior = new ResilienceBehavior(
             pipeline,
-            _options,
             healthState.Object
         );
 

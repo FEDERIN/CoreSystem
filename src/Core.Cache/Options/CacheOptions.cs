@@ -1,5 +1,4 @@
 ﻿using Core.Cache.Abstractions;
-using Polly;
 using StackExchange.Redis;
 
 namespace Core.Cache.Options;

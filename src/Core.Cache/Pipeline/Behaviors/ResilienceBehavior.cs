@@ -9,7 +9,6 @@ namespace Core.Cache.Pipeline.Behaviors;
 
 internal sealed class ResilienceBehavior(
     ResiliencePipeline pipeline,
-    CacheOptions options,
     IHealthState healthState)
     : ICacheBehavior
 {
@@ -20,14 +19,6 @@ internal sealed class ResilienceBehavior(
     {
         try
         {
-            // Skip the resilience pipeline for the in-memory provider.
-            // Memory operations are local and do not require retries or circuit breakers.
-            if (options.DefaultProvider == CacheProviderType.Memory)
-            {
-                await next(context);
-                return;
-            }
-
             await _pipeline.ExecuteAsync(
                 async token =>
                 {
