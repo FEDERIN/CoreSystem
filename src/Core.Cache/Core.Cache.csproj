@@ -14,13 +14,14 @@
 		<Description>Distributed cache abstraction for .NET 8 supporting Redis and In-Memory providers, with native OpenTelemetry integration.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Cache</PackageProjectUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageTags>Distributed;Redis;MemoryCache;OpenTelemetry;Observability;CloudNative</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
+		<PackageReference Include="CoreSystem.Observability.Abstractions" />
 		<PackageReference Include="MessagePack" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
@@ -32,8 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\" />
-		<None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
+		<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
 		<None Include="LICENSE" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
@@ -45,10 +45,6 @@
 		<InternalsVisibleTo Include="Core.Cache.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <ProjectReference Include="..\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

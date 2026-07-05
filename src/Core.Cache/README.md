@@ -82,11 +82,11 @@ builder.Services.AddCoreCache(options =>
 
 # Step 3 — Inject the Cache Service
 
-Inject `ICoreCacheService` wherever caching is required.
+Inject `ICoreCache` wherever caching is required.
 
 ```csharp
 public sealed class ProductService(
-    ICoreCacheService cache)
+    ICoreCache cache)
 {
 }
 ```
@@ -447,7 +447,7 @@ graph TD
 
     App["Application"]
 
-    App --> Service["ICoreCacheService"]
+    App --> Service["ICoreCache"]
 
     Service --> Context["Create CacheContext"]
 
@@ -507,7 +507,7 @@ The framework is composed of a small set of components, each with a clearly defi
 
 | Component | Responsibility |
 |-----------|----------------|
-| **ICoreCacheService** | Public entry point for all cache operations. Creates the appropriate `CacheContext` and delegates execution to the pipeline. |
+| **ICoreCache** | Public entry point for all cache operations. Creates the appropriate `CacheContext` and delegates execution to the pipeline. |
 | **CacheContext** | Represents a single cache operation. Encapsulates its state, execution logic, and selected storage provider. |
 | **CachePipeline** | Coordinates the execution of every cache operation through a chain of reusable behaviors before delegating to the selected storage provider. |
 | **ICacheBehavior** | Defines reusable cross-cutting behaviors such as logging, metrics, resilience, and fallback. |
@@ -522,7 +522,7 @@ The interaction between these components keeps the public API small while allowi
 
 Every cache operation follows the same execution lifecycle regardless of the operation type or selected storage provider.
 
-The application communicates only with `ICoreCacheService`. A specialized `CacheContext` is created for the requested operation, then executed through the `CachePipeline`. Each registered behavior may observe, enrich, or modify the execution before the operation reaches the selected storage provider.
+The application communicates only with `ICoreCache`. A specialized `CacheContext` is created for the requested operation, then executed through the `CachePipeline`. Each registered behavior may observe, enrich, or modify the execution before the operation reaches the selected storage provider.
 
 ```mermaid
 flowchart LR
@@ -530,7 +530,7 @@ flowchart LR
     Request["Application Request"]
 
     Request
-        --> Service["ICoreCacheService"]
+        --> Service["ICoreCache"]
 
     Service
         --> Context["Create CacheContext"]
@@ -647,7 +647,7 @@ sequenceDiagram
 
     actor Client
 
-    participant Cache as ICoreCacheService
+    participant Cache as ICoreCache
     participant Pipeline as CachePipeline
     participant Resolver as ICacheStorageResolver
     participant Storage as ICacheStorage
@@ -1025,7 +1025,7 @@ builder.Services.AddCoreCache(options =>
 # 🧑‍💻 Basic Usage
 
 This guide explains how to use the public API exposed by
-`ICoreCacheService`.
+`ICoreCache`.
 
 By the end of this guide you'll know how to:
 
@@ -1042,7 +1042,7 @@ By the end of this guide you'll know how to:
 
 ```csharp
 public sealed class ProductService(
-    ICoreCacheService cache)
+    ICoreCache cache)
 {
 }
 ```

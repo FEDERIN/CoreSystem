@@ -1,7 +1,7 @@
 # 🧑‍💻 Basic Usage
 
 This guide explains how to use the public API exposed by
-`ICoreCacheService`.
+`ICoreCache`.
 
 By the end of this guide you'll know how to:
 
@@ -18,7 +18,7 @@ By the end of this guide you'll know how to:
 
 ```csharp
 public sealed class ProductService(
-    ICoreCacheService cache)
+    ICoreCache cache)
 {
 }
 ```

@@ -55,11 +55,11 @@ builder.Services.AddCoreCache(options =>
 
 # Step 3 — Inject the Cache Service
 
-Inject `ICoreCacheService` wherever caching is required.
+Inject `ICoreCache` wherever caching is required.
 
 ```csharp
 public sealed class ProductService(
-    ICoreCacheService cache)
+    ICoreCache cache)
 {
 }
 ```
