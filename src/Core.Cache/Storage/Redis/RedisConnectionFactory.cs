@@ -18,6 +18,7 @@ internal sealed class RedisConnectionFactory
         config.ConnectTimeout = 500;
         config.AsyncTimeout = 500;
         config.SyncTimeout = 500;
+        config.BacklogPolicy = BacklogPolicy.FailFast;
         config.ReconnectRetryPolicy = new ExponentialRetry(1000);
         config.KeepAlive = 60;
 

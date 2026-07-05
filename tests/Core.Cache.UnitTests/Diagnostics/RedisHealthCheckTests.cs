@@ -1,7 +1,9 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Diagnostics;
+using Core.Cache.Pipeline.Behaviors;
 using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using StackExchange.Redis;
 
@@ -32,9 +34,12 @@ public sealed class RedisHealthCheckTests
         state.SetupGet(x => x.IsRedisHealthy)
              .Returns(true);
 
+        var logger = NullLogger<RedisHealthCheck>.Instance;
+
         var healthCheck = new RedisHealthCheck(
             multiplexer.Object,
-            state.Object);
+            state.Object,
+            logger);
 
         // Act
         var result = await healthCheck.CheckHealthAsync(

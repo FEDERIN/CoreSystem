@@ -6,11 +6,6 @@ internal sealed class NoOpHealthState : IHealthState
 {
     public bool IsRedisHealthy => false;
 
-    public void MarkHealthy()
-    {
-    }
-
-    public void MarkUnhealthy()
-    {
-    }
+    public HealthTransition Update(bool healthy)
+        => HealthTransition.None;
 }

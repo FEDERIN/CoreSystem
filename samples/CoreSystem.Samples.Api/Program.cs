@@ -39,6 +39,8 @@ builder.Services.AddCoreCache(options =>
         config.EndPoints.Add(redisSection["Host"]!);
         config.Password = redisSection["Password"];
     };
+
+    options.InstanceName = "CoreSystem:App01";
 });
 
 var app = builder.Build();

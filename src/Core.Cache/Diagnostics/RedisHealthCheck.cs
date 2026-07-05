@@ -1,51 +1,53 @@
 ﻿using Core.Cache.Abstractions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace Core.Cache.Diagnostics;
 
 internal sealed class RedisHealthCheck(
     IConnectionMultiplexer redis,
-    IHealthState healthState)
+    IHealthState healthState,
+    ILogger<RedisHealthCheck> logger)
     : IHealthCheck
 {
+    private const string RedisRecoveredMessage =
+    "Redis connection restored.";
+
+    private const string RedisUnavailableMessage =
+        "Redis became unavailable. Switching to memory fallback.";
+
+    private const string RedisUnavailableHealthMessage =
+        "Redis is not responding. Memory fallback active.";
+
     public async Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context,
         CancellationToken ct = default)
     {
-
-
-        if (!healthState.IsRedisHealthy)
-        {
-            try
-            {
-                await redis.GetDatabase().PingAsync();
-
-                healthState.MarkHealthy();
-
-                return HealthCheckResult.Healthy();
-            }
-            catch
-            {
-                return HealthCheckResult.Degraded(
-                    "Redis is unavailable. Circuit breaker is open and the cache is operating with the fallback storage.");
-            }
-        }
-
-
         try
         {
-            var db = redis.GetDatabase();
+            await redis.GetDatabase().PingAsync();
 
-            await db.PingAsync();
+            if (healthState.Update(true) == HealthTransition.BecameHealthy)
+            {
+                logger.LogInformation(
+                    RedisRecoveredMessage);
+            }
 
             return HealthCheckResult.Healthy(
                 "Redis is connected successfully.");
         }
         catch (Exception ex)
         {
+            if (healthState.Update(false) == HealthTransition.BecameUnhealthy)
+            {
+                logger.LogWarning(
+                    ex,
+                    RedisUnavailableMessage);
+            }
+
             return HealthCheckResult.Degraded(
-                "Redis is not responding. Memory fallback active.",
+                RedisUnavailableHealthMessage,
                 ex);
         }
     }

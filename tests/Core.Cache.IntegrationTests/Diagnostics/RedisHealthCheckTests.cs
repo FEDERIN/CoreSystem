@@ -29,27 +29,6 @@ public sealed class RedisHealthCheckTests(RedisContainerFixture fixture)
         result.Description.Should().Be("Redis is connected successfully.");
     }
 
-    [Fact]
-    public async Task CheckHealthAsync_WhenHealthStateRecovers_ShouldReturnHealthy()
-    {
-        // Arrange
-        var state = _provider.GetRequiredService<IHealthState>();
-
-        state.MarkUnhealthy();
-        state.MarkHealthy();
-
-        var healthCheck = _provider.GetRequiredService<RedisHealthCheck>();
-
-        // Act
-        var result = await healthCheck.CheckHealthAsync(
-            new HealthCheckContext(),
-            TestContext.Current.CancellationToken);
-
-        // Assert
-        result.Status.Should().Be(HealthStatus.Healthy);
-    }
-
-
     private static ServiceProvider CreateProvider(RedisContainerFixture fixture)
     {
         var services = new ServiceCollection();

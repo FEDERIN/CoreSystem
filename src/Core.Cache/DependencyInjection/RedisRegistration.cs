@@ -57,6 +57,12 @@ internal static class RedisRegistration
         services.AddSingleton<IHealthCheckContributor,
             CacheHealthContributor>();
 
+
+        if (options.DefaultProvider != CacheProviderType.Redis)
+        {
+            return services;
+        }
+
         // Rehydration
         services.AddSingleton<IRehydrationSource, MemoryRehydrationSource>();
         services.AddSingleton<IRehydrationTarget, RedisRehydrationTarget>();
