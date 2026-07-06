@@ -1,5 +1,4 @@
-using Core.DistributedCache;
-using Core.DistributedCache.Options;
+using Core.Cache.DependencyInjection;
 using Core.Idempotency;
 using Core.Observability;
 using CoreSystem.Samples.Core.Services;
@@ -17,29 +16,38 @@ builder.AddObservability(
 
 builder.Services.AddIdempotencyProvider(builder.Configuration);
 
-builder.Services.AddCoreDistributedCache(options =>
+builder.Services.AddCoreCache(options =>
 {
-    builder.Configuration.GetSection("DistributedCache").Bind(options);
+    builder.Configuration
+        .GetSection("Cache")
+        .Bind(options);
 
-    if (options.DefaultProvider == "Redis")
+    if (!options.Redis.Enabled)
+        return;
+
+    var configurationName = options.Redis.ConfigurationName;
+
+    var redisSection = builder.Configuration.GetSection(
+    $"RedisConnections:{configurationName}");
+
+    if (string.IsNullOrWhiteSpace(configurationName))
+        throw new InvalidOperationException(
+            "Cache:Redis:ConfigurationName is required when Redis is enabled.");
+
+    options.Redis.Configuration = config =>
     {
-        options.Redis = new RedisOptions
-        {
-            Enabled = true,
-            Configuration = config =>
-            {
-                config.EndPoints.Add("localhost:6379");
-                config.Password = "foobared";
-            }
-        };
-    }
+        config.EndPoints.Add(redisSection["Host"]!);
+        config.Password = redisSection["Password"];
+    };
+
+    options.InstanceName = "CoreSystem:App01";
 });
 
 var app = builder.Build();
 
 app.UseObservabilityEndpoints();
 app.UseIdempotency();
-app.UseCoreDistributedCache();
+app.UseCoreCache();
 
 
 try

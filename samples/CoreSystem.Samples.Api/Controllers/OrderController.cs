@@ -1,4 +1,4 @@
-﻿using Core.DistributedCache.Attributes;
+﻿using Core.Cache.Attributes;
 using CoreSystem.Samples.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +10,11 @@ public class OrderController(IMyService myService) : ControllerBase
 {
 
     [HttpGet("data/{id}")]
-    [Cacheable(tag: "Order", expirationSeconds: 300)]
+    [Cacheable(tag: "Order", expirationSeconds: 500)]
     public async Task<IActionResult> GetData(string id)
     {
-        var result = await myService.GetDataAsync(id);
+        var result = "Test data for id: " + id;
+        //await myService.GetDataAsync(id);
         return Ok(result);
     }
 }

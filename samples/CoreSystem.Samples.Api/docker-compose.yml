@@ -41,14 +41,14 @@
       - OpenTelemetry__Tracing__Enabled=true
       - OpenTelemetry__Logging__Enabled=true
       # List of meters to instrument (The 0 indicates the first item in the list)
-      - OpenTelemetry__Metrics__Meters__0=FGutierrez.Core.Idempotency
+      - OpenTelemetry__Metrics__Meters__0=CoreSystem.Idempotency
 
       # Idempotency Configuration (This was missing)
       - Idempotency__Enabled=true
       - Idempotency__Provider=${IDEMPOTENCY_PROVIDER}
       - Idempotency__HeaderName=X-Idempotency-Key
       - Idempotency__Expiration=24:00:00
-      - Idempotency__MeterName=FGutierrez.Core.Idempotency
+      - Idempotency__MeterName=CoreSystem.Idempotency
 
       # Connection Strings
       - ConnectionStrings__Idempotency=${IDEMPOTENCY_CONNECTION}

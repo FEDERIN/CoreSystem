@@ -1,7 +1,7 @@
-# ⚡ FGutierrez.Core.Idempotency
+# ⚡ CoreSystem.Idempotency
 
-![NuGet](https://img.shields.io/nuget/v/FGutierrez.Core.Idempotency?style=for-the-badge)
-![Downloads](https://img.shields.io/nuget/dt/FGutierrez.Core.Idempotency?style=for-the-badge)
+![NuGet](https://img.shields.io/nuget/v/CoreSystem.Idempotency?style=for-the-badge)
+![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Idempotency?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.15.1-purple?style=for-the-badge)
@@ -12,7 +12,7 @@
 
 # 📖 Overview
 
-**FGutierrez.Core.Idempotency** is a high-performance .NET 8 library designed to guarantee that critical operations such as payments, order creation, and transactional workflows are executed **exactly once**, even in scenarios involving retries, duplicated requests, or network failures.
+**CoreSystem.Idempotency** is a high-performance .NET 8 library designed to guarantee that critical operations such as payments, order creation, and transactional workflows are executed **exactly once**, even in scenarios involving retries, duplicated requests, or network failures.
 
 The library provides a distributed idempotency engine with multi-provider persistence support and built-in observability integrations.
 
@@ -85,7 +85,7 @@ Compatible with:
 # 📦 Installation
 
 ```bash
-dotnet add package FGutierrez.Core.Idempotency
+dotnet add package CoreSystem.Idempotency
 ```
 
 ---
@@ -133,7 +133,7 @@ To avoid misconfigurations, use the following guide:
     "AllowedMethods": [ "POST", "PUT", "DELETE" ],
     "HeaderName": "X-Idempotency-Key",
     "Expiration": "06:00:00",
-    "MeterName": "FGutierrez.Core.Idempotency"
+    "MeterName": "CoreSystem.Idempotency"
   }
 }
 ```

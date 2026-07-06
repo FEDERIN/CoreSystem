@@ -1,0 +1,23 @@
+﻿using Core.Cache.Storage;
+
+namespace Core.Cache.Pipeline.Contexts;
+
+public sealed class SetCacheContext<T> : CacheContext
+{
+    public required T Value { get; init; }
+
+    public TimeSpan? Expiration { get; init; }
+
+    public string[]? Tags { get; init; }
+
+    public override Task ExecuteAsync()
+    {
+        return Storage.SetAsync(
+            Key,
+            Value,
+            EntryOptions,
+            Expiration,
+            Tags,
+            CancellationToken);
+    }
+}
