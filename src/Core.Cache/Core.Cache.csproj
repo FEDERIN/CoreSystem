@@ -23,16 +23,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
 		<PackageReference Include="CoreSystem.Observability.Abstractions" />
 		<PackageReference Include="MessagePack" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-		<PackageReference Include="OpenTelemetry" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 		<PackageReference Include="Polly" />
 		<PackageReference Include="protobuf-net" />
-		<PackageReference Include="StackExchange.Redis" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,5 +44,13 @@
 		<InternalsVisibleTo Include="Core.Cache.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\Core.Redis\Core.Redis.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Storage\Redis\Abstractions\" />
 	</ItemGroup>
 </Project>

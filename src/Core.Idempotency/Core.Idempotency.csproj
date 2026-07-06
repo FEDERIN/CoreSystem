@@ -20,9 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="OpenTelemetry.Api" />

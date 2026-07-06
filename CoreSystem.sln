@@ -74,6 +74,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Idempotency.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.IntegrationTests", "tests\Core.Cache.IntegrationTests\Core.Cache.IntegrationTests.csproj", "{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Redis", "src\Core.Redis\Core.Redis.csproj", "{D9056F24-ED62-46AD-8290-B14BC5789BBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9056F24-ED62-46AD-8290-B14BC5789BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9056F24-ED62-46AD-8290-B14BC5789BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9056F24-ED62-46AD-8290-B14BC5789BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9056F24-ED62-46AD-8290-B14BC5789BBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +139,7 @@ Global
 		{F234E5B5-A761-4AE4-1E28-5ACED02935D3} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{7865EE1D-3D54-AD6F-DC08-F4088E32B7A6} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{D9056F24-ED62-46AD-8290-B14BC5789BBC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

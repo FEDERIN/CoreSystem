@@ -4,9 +4,11 @@ using Core.Cache.Options;
 using Core.Cache.Services.Rehydration;
 using Core.Cache.Storage.Abstractions;
 using Core.Cache.Storage.Redis;
-using Core.Cache.Storage.Redis.Abstractions;
 using Core.Cache.Storage.Rehydration;
 using Core.Observability.Abstractions;
+using Core.Redis.Connection;
+using Core.Redis.DependencyInjection;
+using Core.Redis.Synchronization;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
@@ -24,19 +26,18 @@ internal static class RedisRegistration
             return services;
         }
 
-        services.AddSingleton<IRedisConnectionFactory, RedisConnectionFactory>();
-
+        services.AddCoreRedis();
         services.AddSingleton<IConnectionMultiplexer>(sp =>
         {
             var factory = sp.GetRequiredService<IRedisConnectionFactory>();
 
-            return factory.Create(options);
+            return factory.Create(options.Redis.Configuration);
         });
 
         services.AddSingleton<IKeyBuilder, RedisKeyBuilder>();
         services.AddSingleton<IPayloadSerializer, PayloadSerializer>();
         services.AddSingleton<ICacheTagIndex<RedisStorage>, RedisTagIndex>();
-        services.AddSingleton<ICacheLockProvider<RedisStorage>, RedisLockProvider>();
+        //services.AddSingleton<ICacheLockProvider<RedisStorage>, RedisLockProvider>();
 
 
         services.AddSingleton<RedisStorage>(sp =>
@@ -45,8 +46,8 @@ internal static class RedisRegistration
                 sp.GetRequiredService<IPayloadSerializer>(),
                 sp.GetRequiredService<IKeyBuilder>(),
                 sp.GetRequiredService<ICacheTagIndex<RedisStorage>>(),
-                sp.GetRequiredService<ICacheLockProvider<RedisStorage>>()
-                ));
+                sp.GetRequiredService<IDistributedLockProvider>()
+            ));
 
         // Diagnostics
         services.AddSingleton<IHealthState,

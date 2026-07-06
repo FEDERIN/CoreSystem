@@ -1,5 +1,6 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Storage.Abstractions;
+using Core.Redis.Synchronization;
 using StackExchange.Redis;
 
 namespace Core.Cache.Storage.Redis;
@@ -9,13 +10,13 @@ internal sealed class RedisStorage(
     IPayloadSerializer payloadSerializer,
     IKeyBuilder keyBuilder,
     ICacheTagIndex<RedisStorage> tagIndex,
-    ICacheLockProvider<RedisStorage> lockProvider) : ICacheStorage
+    IDistributedLockProvider distributedLockProvider) : ICacheStorage
 {
     private readonly IDatabase _database = redis.GetDatabase();
     private readonly ICacheTagIndex<RedisStorage> _tagIndex = tagIndex;
     private readonly IKeyBuilder _keyBuilder = keyBuilder;
     private readonly IPayloadSerializer _payloadSerializer = payloadSerializer;
-    private readonly ICacheLockProvider<RedisStorage> _lockProvider = lockProvider;
+    private readonly IDistributedLockProvider _distributedLockProvider = distributedLockProvider;
 
     private string GetFullKey(string key) => _keyBuilder.BuildCacheKey(key);
 
@@ -74,7 +75,8 @@ internal sealed class RedisStorage(
         if (cachedValue is not null)
             return cachedValue;
 
-        using (await _lockProvider.AcquireAsync(key, ct))
+        var lockKey = _keyBuilder.BuildLock(key);
+        using (await _distributedLockProvider.AcquireAsync(lockKey, ct))
         {
             cachedValue = await GetAsync<T>(key, ct);
 
