@@ -20,13 +20,13 @@
 
 The ecosystem provides production-ready building blocks for common cross-cutting concerns:
 
-- Distributed observability
-- Request idempotency
+- Observability
 - Distributed caching
-- Logging and tracing
-- Infrastructure abstractions
+- Request idempotency
+- Resilience
+- HTTP middleware
 - Cloud-native integrations
-- Scalable API development
+- High-performance API development
 
 CoreSystem is built around:
 
@@ -95,15 +95,15 @@ graph TD
 
     CoreSystem --> Observability
     CoreSystem --> Idempotency
-    CoreSystem --> DistributedCache
+    CoreSystem --> Cache
 
     Observability --> OpenTelemetry
 
     Idempotency --> PostgreSQL
     Idempotency --> Redis
 
-    DistributedCache --> Memory
-    DistributedCache --> Redis
+    Cache --> Memory
+    Cache --> Redis
 ```
 
 ---
@@ -112,9 +112,10 @@ graph TD
 
 | Package | Latest Version |
 |----------|----------|
-| FGutierrez.Core.DistributedCache | 1.0.0 |
-| FGutierrez.Core.Observability | 1.1.3 |
-| FGutierrez.Core.Idempotency | 1.2.0 |
+| CoreSystem.Cache | 1.0.0 |
+| CoreSystem.Observability.Abstractions | 1.0.0 |
+| FGutierrez.Core.Observability | 1.1.6 |
+| FGutierrez.Core.Idempotency | 1.2.2 |
 
 ---
 
@@ -122,9 +123,39 @@ graph TD
 
 | Package | Description | Status |
 |---|---|---|
+| `CoreSystem.Cache` | Production-ready caching framework with Redis, Memory, HTTP response caching, resilience, and OpenTelemetry integration. | ✅ Stable |
 | `FGutierrez.Core.Observability` | OpenTelemetry, Serilog, Metrics & Health Checks | ✅ Stable |
 | `FGutierrez.Core.Idempotency` | Distributed idempotency middleware | ✅ Stable |
-| `FGutierrez.Core.DistributedCache` | High-performance distributed caching abstraction | ✅ Stable |
+
+
+---
+## ⚡ CoreSystem.Cache
+
+Production-ready caching framework for modern .NET applications.
+
+- Features
+- Memory provider
+- Redis provider
+- Cache-Aside pattern
+- Automatic Redis → Memory fallback
+- Cache rehydration
+- Tag-based invalidation
+- Distributed locking
+- HTTP response caching
+- OpenTelemetry metrics
+- ASP.NET Core Health Checks
+- Pipeline-based architecture
+- Multiple serializers
+
+
+### Features
+
+- Redis fallback strategy
+- In-memory resilience mode
+- Cache hit/miss metrics
+- OpenTelemetry integration
+- HTTP response caching middleware
+- Cache-aside pattern support
 
 ---
 
@@ -170,26 +201,6 @@ Distributed idempotency engine for ensuring critical operations execute exactly 
 
 ---
 
-## ⚡ FGutierrez.Core.DistributedCache
-
-High-performance distributed caching library for .NET 8 providing a unified abstraction over multiple cache providers (Memory | Redis).
-
-Provides a unified caching model over multiple providers:
-
-- Memory Cache
-- Redis
-
-### Features
-
-- Redis fallback strategy
-- In-memory resilience mode
-- Cache hit/miss metrics
-- OpenTelemetry integration
-- HTTP response caching middleware
-- Cache-aside pattern support
-
----
-
 ## 🏗 Repository Structure
 
 ```text
@@ -202,7 +213,7 @@ CoreSystem/
 │
 ├── samples/
 │   │
-│   └── CoreSystem.Samples.Api/´
+│   └── CoreSystem.Samples.Api/
 │       ├── Controllers/
 │       ├── grafana/
 │       ├── docker-compose.yml
@@ -210,24 +221,27 @@ CoreSystem/
 │       ├── otel-collector-config.yml
 │       └── Program.cs
 │
-│   └── CoreSystem.Samples.Core/´
+│   └── CoreSystem.Samples.Core/
 │       ├── Services/
 │
 ├── src/
 │   │
-│   └── Core.DistributedCache/
+│   └── Core.Cache/
 │       ├── Abstractions/
+│       ├── Attributes/
+│       ├── DependencyInjection/
 │       ├── Diagnostics/
+│       ├── Http/
 │       ├── Middleware/
 │       ├── Options/
+│       ├── Pipeline/
 │       ├── Serialization/
+│       ├── Services/
 │       ├── Storage/
-│       │   ├── Memory/
-│       │   └── Redis/
-│       │   └── ResilientCacheDecorator.cs
-│       ├── DistributedCacheExtensions.cs
+│       ├── CHANGELOG.md
 │       ├── LICENSE
 │       └── README.md
+│       └── README_NUGET.md
 │   │
 │   └── Core.Idempotency/
 │       ├── Diagnostics/
@@ -235,8 +249,6 @@ CoreSystem/
 │       ├── Models/
 │       ├── Options/
 │       ├── Storage/
-│       │   ├── PostgreSQL/
-│       │   └── Redis/
 │       └── CHANGELOG.md
 │       ├── IdempotencyExtensions.cs
 │       ├── IdempotencyRegistrationExtensions.cs
@@ -256,11 +268,23 @@ CoreSystem/
 │
 ├── tests/
 │   │
-│   └── Core.DistributedCache.Tests´
+│   └── Core.Cache.IntegrationTests
+│       ├── Cache/
+│       ├── Diagnostics/
 │       ├── Fixtures/
-│       └── DistributedCacheExtensionsTests.cs
-│
-│   └── Core.Idempotency.Tests´
+│       ├── Services/
+│   └── Core.Cache.UnitTests
+│       ├── Attributes/
+│       ├── Behaviors/
+│       ├── DependencyInjection/
+│       ├── Diagnostics/
+│       ├── Http/
+│       ├── Middleware/
+│       ├── Pipeline/
+│       ├── Serialization/
+│       ├── Services/
+│       └── MemoryCacheTestBase.cs
+│   └── Core.Idempotency.Tests
 │       ├── Extensions/
 │       ├── Fixtures/
 │       ├── Middleware/
@@ -392,7 +416,7 @@ CoreSystem follows modern backend engineering practices:
 - [x] Redis Support
 - [x] PostgreSQL Support
 - [x] OpenTelemetry Integration
-- [x] Distributed Cache Foundation
+- [x] Production-ready Cache Framework
 
 ### Planned
 
@@ -419,8 +443,8 @@ To publish a package, create a Git tag using the following format:
 Example:
 
 ```bash
-git tag FGutierrez.Core.Idempotency/v1.2.0
-git push origin FGutierrez.Core.Idempotency/v1.2.0
+git tag Core.Cache/v1.0.0
+git push origin Core.Cache/v1.0.0
 ```
 
 The GitHub workflow will automatically:

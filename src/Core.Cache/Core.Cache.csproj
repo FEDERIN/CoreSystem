@@ -46,8 +46,4 @@
 		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <Folder Include="Builders\" />
-	</ItemGroup>
 </Project>

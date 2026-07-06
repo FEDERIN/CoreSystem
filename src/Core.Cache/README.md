@@ -1781,14 +1781,6 @@ No manual intervention is required.
 
 ---
 
-# Next Step
-
-Continue with:
-
-➡️ **09-extensibility.md**
-
----
-
 # 🧩 Extensibility
 
 One of the main goals of **CoreSystem.Cache** is to provide a caching framework that can evolve without requiring modifications to existing application code.
