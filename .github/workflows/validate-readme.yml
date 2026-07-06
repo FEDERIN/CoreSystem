@@ -1,0 +1,23 @@
+name: Validate Documentation
+
+on:
+  pull_request:
+  push:
+
+jobs:
+
+  validate:
+
+    runs-on: windows-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - shell: pwsh
+        run: ./scripts/build-readme.ps1
+
+      - name: Check for differences
+        shell: pwsh
+        run: |
+          git diff --exit-code

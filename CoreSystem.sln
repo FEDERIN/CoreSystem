@@ -32,13 +32,43 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DistributedCache", "src\Core.DistributedCache\Core.DistributedCache.csproj", "{05DC2865-9DAD-4837-A61D-0254EA44AC20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache", "src\Core.Cache\Core.Cache.csproj", "{05DC2865-9DAD-4837-A61D-0254EA44AC20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.Abstractions", "src\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj", "{D5D8670A-7C9E-4893-8B3E-23782A01D780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DistributedCache.Tests", "tests\Core.DistributedCache.Tests\Core.DistributedCache.Tests.csproj", "{931FB173-4045-4E8F-903B-234BE742B5F8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreSystem.Samples.Core", "samples\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj", "{25A1B931-D216-44FC-958B-D8797AD39E08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{EF9B0CA0-5268-4D9A-A85C-7966829B1033}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Cache\00-README.md = docs\Cache\00-README.md
+		docs\Cache\01-getting-started.md = docs\Cache\01-getting-started.md
+		docs\Cache\02-Why.md = docs\Cache\02-Why.md
+		docs\Cache\03-architecture-and-pipeline.md = docs\Cache\03-architecture-and-pipeline.md
+		docs\Cache\04-configuration.md = docs\Cache\04-configuration.md
+		docs\Cache\05-basic-usage.md = docs\Cache\05-basic-usage.md
+		docs\Cache\06-http-cache.md = docs\Cache\06-http-cache.md
+		docs\Cache\07-observability.md = docs\Cache\07-observability.md
+		docs\Cache\08-health-checks.md = docs\Cache\08-health-checks.md
+		docs\Cache\09-extensibility.md = docs\Cache\09-extensibility.md
+		docs\Cache\10-Roadmap.md = docs\Cache\10-Roadmap.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{82C00201-5B4D-466F-AF60-CB4729ED69D9}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Cache\images\Architecture.mmd = docs\Cache\images\Architecture.mmd
+		docs\Cache\images\Architecture.svg = docs\Cache\images\Architecture.svg
+		docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.mmd = docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.mmd
+		docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.svg = docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.svg
+		docs\Cache\images\HTTP Cache Middleware Lifecycle.mmd = docs\Cache\images\HTTP Cache Middleware Lifecycle.mmd
+		docs\Cache\images\HTTP Cache Middleware Lifecycle.svg = docs\Cache\images\HTTP Cache Middleware Lifecycle.svg
+		docs\Cache\images\Resilience Flow.mmd = docs\Cache\images\Resilience Flow.mmd
+		docs\Cache\images\Resilience Flow.svg = docs\Cache\images\Resilience Flow.svg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{DBC21C0A-969B-4484-B169-AB48D4E4DEC9}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\build-readme.ps1 = scripts\build-readme.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,10 +100,6 @@ Global
 		{D5D8670A-7C9E-4893-8B3E-23782A01D780}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5D8670A-7C9E-4893-8B3E-23782A01D780}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5D8670A-7C9E-4893-8B3E-23782A01D780}.Release|Any CPU.Build.0 = Release|Any CPU
-		{931FB173-4045-4E8F-903B-234BE742B5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{931FB173-4045-4E8F-903B-234BE742B5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{931FB173-4045-4E8F-903B-234BE742B5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{931FB173-4045-4E8F-903B-234BE742B5F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{25A1B931-D216-44FC-958B-D8797AD39E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25A1B931-D216-44FC-958B-D8797AD39E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25A1B931-D216-44FC-958B-D8797AD39E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -90,8 +116,9 @@ Global
 		{41535C27-8E2F-4AA0-8F66-C658319FCF79} = {EF9A3793-6BA8-44B0-8ED8-182BD6D4E34A}
 		{05DC2865-9DAD-4837-A61D-0254EA44AC20} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D5D8670A-7C9E-4893-8B3E-23782A01D780} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{931FB173-4045-4E8F-903B-234BE742B5F8} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{25A1B931-D216-44FC-958B-D8797AD39E08} = {9938565C-D966-4DB9-8D3B-6D92CACE56DF}
+		{EF9B0CA0-5268-4D9A-A85C-7966829B1033} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{82C00201-5B4D-466F-AF60-CB4729ED69D9} = {EF9B0CA0-5268-4D9A-A85C-7966829B1033}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

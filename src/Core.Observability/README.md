@@ -1,7 +1,7 @@
-# 📊 FGutierrez.Core.Observability
+# 📊 CoreSystem.Observability
 
-![NuGet](https://img.shields.io/nuget/v/FGutierrez.Core.Observability?style=for-the-badge)
-![Downloads](https://img.shields.io/nuget/dt/FGutierrez.Core.Observability?style=for-the-badge)
+![NuGet](https://img.shields.io/nuget/v/CoreSystem.Observability?style=for-the-badge)
+![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Observability?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.15.1-purple?style=for-the-badge)
@@ -10,7 +10,7 @@
 
 # 🚀 Overview
 
-**FGutierrez.Core.Observability** is a high-performance .NET observability library designed to standardize telemetry across distributed systems using OpenTelemetry.
+**CoreSystem.Observability** is a high-performance .NET observability library designed to standardize telemetry across distributed systems using OpenTelemetry.
 
 The package provides a unified and production-ready integration layer for:
 
@@ -112,7 +112,7 @@ Configurable to avoid sensitive data exposure.
 Native integration with:
 
 ```text
-FGutierrez.Core.Idempotency
+CoreSystem.Idempotency
 ```
 
 Metrics and traces are automatically correlated without additional configuration.
@@ -134,7 +134,7 @@ If exporters or collectors are unavailable:
 # 📦 Installation
 
 ```bash
-dotnet add package FGutierrez.Core.Observability
+dotnet add package CoreSystem.Observability
 ```
 
 ---
@@ -154,7 +154,7 @@ dotnet add package FGutierrez.Core.Observability
       "Enabled": true,
       "OtlpEndpoint": "http://localhost:4317",
       "Meters": [
-        "FGutierrez.Core.Idempotency"
+        "CoreSystem.Idempotency"
       ]
     },
     "Logging": {
@@ -244,7 +244,7 @@ This library works especially well with:
 
 # 🧪 Engineering Principles
 
-FGutierrez.Core.Observability follows:
+CoreSystem.Observability follows:
 
 - Observability-First architecture
 - Cloud-native engineering
