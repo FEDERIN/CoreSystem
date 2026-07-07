@@ -37,8 +37,6 @@ internal static class RedisRegistration
         services.AddSingleton<IKeyBuilder, RedisKeyBuilder>();
         services.AddSingleton<IPayloadSerializer, PayloadSerializer>();
         services.AddSingleton<ICacheTagIndex<RedisStorage>, RedisTagIndex>();
-        //services.AddSingleton<ICacheLockProvider<RedisStorage>, RedisLockProvider>();
-
 
         services.AddSingleton<RedisStorage>(sp =>
             new RedisStorage(

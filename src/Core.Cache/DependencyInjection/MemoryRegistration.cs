@@ -1,6 +1,7 @@
 ﻿using Core.Cache.Storage.Abstractions;
 using Core.Cache.Storage.Memory;
 using Core.Cache.Storage.Rehydration.Tracking;
+using Core.Memory.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Cache.DependencyInjection;
@@ -23,8 +24,7 @@ internal static class MemoryRegistration
         services.AddSingleton<ICacheKeyTracker, MemoryKeyTracker>();
         services.AddSingleton<IRehydrationTracker, RehydrationTracker>();
 
-        // Synchronization
-        services.AddSingleton<ICacheLockProvider<MemoryStorage>, MemoryLockProvider>();
+        services.AddCoreMemory();
 
         // Storage
         services.AddSingleton<MemoryStorage>();

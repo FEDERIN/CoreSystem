@@ -10,11 +10,10 @@ public class OrderController(IMyService myService) : ControllerBase
 {
 
     [HttpGet("data/{id}")]
-    [Cacheable(tag: "Order", expirationSeconds: 500)]
+    //[Cacheable(tag: "Order", expirationSeconds: 500)]
     public async Task<IActionResult> GetData(string id)
     {
-        var result = "Test data for id: " + id;
-        //await myService.GetDataAsync(id);
+        var result = await myService.GetDataAsync(id);
         return Ok(result);
     }
 }
