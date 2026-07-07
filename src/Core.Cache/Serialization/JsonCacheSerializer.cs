@@ -1,4 +1,6 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Cache.Exceptions;
+using Core.Cache.Options;
 using System.Text.Json;
 
 namespace Core.Cache.Serialization;
@@ -26,6 +28,16 @@ internal sealed class JsonCacheSerializer : ICacheSerializer
         if (bytes.Length == 0)
             return default;
 
-        return JsonSerializer.Deserialize<T>(bytes, _options);
+        try
+        {
+            return JsonSerializer.Deserialize<T>(bytes, _options);
+        }
+        catch (Exception ex)
+        {
+            throw new CacheDeserializationException(
+                SerializerType.Json,
+                "Unable to deserialize cache entry using JSON.",
+                ex);
+        }
     }
 }

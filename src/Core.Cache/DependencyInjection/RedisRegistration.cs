@@ -10,6 +10,7 @@ using Core.Redis.Connection;
 using Core.Redis.DependencyInjection;
 using Core.Redis.Synchronization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace Core.Cache.DependencyInjection;
@@ -44,7 +45,8 @@ internal static class RedisRegistration
                 sp.GetRequiredService<IPayloadSerializer>(),
                 sp.GetRequiredService<IKeyBuilder>(),
                 sp.GetRequiredService<ICacheTagIndex<RedisStorage>>(),
-                sp.GetRequiredService<IDistributedLockProvider>()
+                sp.GetRequiredService<IDistributedLockProvider>(),
+                sp.GetRequiredService<ILogger<RedisStorage>>()
             ));
 
         // Diagnostics

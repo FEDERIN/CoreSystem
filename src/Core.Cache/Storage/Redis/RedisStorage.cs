@@ -1,6 +1,8 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Cache.Exceptions;
 using Core.Cache.Storage.Abstractions;
 using Core.Redis.Synchronization;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace Core.Cache.Storage.Redis;
@@ -10,7 +12,8 @@ internal sealed class RedisStorage(
     IPayloadSerializer payloadSerializer,
     IKeyBuilder keyBuilder,
     ICacheTagIndex<RedisStorage> tagIndex,
-    IDistributedLockProvider distributedLockProvider) : ICacheStorage
+    IDistributedLockProvider distributedLockProvider,
+    ILogger<RedisStorage> logger) : ICacheStorage
 {
     private readonly IDatabase _database = redis.GetDatabase();
     private readonly ICacheTagIndex<RedisStorage> _tagIndex = tagIndex;
@@ -20,14 +23,32 @@ internal sealed class RedisStorage(
 
     private string GetFullKey(string key) => _keyBuilder.BuildCacheKey(key);
 
-    public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
+    public async Task<T?> GetAsync<T>(
+        string key,
+        CancellationToken ct = default)
     {
-        var payload = await _database.StringGetAsync(GetFullKey(key));
+        var fullKey = GetFullKey(key);
+
+        var payload = await _database.StringGetAsync(fullKey);
 
         if (payload.IsNullOrEmpty)
             return default;
 
-        return _payloadSerializer.Deserialize<T>(payload);
+        try
+        {
+            return _payloadSerializer.Deserialize<T>(payload);
+        }
+        catch (CacheDeserializationException ex)
+        {
+            logger.LogWarning(
+                ex,
+                "Corrupted cache entry detected for key '{Key}'. Removing it from Redis.",
+                fullKey);
+
+            await _database.KeyDeleteAsync(fullKey);
+
+            return default;
+        }
     }
 
     public async Task SetAsync<T>(string key, T value, CacheEntryOptions? options = null, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
