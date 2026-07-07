@@ -36,4 +36,7 @@
 		 <_Parameter1>Core.Idempotency.Tests</_Parameter1>
 	 </AssemblyAttribute>
  </ItemGroup>
+ <ItemGroup>
+   <ProjectReference Include="..\Core.Redis\Core.Redis.csproj" />
+ </ItemGroup>
 </Project>

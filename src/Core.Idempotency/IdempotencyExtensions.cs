@@ -4,6 +4,8 @@ using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
 using Core.Idempotency.Storage.PostgreSQL;
 using Core.Idempotency.Storage.Redis;
+using Core.Redis.Connection;
+using Core.Redis.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -29,16 +31,21 @@ public static class IdempotencyExtensions
     }
 
     public static IServiceCollection AddRedisIdempotency(
-            this IServiceCollection services,
-            string redisConnectionString,
-            Action<IdempotencyOptions>? setupAction = null)
+        this IServiceCollection services,
+        Action<ConfigurationOptions> configureRedis,
+        Action<IdempotencyOptions>? configure = null)
     {
-        services.AddIdempotencyCore(setupAction);
+        services.AddIdempotencyCore(configure);
 
-        var config = ConfigurationOptions.Parse(redisConnectionString);
-        config.AbortOnConnectFail = false;
+        services.AddCoreRedis();
 
-        services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(config));
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+            var factory = sp.GetRequiredService<IRedisConnectionFactory>();
+
+            return factory.Create(configureRedis);
+        });
+
         services.AddSingleton<IIdempotencyStorage, RedisIdempotencyStorage>();
 
         return services;

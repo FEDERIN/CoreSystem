@@ -6,5 +6,5 @@ public sealed class RedisLockOptions
 
     public TimeSpan RetryDelay { get; set; } = TimeSpan.FromMilliseconds(100);
 
-    public TimeSpan? MaxWaitTime { get; set; }
+    public TimeSpan? MaxWaitTime { get; set; } = TimeSpan.FromSeconds(10);
 }

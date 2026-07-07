@@ -43,7 +43,12 @@ public static class IdempotencyRegistrationExtensions
 
         if(provider == "REDIS")
         {
-            services.AddRedisIdempotency(connectionString, opt => section.Bind(opt));
+            services.AddRedisIdempotency(
+                redis =>
+                {
+                    redis.EndPoints.Add(connectionString);
+                },
+                opt => section.Bind(opt));
         }
 
         return services;

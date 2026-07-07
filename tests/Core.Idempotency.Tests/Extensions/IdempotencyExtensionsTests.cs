@@ -15,7 +15,16 @@ public class IdempotencyExtensionsTests
         var redisConnectionString = "localhost:6379";
 
         // Act
-        services.AddRedisIdempotency(redisConnectionString);
+        services.AddRedisIdempotency(
+            redis =>
+            {
+                redis.EndPoints.Add(redisConnectionString);
+            },
+            opts =>
+            {
+                opts.HeaderName = "X-Custom-Key";
+                opts.Expiration = TimeSpan.FromHours(2);
+            });
         var serviceProvider = services.BuildServiceProvider();
 
         // Assert
@@ -50,7 +59,10 @@ public class IdempotencyExtensionsTests
 
         // Act
         services.AddRedisIdempotency(
-            redisConnectionString,
+            redis =>
+            {
+                redis.EndPoints.Add(redisConnectionString);
+            },
             opts =>
             {
                 opts.HeaderName = "X-Custom-Key";
