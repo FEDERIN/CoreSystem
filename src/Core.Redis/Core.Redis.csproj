@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <Deterministic>true</Deterministic>
+	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
+	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	  <PackageId>CoreSystem.Redis</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
+	  <Description>Production-ready Redis infrastructure library for .NET 8 providing connection management, distributed locking, and dependency injection integration built on StackExchange.Redis.</Description>
+	  <PackageTags>
+		  Redis;
+		  StackExchange.Redis;
+		  DistributedLock;
+		  DistributedLocking;
+		  Synchronization;
+		  Infrastructure;
+		  ConnectionFactory;
+		  DependencyInjection;
+		  CloudNative;
+		  Microservices;
+		  .NET8
+	  </PackageTags>
+	  <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Redis</PackageProjectUrl>
+	  <PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>	 
+	  <AssemblyVersion>1.0.0.0</AssemblyVersion>
+	  <FileVersion>1.0.0.0</FileVersion>
+	  <InformationalVersion>1.0.0</InformationalVersion>
+	  <PackageReleaseNotes>
+		  Initial stable release.
+		  • Redis Connection Factory
+		  • Distributed Lock Provider
+		  • Dependency Injection integration
+		  • Production-ready defaults
+	  </PackageReleaseNotes>
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StackExchange.Redis" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
+	<None Include="LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+	 <InternalsVisibleTo Include="Core.Redis.UnitTests" />
+	<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+</ItemGroup>
+</Project>
