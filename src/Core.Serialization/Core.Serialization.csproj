@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <Deterministic>true</Deterministic>
+	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
+	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	  <PackageId>CoreSystem.Serialization</PackageId>
+	  <Version>1.1.0</Version>
+	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
+	  <Description>Production-ready serialization library for .NET 8 with a unified abstraction over JSON, MessagePack, and Protocol Buffers, designed for high-performance applications.</Description>
+	  <PackageTags>
+		  Serialization;
+		  JSON;
+		  MessagePack;
+		  ProtocolBuffers;
+		  protobuf;
+		  BinarySerialization;
+		  DependencyInjection;
+		  Infrastructure;
+		  .NET8;
+		  Performance
+	  </PackageTags>
+	  <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Serialization</PackageProjectUrl>
+	  <PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <AssemblyVersion>1.0.0.0</AssemblyVersion>
+	  <FileVersion>1.0.0.0</FileVersion>
+	  <InformationalVersion>1.0.0</InformationalVersion>
+	  <PackageReleaseNotes>
+		  Initial stable release.
+		  • Unified serialization abstraction
+		  • JSON serializer
+		  • MessagePack serializer
+		  • Protocol Buffers serializer
+		  • Dependency Injection integration
+	  </PackageReleaseNotes>
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
+	<None Include="LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MessagePack" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="protobuf-net" />
+  </ItemGroup>
+	
+</Project>
