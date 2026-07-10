@@ -58,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	 <InternalsVisibleTo Include="Core.Redis.UnitTests" />
+	<InternalsVisibleTo Include="Core.Redis.UnitTests" />
 	<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
-</ItemGroup>
+  </ItemGroup>
 </Project>

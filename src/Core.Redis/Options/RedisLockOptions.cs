@@ -22,5 +22,4 @@ public sealed class RedisLockOptions
     /// If null, retries indefinitely.
     /// </summary>
     public TimeSpan? MaxWaitTime { get; set; }
-    public Action<object> Configuration { get; set; }
 }
