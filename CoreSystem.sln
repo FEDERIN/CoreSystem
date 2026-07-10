@@ -78,6 +78,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Redis", "src\Core.Redi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Redis.UnitTests", "tests\Core.Redis.UnitTests\Core.Redis.UnitTests.csproj", "{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Serialization", "src\Core.Serialization\Core.Serialization.csproj", "{5BF69865-60CB-A8DA-98C2-2B5FEA3F5BAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Serialization.UnitTests", "tests\Core.Serialization.UnitTests\Core.Serialization.UnitTests.csproj", "{B37CAA7B-EAC5-4035-8BAD-B413236154D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +132,14 @@ Global
 		{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF69865-60CB-A8DA-98C2-2B5FEA3F5BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF69865-60CB-A8DA-98C2-2B5FEA3F5BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF69865-60CB-A8DA-98C2-2B5FEA3F5BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF69865-60CB-A8DA-98C2-2B5FEA3F5BAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37CAA7B-EAC5-4035-8BAD-B413236154D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37CAA7B-EAC5-4035-8BAD-B413236154D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37CAA7B-EAC5-4035-8BAD-B413236154D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37CAA7B-EAC5-4035-8BAD-B413236154D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,6 +159,8 @@ Global
 		{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{565BF7AE-71CD-1E8A-08ED-FFD4FB278CD6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{5BF69865-60CB-A8DA-98C2-2B5FEA3F5BAB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B37CAA7B-EAC5-4035-8BAD-B413236154D3} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}
