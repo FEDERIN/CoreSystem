@@ -8,467 +8,157 @@
   <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" />
 </p>
 
-<p align="center">
-  <b>Cloud-Native • Modular • Observability-First • Production-Ready</b>
-</p>
+> **Production-ready modular infrastructure libraries for modern .NET
+> applications.**
 
----
+CoreSystem is an ecosystem of reusable .NET 8 libraries designed to
+simplify the development of cloud-native, observable, and resilient
+applications.
 
-## 📖 Overview
+------------------------------------------------------------------------
 
-**CoreSystem** is a modular ecosystem of reusable .NET libraries focused on simplifying the development of modern distributed systems and high-performance microservices.
+# 🚀 Why CoreSystem?
 
-The ecosystem provides production-ready building blocks for common cross-cutting concerns:
+CoreSystem provides production-ready building blocks for common
+infrastructure concerns while keeping each package independent and
+composable.
 
-- Observability
-- Distributed caching
-- Request idempotency
-- Resilience
-- HTTP middleware
-- Cloud-native integrations
-- High-performance API development
+## Highlights
 
-CoreSystem is built around:
+-   Modular architecture
+-   OpenTelemetry-first
+-   Dependency Injection friendly
+-   Production-ready defaults
+-   High performance
+-   ASP.NET Core integration
+-   Cloud-native
+-   Minimal configuration
 
-- Clean Architecture principles
-- Extensible designs
-- Provider-based implementations
-- Operational excellence
-- Developer productivity
+------------------------------------------------------------------------
 
----
+# 📦 Ecosystem Packages
 
-## 🌍 Ecosystem Vision
+  ----------------------------------------------------------------------------------
+  Package                           Description                   Status
+  --------------------------------- ----------------------------- ------------------
+  CoreSystem.Cache                        Distributed cache with Memory ✅ Stable
+                                    and Redis providers           
 
-CoreSystem aims to become a complete toolkit for building scalable and reliable .NET distributed applications.
+  CoreSystem.Idempotency                  HTTP request idempotency      ✅ Stable
+                                    middleware                    
 
-## Current Focus
+  CoreSystem.Memory                       In-process asynchronous keyed ✅ Stable
+                                    locks                         
 
-- Observability
-- Idempotency
-- Distributed Caching
+  CoreSystem.Redis                        Redis infrastructure and      ✅ Stable
+                                    distributed locking           
 
-## Future Modules
+  CoreSystem.Serialization                JSON, MessagePack and         ✅ Stable
+                                    Protobuf abstraction          
 
-- Messaging abstractions
-- Security components
-- Rate limiting
-- Service discovery
-- Resilience patterns
-- API Gateway utilities
+  CoreSystem.Observability                Logging, Metrics, Tracing and ✅ Stable
+                                    Health Checks                 
 
----
+  CoreSystem.Observability.Abstractions   Extensibility contracts       ✅ Stable
 
-## ✨ Ecosystem Features
+  CoreSystem.Resilience                   Polly-based resilience        🚧 Coming Soon
+                                    pipelines                     
+  ----------------------------------------------------------------------------------
 
-| Category | Description |
-|---|---|
-| 🏗 Modular Architecture | Independent reusable NuGet packages |
-| 📊 Observability | OpenTelemetry-based telemetry ecosystem |
-| ⚡ Performance | Optimized middleware-first components |
-| 🧩 Extensibility | Provider-based architecture |
-| ☁ Cloud-Native | Designed for distributed environments |
-| 🚀 Developer Experience | Minimal configuration and integration |
+------------------------------------------------------------------------
 
----
+# 🏗 Ecosystem Architecture
 
-## 🎯 Design Principles
-
-CoreSystem follows a set of engineering principles:
-
-- OpenTelemetry First
-- Cloud-Native by Design
-- Middleware-Centric Architecture
-- Provider-Based Extensibility
-- Production-Ready Defaults
-- Low Coupling / High Cohesion
-- Minimal Configuration
-- Developer Experience Focused
-
----
-
-## 🧠 Ecosystem Architecture
-
-```mermaid
+``` mermaid
 graph TD
-    APIs --> CoreSystem
 
-    CoreSystem --> Observability
-    CoreSystem --> Idempotency
-    CoreSystem --> Cache
+Application --> Cache
+Application --> Idempotency
+Application --> Observability
 
-    Observability --> OpenTelemetry
+Cache --> Memory
+Cache --> Redis
+Cache --> Serialization
 
-    Idempotency --> PostgreSQL
-    Idempotency --> Redis
+Idempotency --> Redis
+Idempotency --> PostgreSQL
 
-    Cache --> Memory
-    Cache --> Redis
+Observability --> OpenTelemetry
+
+Resilience --> Polly
 ```
 
----
+------------------------------------------------------------------------
 
-## 🚀 Latest Releases
+# 🎯 Design Principles
 
-| Package | Latest Version |
-|----------|----------|
-| CoreSystem.Cache | 1.0.0 |
-| CoreSystem.Observability.Abstractions | 1.0.0 |
-| FGutierrez.Core.Observability | 1.1.6 |
-| FGutierrez.Core.Idempotency | 1.2.2 |
+-   OpenTelemetry First
+-   Cloud Native by Design
+-   Provider-Based Architecture
+-   Middleware First
+-   SOLID
+-   Clean Architecture
+-   Low Coupling
+-   High Cohesion
+-   Developer Experience
 
----
+------------------------------------------------------------------------
 
-## 📦 Available Packages
+# 🚀 Quick Start
 
-| Package | Description | Status |
-|---|---|---|
-| `CoreSystem.Cache` | Production-ready caching framework with Redis, Memory, HTTP response caching, resilience, and OpenTelemetry integration. | ✅ Stable |
-| `FGutierrez.Core.Observability` | OpenTelemetry, Serilog, Metrics & Health Checks | ✅ Stable |
-| `FGutierrez.Core.Idempotency` | Distributed idempotency middleware | ✅ Stable |
-
-
----
-## ⚡ CoreSystem.Cache
-
-Production-ready caching framework for modern .NET applications.
-
-- Features
-- Memory provider
-- Redis provider
-- Cache-Aside pattern
-- Automatic Redis → Memory fallback
-- Cache rehydration
-- Tag-based invalidation
-- Distributed locking
-- HTTP response caching
-- OpenTelemetry metrics
-- ASP.NET Core Health Checks
-- Pipeline-based architecture
-- Multiple serializers
-
-
-### Features
-
-- Redis fallback strategy
-- In-memory resilience mode
-- Cache hit/miss metrics
-- OpenTelemetry integration
-- HTTP response caching middleware
-- Cache-aside pattern support
-
----
-
-## ⚡ FGutierrez.Core.Observability
-
-Production-grade observability integrations for ASP.NET Core applications.
-
-### Features
-
-- OpenTelemetry tracing
-- Runtime metrics
-- HTTP metrics
-- Structured logging
-- Serilog integration
-- Health checks
-- OTLP exporter support
-- Automatic telemetry correlation
-
-The library is backend-agnostic and can integrate with any OTLP-compatible observability platform.
-
----
-
-## 🎟️ FGutierrez.Core.Idempotency
-
-Distributed idempotency engine for ensuring critical operations execute exactly once.
-
-### Useful for
-
-- Payments
-- Order creation
-- Resource provisioning
-- Distributed workflows
-
-### Features
-
-- Redis provider
-- PostgreSQL provider
-- Response replay
-- Duplicate request prevention
-- OpenTelemetry metrics
-- Middleware-based execution pipeline
-- Configurable expiration policies
-
----
-
-## 🏗 Repository Structure
-
-```text
-CoreSystem/
-│
-├── .github/
-│   └── workflows/
-│
-├── docs/
-│
-├── samples/
-│   │
-│   └── CoreSystem.Samples.Api/
-│       ├── Controllers/
-│       ├── grafana/
-│       ├── docker-compose.yml
-│       ├── prometheus.yml
-│       ├── otel-collector-config.yml
-│       └── Program.cs
-│
-│   └── CoreSystem.Samples.Core/
-│       ├── Services/
-│
-├── src/
-│   │
-│   └── Core.Cache/
-│       ├── Abstractions/
-│       ├── Attributes/
-│       ├── DependencyInjection/
-│       ├── Diagnostics/
-│       ├── Http/
-│       ├── Middleware/
-│       ├── Options/
-│       ├── Pipeline/
-│       ├── Serialization/
-│       ├── Services/
-│       ├── Storage/
-│       ├── CHANGELOG.md
-│       ├── LICENSE
-│       └── README.md
-│       └── README_NUGET.md
-│   │
-│   └── Core.Idempotency/
-│       ├── Diagnostics/
-│       ├── Middleware/
-│       ├── Models/
-│       ├── Options/
-│       ├── Storage/
-│       └── CHANGELOG.md
-│       ├── IdempotencyExtensions.cs
-│       ├── IdempotencyRegistrationExtensions.cs
-│       ├── LICENSE
-│       └── README.md
-│   │
-│   ├── Core.Observability/
-│   │   ├── Extensions/
-│   │   ├── Options/
-│   │   ├── ObservabilityDependencyInjection.cs
-│   │   ├── LICENSE
-│   │   └── README.md
-│   │
-│   ├── Core.Observability.Abstractions/
-│       ├── IHealthCheckContributor.cs
-│       ├── IObservabilityContributor.cs
-│
-├── tests/
-│   │
-│   └── Core.Cache.IntegrationTests
-│       ├── Cache/
-│       ├── Diagnostics/
-│       ├── Fixtures/
-│       ├── Services/
-│   └── Core.Cache.UnitTests
-│       ├── Attributes/
-│       ├── Behaviors/
-│       ├── DependencyInjection/
-│       ├── Diagnostics/
-│       ├── Http/
-│       ├── Middleware/
-│       ├── Pipeline/
-│       ├── Serialization/
-│       ├── Services/
-│       └── MemoryCacheTestBase.cs
-│   └── Core.Idempotency.Tests
-│       ├── Extensions/
-│       ├── Fixtures/
-│       ├── Middleware/
-│       ├── Models/
-│       ├── Options/
-│       ├── Storage/
-│
-├── CHANGELOG.md
-├── LICENSE
-├── global.json
-├── CoreSystem.sln
-└── README.md
-```
-
----
-
-## 🏗 Technology Stack
-
-### Backend
-
-- .NET 8
-- ASP.NET Core Minimal APIs
-- Dapper
-- Middleware Pipeline
-
-### Observability
-
-- OpenTelemetry
-- Serilog
-- OTLP Exporter
-
-### Infrastructure
-
-- PostgreSQL
-- Redis
-- Docker
-
----
-
-## 🚀 Getting Started
-
-### Clone Repository
-
-```bash
+``` bash
 git clone https://github.com/FEDERIN/CoreSystem.git
-```
 
-### Build Solution
-
-```bash
 dotnet build
 ```
 
-### Run Sample API
+------------------------------------------------------------------------
 
-```bash
-cd samples/CoreSystem.Samples.Api
-dotnet run
+# 📁 Repository Structure
+
+``` text
+src/
+ ├── Core.Cache
+ ├── Core.Idempotency
+ ├── Core.Memory
+ ├── Core.Redis
+ ├── Core.Serialization
+ ├── Core.Observability
+ ├── Core.Observability.Abstractions
+ └── Core.Resilience
 ```
 
-### Run Full Local Stack
+------------------------------------------------------------------------
 
-```bash
-docker compose up -d
-```
+# 🛣 Roadmap
 
-This launches:
+## Completed
 
-- PostgreSQL
-- Redis
-- OpenTelemetry Collector
-- Sample dashboards and monitoring tools
+-   Distributed Cache
+-   Redis Infrastructure
+-   Memory Synchronization
+-   Serialization
+-   Observability
+-   Idempotency
 
----
+## In Progress
 
-## 📊 Telemetry Ecosystem
+-   Core.Resilience
 
-CoreSystem follows an **OpenTelemetry-first** approach.
+## Planned
 
-Telemetry is exported through the OpenTelemetry Protocol (OTLP), making the ecosystem vendor-neutral and backend-agnostic.
+-   Messaging
+-   Rate Limiting
+-   Security
+-   API Gateway utilities
 
-Supported platforms include:
+------------------------------------------------------------------------
 
-- Grafana
-- Jaeger
-- Prometheus
-- Datadog
-- New Relic
-- Elastic
-- Azure Monitor
-- Any OTLP-compatible backend
+# 🤝 Contributing
 
-```text
-Application
-      │
-      ▼
-OpenTelemetry SDK
-      │
-      ▼
-OTLP Exporter
-      │
-      ▼
-Collector / Backend
-```
+Pull requests and suggestions are welcome.
 
----
-
-## 🧪 Engineering Principles
-
-CoreSystem follows modern backend engineering practices:
-
-- Clean Architecture
-- SOLID Principles
-- Middleware-First Integrations
-- Provider-Based Extensibility
-- High Cohesion / Low Coupling
-- Production-Grade Defaults
-- Cloud-Native Development
-- Observability by Default
-
----
-
-## 📌 Current Focus
-
-### Completed
-
-- [x] Distributed Observability
-- [x] Idempotency Engine
-- [x] Redis Support
-- [x] PostgreSQL Support
-- [x] OpenTelemetry Integration
-- [x] Production-ready Cache Framework
-
-### Planned
-
-- [ ] Distributed Messaging
-- [ ] JWT Security Components
-- [ ] Rate Limiting
-- [ ] API Gateway Utilities
-- [ ] Kubernetes Helpers
-- [ ] Service Discovery
-- [ ] Resilience Policies
-
----
-
-## 📦 Package Publishing
-
-This repository uses GitHub Actions to automate NuGet packaging and publishing.
-
-To publish a package, create a Git tag using the following format:
-
-```text
-<ProjectName>/v<Major>.<Minor>.<Patch>
-```
-
-Example:
-
-```bash
-git tag Core.Cache/v1.0.0
-git push origin Core.Cache/v1.0.0
-```
-
-The GitHub workflow will automatically:
-
-1. Build the package
-2. Generate the NuGet artifact
-3. Publish it to NuGet.org
-4. Create the corresponding GitHub Release
-
----
-
-## 🤝 Contributing
-
-Contributions, ideas, and improvements are welcome.
-
-## Development Workflow
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a Pull Request
-
----
-
+------------------------------------------------------------------------
 ## 📄 License
 
 MIT License © Federin Pastor Gutierrez Ortiz
