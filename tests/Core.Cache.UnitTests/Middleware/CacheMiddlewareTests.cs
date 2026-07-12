@@ -1,6 +1,5 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Http;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 

@@ -1,6 +1,7 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Storage.Abstractions;
 using Core.Cache.Storage.Rehydration.Tracking;
+using Core.Memory.Synchronization;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Core.Cache.Storage.Memory;
@@ -8,7 +9,7 @@ namespace Core.Cache.Storage.Memory;
 internal sealed class MemoryStorage(
     IMemoryCache memoryCache,
     ICacheTagIndex<MemoryStorage> tagIndex,
-    ICacheLockProvider<MemoryStorage> lockProvider,
+    IAsyncKeyLock lockProvider,
     ICacheEntryFactory entryFactory,
     ICacheEntryInspector entryInspector,
     IRehydrationTracker rehydrationTracker)
@@ -16,7 +17,7 @@ internal sealed class MemoryStorage(
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
     private readonly ICacheTagIndex<MemoryStorage> _tagIndex = tagIndex;
-    private readonly ICacheLockProvider<MemoryStorage> _lockProvider = lockProvider;
+    private readonly IAsyncKeyLock _lockProvider = lockProvider;
     private readonly ICacheEntryFactory _entryFactory = entryFactory;
     private readonly ICacheEntryInspector _entryInspector = entryInspector;
     private readonly IRehydrationTracker _rehydrationTracker = rehydrationTracker;

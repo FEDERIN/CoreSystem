@@ -13,8 +13,13 @@ public class OrderController(IMyService myService) : ControllerBase
     [Cacheable(tag: "Order", expirationSeconds: 500)]
     public async Task<IActionResult> GetData(string id)
     {
-        var result = "Test data for id: " + id;
-        //await myService.GetDataAsync(id);
+        var result = await myService.GetDataAsync(id);
         return Ok(result);
+    }
+
+    [HttpPost("data")]
+    public async Task<IActionResult> PostData([FromBody] object data)
+    {
+        return Ok(data);
     }
 }

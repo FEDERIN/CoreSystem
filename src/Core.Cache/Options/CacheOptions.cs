@@ -1,4 +1,5 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Serialization;
 using StackExchange.Redis;
 
 namespace Core.Cache.Options;
@@ -97,26 +98,5 @@ public class RedisOptions
     /// <summary>
     /// Gets or sets the name of the configuration section used to configure Redis.
     /// </summary>
-    public string? ConfigurationName { get; set; }
-}
-
-/// <summary>
-/// Specifies the serialization format used to persist cache entries.
-/// </summary>
-public enum SerializerType : byte
-{
-    /// <summary>
-    /// Uses System.Text.Json serialization.
-    /// </summary>
-    Json = 1,
-
-    /// <summary>
-    /// Uses MessagePack binary serialization.
-    /// </summary>
-    MessagePack = 2,
-
-    /// <summary>
-    /// Uses Protocol Buffers binary serialization.
-    /// </summary>
-    Protobuf = 3
+    public string? Connection { get; set; }
 }

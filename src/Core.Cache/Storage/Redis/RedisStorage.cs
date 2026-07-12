@@ -1,5 +1,9 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Cache.Exceptions;
 using Core.Cache.Storage.Abstractions;
+using Core.Redis.Synchronization;
+using Core.Serialization.Abstractions;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace Core.Cache.Storage.Redis;
@@ -9,24 +13,44 @@ internal sealed class RedisStorage(
     IPayloadSerializer payloadSerializer,
     IKeyBuilder keyBuilder,
     ICacheTagIndex<RedisStorage> tagIndex,
-    ICacheLockProvider<RedisStorage> lockProvider) : ICacheStorage
+    IDistributedLockProvider distributedLockProvider,
+    ILogger<RedisStorage> logger) : ICacheStorage
 {
     private readonly IDatabase _database = redis.GetDatabase();
+
     private readonly ICacheTagIndex<RedisStorage> _tagIndex = tagIndex;
     private readonly IKeyBuilder _keyBuilder = keyBuilder;
     private readonly IPayloadSerializer _payloadSerializer = payloadSerializer;
-    private readonly ICacheLockProvider<RedisStorage> _lockProvider = lockProvider;
+    private readonly IDistributedLockProvider _distributedLockProvider = distributedLockProvider;
 
     private string GetFullKey(string key) => _keyBuilder.BuildCacheKey(key);
 
-    public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
+    public async Task<T?> GetAsync<T>(
+        string key,
+        CancellationToken ct = default)
     {
-        var payload = await _database.StringGetAsync(GetFullKey(key));
+        var fullKey = GetFullKey(key);
+
+        var payload = await _database.StringGetAsync(fullKey);
 
         if (payload.IsNullOrEmpty)
             return default;
 
-        return _payloadSerializer.Deserialize<T>(payload);
+        try
+        {
+            return _payloadSerializer.Deserialize<T>(payload);
+        }
+        catch (CacheDeserializationException ex)
+        {
+            logger.LogWarning(
+                ex,
+                "Corrupted cache entry detected for key '{Key}'. Removing it from Redis.",
+                fullKey);
+
+            await _database.KeyDeleteAsync(fullKey);
+
+            return default;
+        }
     }
 
     public async Task SetAsync<T>(string key, T value, CacheEntryOptions? options = null, TimeSpan? expiration = null, string[]? tags = null, CancellationToken ct = default)
@@ -63,7 +87,6 @@ internal sealed class RedisStorage(
             },
             ct);
     }
-
     public async Task<bool> ExistsAsync(string key, CancellationToken ct = default)
         => await _database.KeyExistsAsync(GetFullKey(key));
 
@@ -74,7 +97,8 @@ internal sealed class RedisStorage(
         if (cachedValue is not null)
             return cachedValue;
 
-        using (await _lockProvider.AcquireAsync(key, ct))
+        var lockKey = _keyBuilder.BuildLock(key);
+        using (await _distributedLockProvider.AcquireAsync(lockKey, ct))
         {
             cachedValue = await GetAsync<T>(key, ct);
 

@@ -1,5 +1,7 @@
-﻿using Core.Cache.Http;
+﻿using Core.Cache.Abstractions;
+using Core.Cache.Http;
 using Core.Cache.Options;
+using Core.Serialization.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,13 +13,19 @@ public static class CacheRegistration
         this IServiceCollection services,
         Action<CacheOptions> configure)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
+
         var options = new CacheOptions();
         configure(options);
 
         services
-            .AddSingleton(options)
+            .AddSingleton<CacheOptions>(options)
             .AddLogging()
-            .AddCacheSerialization()
+            .AddCoreSerialization(serialization =>
+            {
+                serialization.DefaultSerializer = options.SerializerType;
+            })
             .AddCacheDiagnostics()
             .AddCacheMemory()
             .AddCacheRedis(options);
@@ -37,6 +45,13 @@ public static class CacheRegistration
 
     public static IApplicationBuilder UseCoreCache(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
+        if (app.ApplicationServices.GetService<IHttpCacheHandler>() is null)
+        {
+            throw new InvalidOperationException(CacheMessages.MissingRegistration);
+        }
+
         return app.UseMiddleware<CacheMiddleware>();
     }
 }

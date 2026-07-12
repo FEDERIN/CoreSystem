@@ -31,6 +31,8 @@ Install the NuGet package.
 dotnet add package CoreSystem.Cache
 ```
 
+> Installing **CoreSystem.Cache** automatically installs the required provider and serialization packages through NuGet dependencies.
+
 ---
 
 # Step 2 — Register the Framework

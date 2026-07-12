@@ -18,24 +18,33 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="CoreSystem.Observability.Abstractions" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="OpenTelemetry.Api" />
     <PackageReference Include="StackExchange.Redis" />
+	<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
 	  <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
 	  <None Include="LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <ItemGroup>
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+	
  <ItemGroup>
 	 <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 		 <_Parameter1>Core.Idempotency.Tests</_Parameter1>
 	 </AssemblyAttribute>
+ </ItemGroup>
+ <ItemGroup>
+   <ProjectReference Include="..\Core.Redis\Core.Redis.csproj" />
+   <ProjectReference Include="..\Core.Serialization\Core.Serialization.csproj" />
  </ItemGroup>
 </Project>

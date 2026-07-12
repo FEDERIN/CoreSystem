@@ -1,18 +1,33 @@
 # ❓ Why Another Distributed Cache?
 
-`ICache` is an excellent abstraction for storing and retrieving data from distributed cache providers. It offers a simple and provider-agnostic API that works well for many applications.
+`IDistributedCache` is an excellent abstraction for storing and retrieving data from distributed cache providers. It offers a simple, provider-agnostic API that works well for many applications.
 
 However, as distributed systems grow in complexity, caching becomes much more than reading and writing key/value pairs.
 
-Production applications often require resilience, observability, cache invalidation, distributed locking, HTTP response caching, and operational insights. These concerns are typically implemented separately in every project, leading to duplicated infrastructure code and inconsistent implementations.
+Production applications often require resilience, observability, cache invalidation, distributed locking, HTTP response caching, serialization, and operational insights. These concerns are typically implemented separately in every project, leading to duplicated infrastructure code and inconsistent implementations.
 
-**CoreSystem.Cache** was created to solve these challenges by providing a production-ready caching framework instead of just another cache provider.
+**CoreSystem.Cache** is the orchestration layer of the **CoreSystem** caching ecosystem.
+
+It provides a unified caching API while coordinating cache providers, the execution pipeline, HTTP response caching, resilience, observability, and serialization through dedicated CoreSystem packages.
+
+---
+
+# 📦 CoreSystem Ecosystem
+
+CoreSystem.Cache integrates with specialized packages that provide storage providers and serialization while exposing a single, unified API for application developers.
+
+| Package | Responsibility |
+|----------|----------------|
+| **CoreSystem.Cache** | Cache orchestration, execution pipeline, HTTP middleware, Cache-Aside, resilience and observability |
+| **CoreSystem.Cache.Memory** | In-memory cache provider |
+| **CoreSystem.Cache.Redis** | Redis distributed cache provider |
+| **CoreSystem.Serialization** | JSON, MessagePack and Protocol Buffers serialization |
 
 ---
 
 # The Problem
 
-Modern distributed applications frequently need capabilities such as:
+Modern distributed applications frequently require capabilities such as:
 
 - Automatic failover when Redis becomes unavailable.
 - Transparent recovery after connectivity is restored.
@@ -30,28 +45,28 @@ Most teams end up implementing these features independently, increasing maintena
 
 # The Solution
 
-CoreSystem.Cache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
+CoreSystem.Cache builds on top of the standard .NET distributed caching abstractions by introducing a composable execution pipeline that transparently manages infrastructure concerns.
 
-Rather than coupling cache operations directly to a storage provider, every operation passes through a configurable pipeline where cross-cutting concerns are executed before the selected storage provider.
+Rather than coupling cache operations directly to a storage provider, every operation flows through a configurable execution pipeline where cross-cutting concerns are applied before reaching the selected cache provider.
 
-This architecture keeps business code focused on application logic while the framework manages resilience, observability, and cache infrastructure transparently.
+This architecture allows business code to remain focused on application logic while the framework manages provider selection, resilience, serialization, observability, and HTTP response caching automatically.
 
 ---
 
 # Feature Comparison
 
-| Capability | `ICache` | `CoreSystem.Cache` |
-|------------|:-------------------:|:----------------------------------:|
+| Capability | `IDistributedCache` | CoreSystem Ecosystem |
+|------------|:-------------------:|:--------------------:|
 | Unified Cache API | ✅ | ✅ |
-| Memory Provider | ❌ | ✅ |
-| Redis Provider | ✅ | ✅ |
+| Memory Cache Provider | ❌ | ✅ |
+| Redis Cache Provider | ✅ | ✅ |
 | Composable Execution Pipeline | ❌ | ✅ |
 | Automatic Redis → Memory Fallback | ❌ | ✅ |
 | Automatic Cache Rehydration | ❌ | ✅ |
 | Cache-Aside Pattern | ❌ | ✅ |
 | Tag-based Invalidation | ❌ | ✅ |
 | Distributed Locking | ❌ | ✅ |
-| Multiple Serialization Formats | ❌ | ✅ |
+| Pluggable Serialization | ❌ | ✅ |
 | HTTP Response Caching | ❌ | ✅ |
 | OpenTelemetry Metrics | ❌ | ✅ |
 | Health Checks | ❌ | ✅ |
@@ -62,21 +77,21 @@ This architecture keeps business code focused on application logic while the fra
 
 # Design Philosophy
 
-The framework follows a few simple principles.
+The framework follows a small set of architectural principles.
 
 ## Infrastructure Should Be Invisible
 
-Applications should focus on business logic, not cache implementation details.
+Applications should focus on business logic rather than cache implementation details.
 
-The framework manages provider selection, resilience, serialization, metrics, and fallback automatically.
+CoreSystem.Cache automatically manages provider selection, serialization, resilience, observability, metrics, and fallback behavior.
 
 ---
 
 ## Extensibility First
 
-New capabilities should be added without modifying existing code.
+New capabilities should be introduced without modifying existing code.
 
-The composable execution pipeline allows new behaviors—such as compression, encryption, auditing, or tracing—to be introduced independently of the core cache implementation.
+The composable execution pipeline allows behaviors such as compression, encryption, auditing, tracing, or custom metrics to be added independently of the core framework.
 
 ---
 
@@ -85,7 +100,7 @@ The composable execution pipeline allows new behaviors—such as compression, en
 The framework embraces modern cloud-native development practices.
 
 - OpenTelemetry integration
-- Health Checks
+- ASP.NET Core Health Checks
 - Dependency Injection
 - Middleware-based integrations
 - Provider abstraction
@@ -93,14 +108,22 @@ The framework embraces modern cloud-native development practices.
 
 ---
 
+## Modular by Design
+
+Each responsibility lives in its own package.
+
+This modular architecture allows applications to benefit from a unified caching experience while keeping providers, serialization, and infrastructure concerns independently maintainable.
+
+---
+
 ## Production-Ready Defaults
 
-The framework includes sensible defaults for production workloads while remaining fully configurable.
+The framework includes production-ready defaults while remaining fully configurable.
 
 Examples include:
 
 - Redis connectivity monitoring
-- Automatic fallback
+- Automatic provider fallback
 - Cache rehydration
 - Distributed locking
 - Configurable serialization
@@ -108,9 +131,9 @@ Examples include:
 
 ---
 
-# When Should You Use This Library?
+# When Should You Use CoreSystem.Cache?
 
-CoreSystem.Cache is a good fit when your application requires one or more of the following:
+CoreSystem.Cache is an excellent fit when your application requires one or more of the following:
 
 - High-performance APIs
 - Microservices
@@ -121,135 +144,12 @@ CoreSystem.Cache is a good fit when your application requires one or more of the
 - Redis with automatic failover
 - Provider-independent cache implementations
 - Advanced caching strategies
+- Production-grade resilience
 
 ---
 
-# When Is `ICache` Enough?
+# When Is `IDistributedCache` Enough?
 
-If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `ICache` abstraction is an excellentoice.
+If your application only requires basic distributed key/value storage without additional infrastructure capabilities, the built-in `IDistributedCache` abstraction is an excellent choice.
 
-CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
-
----
-
-# The Problem
-
-Modern distributed applications frequently need capabilities such as:
-
-- Automatic failover when Redis becomes unavailable.
-- Transparent recovery after connectivity is restored.
-- Cache invalidation by logical groups.
-- Distributed locking to prevent cache stampede.
-- Consistent serialization across providers.
-- HTTP response caching.
-- OpenTelemetry metrics.
-- Health monitoring.
-- Extensibility without modifying application code.
-
-Most teams end up implementing these features independently, increasing maintenance costs and introducing subtle inconsistencies between projects.
-
----
-
-# The Solution
-
-CoreSystem.Cache builds on top of the standard caching abstraction by introducing a modular execution pipeline that handles infrastructure concerns automatically.
-
-Rather than coupling cache operations directly to a storage provider, every operation passes through a configurable pipeline where cross-cutting concerns are executed before the selected storage provider.
-
-This architecture keeps business code focused on application logic while the framework manages resilience, observability, and cache infrastructure transparently.
-
----
-
-# Feature Comparison
-
-| Capability | `ICache` | `CoreSystem.Cache` |
-|------------|:-------------------:|:----------------------------------:|
-| Unified Cache API | ✅ | ✅ |
-| Memory Provider | ❌ | ✅ |
-| Redis Provider | ✅ | ✅ |
-| Composable Execution Pipeline | ❌ | ✅ |
-| Automatic Redis → Memory Fallback | ❌ | ✅ |
-| Automatic Cache Rehydration | ❌ | ✅ |
-| Cache-Aside Pattern | ❌ | ✅ |
-| Tag-based Invalidation | ❌ | ✅ |
-| Distributed Locking | ❌ | ✅ |
-| Multiple Serialization Formats | ❌ | ✅ |
-| HTTP Response Caching | ❌ | ✅ |
-| OpenTelemetry Metrics | ❌ | ✅ |
-| Health Checks | ❌ | ✅ |
-| Provider Resolution | ❌ | ✅ |
-| Extensible Architecture | Limited | ✅ |
-
----
-
-# Design Philosophy
-
-The framework follows a few simple principles.
-
-## Infrastructure Should Be Invisible
-
-Applications should focus on business logic, not cache implementation details.
-
-The framework manages provider selection, resilience, serialization, metrics, and fallback automatically.
-
----
-
-## Extensibility First
-
-New capabilities should be added without modifying existing code.
-
-The composable execution pipeline allows new behaviors—such as compression, encryption, auditing, or tracing—to be introduced independently of the core cache implementation.
-
----
-
-## Cloud-Native by Design
-
-The framework embraces modern cloud-native development practices.
-
-- OpenTelemetry integration
-- Health Checks
-- Dependency Injection
-- Middleware-based integrations
-- Provider abstraction
-- Resilience patterns
-
----
-
-## Production-Ready Defaults
-
-The framework includes sensible defaults for production workloads while remaining fully configurable.
-
-Examples include:
-
-- Redis connectivity monitoring
-- Automatic fallback
-- Cache rehydration
-- Distributed locking
-- Configurable serialization
-- Provider-independent API
-
----
-
-# When Should You Use This Library?
-
-CoreSystem.Cache is a good fit when your application requires one or more of the following:
-
-- High-performance APIs
-- Microservices
-- Cloud-native applications
-- Distributed systems
-- HTTP response caching
-- OpenTelemetry observability
-- Redis with automatic failover
-- Provider-independent cache implementations
-- Advanced caching strategies
-
----
-
-# When Is `ICache` Enough?
-
-If your application only needs basic distributed key/value storage without additional infrastructure capabilities, the built-in `ICache` abstraction is an excellent choice.
-
-CoreSystem.Cache is intended for applications that require production-grade caching features while maintaining a clean and extensible architecture.
-
----
+CoreSystem.Cache is intended for applications that require a complete, production-ready caching platform while maintaining a clean, modular, and extensible architecture.

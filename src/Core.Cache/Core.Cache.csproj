@@ -9,10 +9,10 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Cache</PackageId>
-		<Version>1.0.1</Version>
-		<AssemblyVersion>1.0.1.0</AssemblyVersion>
-		<FileVersion>1.0.1.0</FileVersion>
-		<InformationalVersion>1.0.1</InformationalVersion>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
+		<InformationalVersion>1.1.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Distributed cache abstraction for .NET 8 supporting Redis and In-Memory providers, with native OpenTelemetry integration.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
@@ -23,16 +23,21 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
+	  <Compile Remove="Storage\Redis\Abstractions\**" />
+	  <EmbeddedResource Remove="Storage\Redis\Abstractions\**" />
+	  <None Remove="Storage\Redis\Abstractions\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CoreSystem.Memory" />
 		<PackageReference Include="CoreSystem.Observability.Abstractions" />
+		<PackageReference Include="CoreSystem.Redis" />
+		<PackageReference Include="CoreSystem.Serialization" />
 		<PackageReference Include="MessagePack" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-		<PackageReference Include="OpenTelemetry" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 		<PackageReference Include="Polly" />
 		<PackageReference Include="protobuf-net" />
-		<PackageReference Include="StackExchange.Redis" />
 	</ItemGroup>
 
 	<ItemGroup>
