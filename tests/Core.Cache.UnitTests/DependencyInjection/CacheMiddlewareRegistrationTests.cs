@@ -13,7 +13,6 @@ public class CacheMiddlewareRegistrationTests
     {
         var builder = new WebHostBuilder()
             .ConfigureServices(services => {
-                services.AddLogging();
                 services.AddCoreCache(options => { });
             })
             .Configure(app => {

@@ -1,10 +1,19 @@
-﻿using System.Collections.Concurrent;
-
-namespace Core.Memory.Synchronization;
+﻿using Core.Memory.Synchronization;
 
 internal sealed class MemoryLockProvider : IAsyncKeyLock
 {
-    private readonly ConcurrentDictionary<string, MemoryLockEntry> _locks = [];
+    private readonly ILockRegistry _registry;
+
+    public MemoryLockProvider()
+        : this(new MemoryLockRegistry())
+    {
+    }
+
+    internal MemoryLockProvider(
+        ILockRegistry registry)
+    {
+        _registry = registry;
+    }
 
     public async Task<IDisposable> AcquireAsync(
         string key,
@@ -14,9 +23,7 @@ internal sealed class MemoryLockProvider : IAsyncKeyLock
         {
             ct.ThrowIfCancellationRequested();
 
-            var entry = _locks.GetOrAdd(
-                key,
-                static _ => new MemoryLockEntry());
+            var entry = _registry.GetOrCreate(key);
 
             entry.AddReference();
 
@@ -27,19 +34,11 @@ internal sealed class MemoryLockProvider : IAsyncKeyLock
                 return new MemoryLockReleaser(
                     key,
                     entry,
-                    _locks);
+                    _registry);
             }
             catch
             {
-                if (entry.ReleaseReference() == 0)
-                {
-                    _locks.TryRemove(
-                        new KeyValuePair<string, MemoryLockEntry>(
-                            key,
-                            entry));
-
-                    entry.Semaphore.Dispose();
-                }
+                _registry.Release(key, entry);
 
                 throw;
             }

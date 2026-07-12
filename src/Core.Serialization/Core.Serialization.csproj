@@ -11,7 +11,7 @@
 	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
 	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	  <PackageId>CoreSystem.Serialization</PackageId>
-	  <Version>1.1.0</Version>
+	  <Version>1.2.0</Version>
 	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	  <Description>Production-ready serialization library for .NET 8 with a unified abstraction over JSON, MessagePack, and Protocol Buffers, designed for high-performance applications.</Description>
 	  <PackageTags>
@@ -31,9 +31,9 @@
 	  <PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Serialization</PackageProjectUrl>
 	  <PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
 	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
-	  <AssemblyVersion>1.1.0.0</AssemblyVersion>
-	  <FileVersion>1.1.0.0</FileVersion>
-	  <InformationalVersion>1.1.0</InformationalVersion>
+	  <AssemblyVersion>1.2.0.0</AssemblyVersion>
+	  <FileVersion>1.2.0.0</FileVersion>
+	  <InformationalVersion>1.2.0</InformationalVersion>
 	  <PackageReleaseNotes>
 		  Initial stable release.
 		  • Unified serialization abstraction
@@ -51,9 +51,14 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="Microsoft.SourceLink.GitHub">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
     <PackageReference Include="MessagePack" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="protobuf-net" />
+    <PackageReference Include="protobuf-net.Core" />
   </ItemGroup>
 
   <ItemGroup>

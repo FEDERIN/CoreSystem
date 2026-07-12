@@ -1,11 +1,9 @@
-﻿using System.Collections.Concurrent;
-
-namespace Core.Memory.Synchronization;
+﻿namespace Core.Memory.Synchronization;
 
 internal sealed class MemoryLockReleaser(
     string key,
     MemoryLockEntry entry,
-    ConcurrentDictionary<string, MemoryLockEntry> locks)
+    ILockRegistry registry)
     : IDisposable
 {
     private bool _disposed;
@@ -19,14 +17,8 @@ internal sealed class MemoryLockReleaser(
 
         entry.Semaphore.Release();
 
-        if (entry.ReleaseReference() != 0)
-            return;
-
-        locks.TryRemove(
-            new KeyValuePair<string, MemoryLockEntry>(
-                key,
-                entry));
-
-        entry.Semaphore.Dispose();
+        registry.Release(
+            key,
+            entry);
     }
 }

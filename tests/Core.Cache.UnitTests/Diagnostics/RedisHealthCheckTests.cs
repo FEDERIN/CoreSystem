@@ -1,6 +1,5 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Diagnostics;
-using Core.Cache.Pipeline.Behaviors;
 using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging.Abstractions;

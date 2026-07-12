@@ -63,6 +63,8 @@ public static class MemoryRegistration
         this IServiceCollection services)
     {
         // Synchronization
+        services.AddSingleton<ILockRegistry, MemoryLockRegistry>();
+
         services.AddSingleton<IAsyncKeyLock, MemoryLockProvider>();
 
         return services;

@@ -10,11 +10,10 @@ public class IdempotencyMetrics
     private readonly Counter<long>? _cacheHitCounter;
     private readonly Counter<long>? _cacheMissCounter;
 
-    public IdempotencyMetrics(IMeterFactory meterFactory, string? meterName)
+    public IdempotencyMetrics(IMeterFactory meterFactory)
     {
-        if (string.IsNullOrWhiteSpace(meterName)) return;
-
-        var meter = meterFactory.Create(meterName, "1.0.0");
+        var meter = meterFactory.
+            Create(IdempotencyDiagnosticsConstants.MeterName, "1.0.0");
 
         _cacheHitCounter = meter.CreateCounter<long>(
             name: "idempotency.cache.hits",

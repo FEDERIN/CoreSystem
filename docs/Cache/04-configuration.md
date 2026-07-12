@@ -139,6 +139,8 @@ Individual cache operations can override this value.
 
 Choose the serializer that best fits your application.
 
+Serialization is provided by CoreSystem.Serialization
+
 ## JSON
 
 ```csharp

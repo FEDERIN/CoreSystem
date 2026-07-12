@@ -2,8 +2,15 @@
 
 namespace Core.Idempotency.Abstractions;
 
-public interface IIdempotencyStorage
+internal interface IIdempotencyStorage
 {
-    Task<IdempotencyResponse?> GetAsync(string key);
-    Task SaveAsync(string key, IdempotencyResponse response, TimeSpan expiration);
+    Task<IdempotencyResponse?> GetAsync(
+        string key,
+        CancellationToken ct = default);
+
+    Task SetAsync(
+        string key,
+        IdempotencyResponse response,
+        TimeSpan? expiration = null,
+        CancellationToken ct = default);
 }
