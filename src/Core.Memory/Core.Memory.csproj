@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Deterministic>true</Deterministic>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<PackageId>CoreSystem.Memory</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
+		<Description>Production-ready in-memory synchronization library for .NET 8 providing lightweight keyed asynchronous locks for coordinating concurrent operations within a single process.</Description>
+		<PackageTags>
+			Memory;
+			Synchronization;
+			KeyedLock;
+			AsyncLock;
+			Concurrency;
+			Threading;
+			SemaphoreSlim;
+			InMemory;
+			DependencyInjection;
+			.NET8
+		</PackageTags>
+		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Memory</PackageProjectUrl>
+		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<InformationalVersion>1.0.0</InformationalVersion>
+		<PackageReleaseNotes>
+			Initial stable release.
+			• In-memory keyed asynchronous lock provider
+			• Thread-safe synchronization
+			• Automatic lock lifecycle management
+			• Dependency Injection integration
+			• Production-ready implementation
+		</PackageReleaseNotes>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
+		<None Include="LICENSE" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+</Project>
