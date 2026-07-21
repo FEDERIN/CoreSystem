@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>CoreSystem.Resilience</PackageId>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<InformationalVersion>1.0.0</InformationalVersion>
+		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
+		<Description>
+			Production-ready resilience framework for .NET 8 with named pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry integration.
+		</Description>
+		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/docs/Resilience</PackageProjectUrl>
+		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>
+			Resilience;
+			Retry;
+			Timeout;
+			CircuitBreaker;
+			Polly;
+			OpenTelemetry;
+			CloudNative;
+			DependencyInjection;
+			Observability;
+			.NET8
+		</PackageTags>
+		<PackageReleaseNotes>
+			Initial release with Retry, Timeout, Circuit Breaker, OpenTelemetry metrics, and named resilience pipelines.
+		</PackageReleaseNotes>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CoreSystem.Observability.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Polly" />
+	<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
+	<None Include="LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<InternalsVisibleTo Include="Core.Resilience.UnitTests" />
+	<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+</Project>

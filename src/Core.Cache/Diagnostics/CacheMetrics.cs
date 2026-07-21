@@ -14,14 +14,15 @@ public class CacheMetrics
         _cacheHitCounter = meter.CreateCounter<long>(
             name: "cache.distributed.hits",
             unit: "{hits}",
-            description: "Número total de lecturas exitosas desde el caché.");
+            description: "Total number of successful cache reads.");
 
         _cacheMissCounter = meter.CreateCounter<long>(
             name: "cache.distributed.misses",
             unit: "{misses}",
-            description: "Número total de lecturas que no encontraron el elemento (Cache Miss).");
+            description: "Total number of cache read requests that did not find the requested item.");
     }
 
     public void RecordHit() => _cacheHitCounter?.Add(1);
+
     public void RecordMiss() => _cacheMissCounter?.Add(1);
 }

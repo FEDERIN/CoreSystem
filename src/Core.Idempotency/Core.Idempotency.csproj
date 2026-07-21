@@ -19,6 +19,8 @@
   
   <ItemGroup>
     <PackageReference Include="CoreSystem.Observability.Abstractions" />
+    <PackageReference Include="CoreSystem.Redis" />
+    <PackageReference Include="CoreSystem.Serialization" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
@@ -42,9 +44,5 @@
 	 <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 		 <_Parameter1>Core.Idempotency.Tests</_Parameter1>
 	 </AssemblyAttribute>
- </ItemGroup>
- <ItemGroup>
-   <ProjectReference Include="..\Core.Redis\Core.Redis.csproj" />
-   <ProjectReference Include="..\Core.Serialization\Core.Serialization.csproj" />
  </ItemGroup>
 </Project>

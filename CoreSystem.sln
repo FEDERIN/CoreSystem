@@ -84,6 +84,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Serialization.UnitTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Memory.UnitTests", "tests\Core.Memory.UnitTests\Core.Memory.UnitTests.csproj", "{3B1D35E6-0C02-4A33-8DE9-BEDD2A49C6AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Resilience", "src\Core.Resilience\Core.Resilience.csproj", "{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resilience", "Resilience", "{1A0ED75C-5E25-4205-A0A6-F55BBB1B129B}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Resilience\00-README.md = docs\Resilience\00-README.md
+		docs\Resilience\01-getting-started.md = docs\Resilience\01-getting-started.md
+		docs\Resilience\02-architecture.md = docs\Resilience\02-architecture.md
+		docs\Resilience\03-pipelines.md = docs\Resilience\03-pipelines.md
+		docs\Resilience\04-configuration.md = docs\Resilience\04-configuration.md
+		docs\Resilience\05-retry.md = docs\Resilience\05-retry.md
+		docs\Resilience\06-timeout.md = docs\Resilience\06-timeout.md
+		docs\Resilience\07-circuit-breaker.md = docs\Resilience\07-circuit-breaker.md
+		docs\Resilience\08-metrics.md = docs\Resilience\08-metrics.md
+		docs\Resilience\09-extensibility.md = docs\Resilience\09-extensibility.md
+		docs\Resilience\10-Roadmap.md = docs\Resilience\10-Roadmap.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Resilience.UnitTests", "tests\Core.Resilience.UnitTests\Core.Resilience.UnitTests.csproj", "{00D19029-AEB1-47BC-A1DE-0DD185578A38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,6 +165,14 @@ Global
 		{3B1D35E6-0C02-4A33-8DE9-BEDD2A49C6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B1D35E6-0C02-4A33-8DE9-BEDD2A49C6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B1D35E6-0C02-4A33-8DE9-BEDD2A49C6AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00D19029-AEB1-47BC-A1DE-0DD185578A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00D19029-AEB1-47BC-A1DE-0DD185578A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00D19029-AEB1-47BC-A1DE-0DD185578A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00D19029-AEB1-47BC-A1DE-0DD185578A38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -168,6 +195,9 @@ Global
 		{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{B37CAA7B-EAC5-4035-8BAD-B413236154D3} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{3B1D35E6-0C02-4A33-8DE9-BEDD2A49C6AD} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1A0ED75C-5E25-4205-A0A6-F55BBB1B129B} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{00D19029-AEB1-47BC-A1DE-0DD185578A38} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

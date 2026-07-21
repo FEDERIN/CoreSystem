@@ -32,12 +32,11 @@
 		<PackageReference Include="CoreSystem.Memory" />
 		<PackageReference Include="CoreSystem.Observability.Abstractions" />
 		<PackageReference Include="CoreSystem.Redis" />
+		<PackageReference Include="CoreSystem.Resilience" />
 		<PackageReference Include="CoreSystem.Serialization" />
 		<PackageReference Include="MessagePack" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
-		<PackageReference Include="Polly" />
-		<PackageReference Include="protobuf-net" />
 	</ItemGroup>
 
 	<ItemGroup>
