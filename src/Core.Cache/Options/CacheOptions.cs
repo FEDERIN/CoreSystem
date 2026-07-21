@@ -1,4 +1,5 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Resilience.Options;
 using Core.Serialization;
 using StackExchange.Redis;
 
@@ -71,6 +72,14 @@ public class CacheOptions
     /// </remarks>
     public TimeSpan RehydrationInterval { get; set; }
         = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// Gets the resilience configuration options for the cache provider.
+    /// </summary>
+    /// <remarks>
+    /// These options control the resilience behavior for the cache provider.
+    /// </remarks>
+    public ResilienceOptions Resilience { get; } = new();
 }
 
 /// <summary>

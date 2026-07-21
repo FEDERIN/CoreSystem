@@ -1,5 +1,4 @@
 using Core.Cache.DependencyInjection;
-using Core.Idempotency;
 using Core.Idempotency.Abstractions;
 using Core.Idempotency.DependencyInjection;
 using Core.Observability;
@@ -11,10 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IMyService, MyService>();
 
-builder.AddObservability(
-    environment: builder.Environment.EnvironmentName,
-    serviceName: "Minimal.Test.Api",
-    serviceNamespace: "CoreSystems");
+
 
 var applyIdempotency = false;
 
@@ -80,6 +76,11 @@ builder.Services.AddCoreCache(options =>
 
     options.InstanceName = "CoreSystem:App01";
 });
+
+builder.AddObservability(
+    environment: builder.Environment.EnvironmentName,
+    serviceName: "Minimal.Test.Api",
+    serviceNamespace: "CoreSystems");
 
 var app = builder.Build();
 

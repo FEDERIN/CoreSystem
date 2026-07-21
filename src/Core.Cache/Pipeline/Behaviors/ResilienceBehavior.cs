@@ -1,23 +1,23 @@
 ﻿using Core.Cache.Pipeline.Abstractions;
 using Core.Cache.Pipeline.Contexts;
 using Core.Cache.Pipeline.Delegates;
-using Polly;
+using Core.Resilience.Abstractions;
 
 namespace Core.Cache.Pipeline.Behaviors;
 
 internal sealed class ResilienceBehavior(
-    ResiliencePipeline pipeline)
+    IResiliencePipelineProvider provider)
     : ICacheBehavior
 {
-    private readonly ResiliencePipeline _pipeline = pipeline;
+    private readonly IResiliencePipeline _pipeline =
+        provider.GetPipeline(PipelineType.Redis);
 
-    public async Task InvokeAsync(CacheContext context, CacheDelegate next)
+    public Task InvokeAsync(
+        CacheContext context,
+        CacheDelegate next)
     {
-        await _pipeline.ExecuteAsync(
-            async token =>
-            {
-                await next(context);
-            },
+        return _pipeline.ExecuteAsync(
+            _ => next(context),
             context.CancellationToken);
     }
 }
