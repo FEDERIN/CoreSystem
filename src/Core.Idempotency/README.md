@@ -61,6 +61,32 @@ This library solves those challenges through a unified and extensible architectu
 | PostgreSQL | Dapper |
 | Redis | StackExchange.Redis |
 
+## PostgreSQL
+
+The PostgreSQL provider requires the following table:
+
+```sql
+CREATE TABLE idempotency_keys
+(
+    key            VARCHAR(255) PRIMARY KEY,
+    status_code    INTEGER NOT NULL,
+    content_type   VARCHAR(255),
+    body           BYTEA,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expires_at     TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_idempotency_keys_expires_at
+    ON idempotency_keys (expires_at);
+```
+
+Expired records should be removed periodically:
+
+```sql
+DELETE FROM idempotency_keys
+WHERE expires_at <= NOW();
+```
+
 ---
 
 # 📊 Observability

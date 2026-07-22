@@ -1,7 +1,9 @@
 using Core.Cache.DependencyInjection;
+using Core.Cache.Options;
 using Core.Idempotency.Abstractions;
 using Core.Idempotency.DependencyInjection;
 using Core.Observability;
+using Core.Resilience.DependencyInjection;
 using CoreSystem.Samples.Core.Services;
 using Serilog;
 
@@ -9,8 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IMyService, MyService>();
-
-
 
 var applyIdempotency = false;
 
@@ -49,11 +49,25 @@ builder.Services.AddCoreIdempotency(options =>
     }
 });
 
+var cacheOptions = new CacheOptions();
+
+builder.Configuration
+    .GetSection("Core:Cache")
+    .Bind(cacheOptions);
+
+if (cacheOptions.Redis.Enabled)
+{
+    builder.Services.AddCoreResilience(options =>
+    {
+        builder.Configuration
+            .GetSection("Core:Resilience")
+            .Bind(options);
+    });
+}
+
 builder.Services.AddCoreCache(options =>
 {
-    builder.Configuration
-        .GetSection("Cache")
-        .Bind(options);
+    options.CopyFrom(cacheOptions);
 
     if (!options.Redis.Enabled)
         return;

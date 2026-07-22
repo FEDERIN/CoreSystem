@@ -31,4 +31,15 @@ public sealed class ResilienceOptions
             Pipelines[pipeline.Key] = pipeline.Value;
         }
     }
+
+    public PipelineOptions GetPipeline(PipelineType pipelineType)
+    {
+        if (!Pipelines.TryGetValue(pipelineType, out var pipeline))
+        {
+            throw new InvalidOperationException(
+                $"Pipeline '{pipelineType}' is not configured.");
+        }
+
+        return pipeline;
+    }
 }

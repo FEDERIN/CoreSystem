@@ -1,5 +1,4 @@
 ﻿using Core.Cache.Abstractions;
-using Core.Resilience.Options;
 using Core.Serialization;
 using StackExchange.Redis;
 
@@ -74,12 +73,27 @@ public class CacheOptions
         = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Gets the resilience configuration options for the cache provider.
+    /// 
     /// </summary>
-    /// <remarks>
-    /// These options control the resilience behavior for the cache provider.
-    /// </remarks>
-    public ResilienceOptions Resilience { get; } = new();
+    /// <param name="source"></param>
+    public void CopyFrom(CacheOptions source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        DefaultProvider = source.DefaultProvider;
+        InstanceName = source.InstanceName;
+        DefaultExpiration = source.DefaultExpiration;
+        MaxCacheableSize = source.MaxCacheableSize;
+        SerializerType = source.SerializerType;
+        RehydrationInterval = source.RehydrationInterval;
+
+        Redis = new RedisOptions
+        {
+            Enabled = source.Redis.Enabled,
+            Connection = source.Redis.Connection,
+            Configuration = source.Redis.Configuration
+        };
+    }
 }
 
 /// <summary>
