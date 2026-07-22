@@ -11,4 +11,7 @@ internal sealed class RedisKeyBuilder(IdempotencyOptions options) : IKeyBuilder
 
     public string BuildCacheKey(string key)
         => $"{_prefix}Idempotency:{key}";
+
+    public string BuildLock(string key)
+        => $"{BuildCacheKey(key)}:lock";
 }

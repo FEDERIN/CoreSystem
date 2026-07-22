@@ -35,6 +35,8 @@ internal sealed class IdempotencyService(
             return;
         }
 
+        _metrics.RecordRequest();
+
         if (!_keyResolver.TryResolve(
                 context,
                 out var key))
@@ -45,10 +47,11 @@ internal sealed class IdempotencyService(
 
         var cached =
             await _storage.GetAsync(key!);
-
-            if (cached is not null)
+        
+        if (cached is not null)
         {
             _metrics.RecordHit();
+            _metrics.RecordReplay();
 
             context.Response.StatusCode = cached.StatusCode;
             context.Response.ContentType = cached.ContentType;
