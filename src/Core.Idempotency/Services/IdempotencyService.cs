@@ -1,8 +1,9 @@
-﻿using Core.Idempotency.Abstractions;
+﻿using Core.Http.Abstractions;
+using Core.Http.Responses;
+using Core.Idempotency.Abstractions;
 using Core.Idempotency.Constants;
 using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Internal;
-using Core.Idempotency.Internal.Capture;
 using Core.Idempotency.Models;
 using Core.Idempotency.Options;
 using Microsoft.AspNetCore.Http;
@@ -14,13 +15,17 @@ internal sealed class IdempotencyService(
     IOptions<IdempotencyOptions> options,
     IdempotencyMetrics metrics,
     IIdempotencyStorage storage,
-    IIdempotencyKeyResolver keyResolver)
+    IIdempotencyKeyResolver keyResolver,
+    IResponseCapture responseCapture,
+    IHttpResponseWriter responseWriter)
     : IIdempotencyService
 {
     private readonly IdempotencyOptions _options = options.Value;
     private readonly IdempotencyMetrics _metrics = metrics;
     private readonly IIdempotencyStorage _storage = storage;
     private readonly IIdempotencyKeyResolver _keyResolver = keyResolver;
+    private readonly IResponseCapture _responseCapture = responseCapture;
+    private readonly IHttpResponseWriter _responseWriter = responseWriter;
 
     public async Task HandleAsync(
         HttpContext context,
@@ -96,29 +101,24 @@ internal sealed class IdempotencyService(
     }
 
     private async Task ExecuteRequestAsync(
-    HttpContext context,
-    IdempotencyContext request,
-    RequestDelegate next)
+        HttpContext context,
+        IdempotencyContext request,
+        RequestDelegate next)
     {
-        await using var capture =
-            new ResponseCapture(context);
-
-        await next(context);
+        var response =
+            await _responseCapture.CaptureAsync(
+                context,
+                next);
 
         if (!_options.CacheableStatusCodes.Contains(
-                context.Response.StatusCode))
+                response.StatusCode))
         {
             return;
         }
 
-        var response =
-            await capture.BuildAsync();
-
         await PersistResponseAsync(
             request,
             response);
-
-        await capture.CopyToOriginalAsync();
     }
 
     private Task PersistResponseAsync(
@@ -131,26 +131,28 @@ internal sealed class IdempotencyService(
             {
                 StatusCode = response.StatusCode,
                 ContentType = response.ContentType,
-                Body = response.Body
+                Body = response.Body,
+                Headers = response.Headers,
             },
             request.Expiration);
     }
 
-    private static async Task ReplayResponseAsync(
-    HttpContext context,
-    IdempotencyResponse cached)
+    private async Task ReplayResponseAsync(
+        HttpContext context,
+        IdempotencyResponse cached)
     {
-        context.Response.StatusCode = cached.StatusCode;
-        context.Response.ContentType = cached.ContentType;
+        await _responseWriter.WriteAsync(
+            context,
+            new CapturedResponse
+            {
+                StatusCode = cached.StatusCode,
+                Body = cached.Body,
+                ContentType = cached.ContentType,
+                Headers = cached.Headers,
+            });
 
         context.Response.Headers.Append(
             HeaderNames.IdempotencyCache,
             HeaderValues.Hit);
-
-        if (cached.StatusCode != StatusCodes.Status204NoContent &&
-            !string.IsNullOrEmpty(cached.Body))
-        {
-            await context.Response.WriteAsync(cached.Body);
-        }
     }
 }

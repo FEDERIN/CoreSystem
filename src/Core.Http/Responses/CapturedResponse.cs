@@ -17,6 +17,11 @@ public sealed record CapturedResponse
     public required int StatusCode { get; init; }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public string? ContentType { get; init; }
+
+    /// <summary>
     /// Gets the response headers captured from the original response.
     /// </summary>
     public required IReadOnlyDictionary<string, string[]> Headers

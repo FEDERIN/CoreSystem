@@ -45,4 +45,12 @@
 		 <_Parameter1>Core.Idempotency.Tests</_Parameter1>
 	 </AssemblyAttribute>
  </ItemGroup>
+	
+ <ItemGroup>
+   <ProjectReference Include="..\Core.Http\Core.Http.csproj" />
+ </ItemGroup>
+	
+ <ItemGroup>
+   <Folder Include="Internal\Capture\" />
+ </ItemGroup>
 </Project>

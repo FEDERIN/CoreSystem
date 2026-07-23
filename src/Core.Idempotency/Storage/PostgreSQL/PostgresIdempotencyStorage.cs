@@ -5,7 +5,6 @@ using Core.Idempotency.Options;
 using Dapper;
 using Npgsql;
 using System.Diagnostics;
-using System.Text;
 
 namespace Core.Idempotency.Storage.PostgreSQL;
 
@@ -110,10 +109,10 @@ internal sealed class PostgresIdempotencyStorage(
             {
                 metrics.RecordStorageWrite();
 
-                if (!string.IsNullOrEmpty(response.Body))
+                if (response.Body.Length > 0)
                 {
                     metrics.RecordPayloadSize(
-                        Encoding.UTF8.GetByteCount(response.Body));
+                        response.Body.Length);
                 }
             }
         }
