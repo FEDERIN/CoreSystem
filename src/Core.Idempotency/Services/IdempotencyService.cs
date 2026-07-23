@@ -1,5 +1,8 @@
 ﻿using Core.Idempotency.Abstractions;
+using Core.Idempotency.Constants;
 using Core.Idempotency.Diagnostics;
+using Core.Idempotency.Internal;
+using Core.Idempotency.Internal.Capture;
 using Core.Idempotency.Models;
 using Core.Idempotency.Options;
 using Microsoft.AspNetCore.Http;
@@ -23,13 +26,9 @@ internal sealed class IdempotencyService(
         HttpContext context,
         RequestDelegate next)
     {
-        if (!_options.Enabled)
-        {
-            await next(context);
-            return;
-        }
+        var request = ResolveRequest(context);
 
-        if (!_options.AllowedMethods.Contains(context.Request.Method))
+        if (request is null)
         {
             await next(context);
             return;
@@ -37,81 +36,121 @@ internal sealed class IdempotencyService(
 
         _metrics.RecordRequest();
 
-        if (!_keyResolver.TryResolve(
-                context,
-                out var key))
+        if (await TryReplayAsync(context, request))
         {
-            await next(context);
-            return;
-        }
-
-        var cached =
-            await _storage.GetAsync(key!);
-        
-        if (cached is not null)
-        {
-            _metrics.RecordHit();
-            _metrics.RecordReplay();
-
-            context.Response.StatusCode = cached.StatusCode;
-            context.Response.ContentType = cached.ContentType;
-            context.Response.Headers.Append(
-                "X-Idempotency-Cache",
-                "HIT");
-
-            if (cached.StatusCode != StatusCodes.Status204NoContent &&
-                !string.IsNullOrEmpty(cached.Body))
-            {
-                await context.Response.WriteAsync(cached.Body);
-            }
-
             return;
         }
 
         _metrics.RecordMiss();
 
-        var originalBody = context.Response.Body;
+        await ExecuteRequestAsync(
+            context,
+            request,
+            next);
+    }
 
-        await using var memory = new MemoryStream();
-
-        context.Response.Body = memory;
-
-        try
+    private IdempotencyContext? ResolveRequest(
+        HttpContext context)
+    {
+        if (!_options.Enabled)
         {
-            await next(context);
-
-            if (_options.CacheableStatusCodes.Contains(
-                    context.Response.StatusCode))
-            {
-                memory.Position = 0;
-
-                var body =
-                    await new StreamReader(memory)
-                        .ReadToEndAsync();
-
-                await _storage.SetAsync(
-                    key!,
-                    new IdempotencyResponse
-                    {
-                        StatusCode = context.Response.StatusCode,
-                        ContentType = context.Response.ContentType,
-                        Body = body
-                    },
-                    _options.Expiration);
-
-                memory.Position = 0;
-            }
-
-            if (memory.Length > 0)
-            {
-                memory.Position = 0;
-
-                await memory.CopyToAsync(originalBody);
-            }
+            return null;
         }
-        finally
+
+        if (!_options.AllowedMethods.Contains(context.Request.Method))
         {
-            context.Response.Body = originalBody;
+            return null;
+        }
+
+        if (!_keyResolver.TryResolve(context, out var key))
+        {
+            return null;
+        }
+
+        return new IdempotencyContext
+        {
+            Key = key!,
+            Expiration = _options.Expiration
+        };
+    }
+
+    private async Task<bool> TryReplayAsync(
+        HttpContext context,
+        IdempotencyContext request)
+    {
+        var cached = await _storage.GetAsync(request.Key);
+
+        if (cached is null)
+        {
+            return false;
+        }
+
+        _metrics.RecordHit();
+        _metrics.RecordReplay();
+
+        await ReplayResponseAsync(
+            context,
+            cached);
+
+        return true;
+    }
+
+    private async Task ExecuteRequestAsync(
+    HttpContext context,
+    IdempotencyContext request,
+    RequestDelegate next)
+    {
+        await using var capture =
+            new ResponseCapture(context);
+
+        await next(context);
+
+        if (!_options.CacheableStatusCodes.Contains(
+                context.Response.StatusCode))
+        {
+            return;
+        }
+
+        var response =
+            await capture.BuildAsync();
+
+        await PersistResponseAsync(
+            request,
+            response);
+
+        await capture.CopyToOriginalAsync();
+    }
+
+    private Task PersistResponseAsync(
+        IdempotencyContext request,
+        CapturedResponse response)
+    {
+        return _storage.SetAsync(
+            request.Key,
+            new IdempotencyResponse
+            {
+                StatusCode = response.StatusCode,
+                ContentType = response.ContentType,
+                Body = response.Body
+            },
+            request.Expiration);
+    }
+
+    private static async Task ReplayResponseAsync(
+    HttpContext context,
+    IdempotencyResponse cached)
+    {
+        context.Response.StatusCode = cached.StatusCode;
+        context.Response.ContentType = cached.ContentType;
+
+        context.Response.Headers.Append(
+            HeaderNames.IdempotencyCache,
+            HeaderValues.Hit);
+
+        if (cached.StatusCode != StatusCodes.Status204NoContent &&
+            !string.IsNullOrEmpty(cached.Body))
+        {
+            await context.Response.WriteAsync(cached.Body);
         }
     }
 }
