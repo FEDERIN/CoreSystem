@@ -34,8 +34,8 @@ Thumbs.db
 coverage/
 coverage-report/
 [Tt]est[Rr]esults/
-
 *.cobertura.xml
+**/CoverageReport/
 
 # --- NuGet ---
 nupkgs/

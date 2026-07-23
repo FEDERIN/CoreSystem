@@ -17,7 +17,7 @@ var applyIdempotency = false;
 builder.Services.AddCoreIdempotency(options =>
 {
     builder.Configuration
-        .GetSection("Idempotency")
+        .GetSection("Core:Idempotency")
         .Bind(options);
 
     if (!options.Enabled)
@@ -49,25 +49,11 @@ builder.Services.AddCoreIdempotency(options =>
     }
 });
 
-var cacheOptions = new CacheOptions();
-
-builder.Configuration
-    .GetSection("Core:Cache")
-    .Bind(cacheOptions);
-
-if (cacheOptions.Redis.Enabled)
-{
-    builder.Services.AddCoreResilience(options =>
-    {
-        builder.Configuration
-            .GetSection("Core:Resilience")
-            .Bind(options);
-    });
-}
-
 builder.Services.AddCoreCache(options =>
 {
-    options.CopyFrom(cacheOptions);
+    builder.Configuration
+        .GetSection("Cache")
+        .Bind(options);
 
     if (!options.Redis.Enabled)
         return;
