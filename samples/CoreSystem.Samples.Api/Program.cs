@@ -17,7 +17,7 @@ var applyIdempotency = false;
 builder.Services.AddCoreIdempotency(options =>
 {
     builder.Configuration
-        .GetSection("Idempotency")
+        .GetSection("Core:Idempotency")
         .Bind(options);
 
     if (!options.Enabled)
@@ -52,7 +52,7 @@ builder.Services.AddCoreIdempotency(options =>
 builder.Services.AddCoreCache(options =>
 {
     builder.Configuration
-        .GetSection("Cache")
+        .GetSection("Core:Cache")
         .Bind(options);
 
     if (!options.Redis.Enabled)
