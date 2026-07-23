@@ -37,7 +37,7 @@ public class CacheRegistrationTests
                 Configuration = config =>
                 {
                     config.EndPoints.Add("localhost:6379");
-                    config.Password = "foob";
+                    config.Password = "foobared";
                 }
             };
         });
