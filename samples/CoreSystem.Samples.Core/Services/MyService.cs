@@ -2,7 +2,7 @@
 
 namespace CoreSystem.Samples.Core.Services;
 
-public class MyService(ICoreCache cache) : IMyService
+public sealed class MyService(ICoreCache cache) : IMyService
 {
     public async Task<string> GetDataAsync(string id)
     {

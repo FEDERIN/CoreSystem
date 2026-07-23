@@ -1,27 +1,11 @@
-﻿using Core.Cache.Abstractions;
+﻿using Core.Http.Abstractions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
 
-namespace Core.Cache.Http.Caching;
+namespace Core.Http.Responses;
 
 internal sealed class ResponseCapture
     : IResponseCapture
 {
-    private static readonly HashSet<string> IgnoredHeaders =
-    [
-        HeaderNames.TransferEncoding,
-        HeaderNames.ContentLength,
-        HeaderNames.Connection,
-        HeaderNames.Date,
-        HeaderNames.Server,
-        HeaderNames.KeepAlive,
-        HeaderNames.Upgrade,
-        HeaderNames.TE,
-        HeaderNames.Trailer,
-        HeaderNames.ProxyAuthenticate,
-        HeaderNames.ProxyAuthorization
-    ];
-
     public async Task<CapturedResponse> CaptureAsync(
         HttpContext context,
         RequestDelegate next)
@@ -45,11 +29,11 @@ internal sealed class ResponseCapture
         }
         finally
         {
+            context.Response.Body = original;
+
             memory.Position = 0;
 
             await memory.CopyToAsync(original);
-
-            context.Response.Body = original;
         }
     }
 
@@ -57,12 +41,12 @@ internal sealed class ResponseCapture
         HttpResponse response)
     {
         return response.Headers
-            .Where(h => !IgnoredHeaders.Contains(h.Key))
+            .Where(h => !IgnoredResponseHeaders.Values.Contains(h.Key))
             .ToDictionary(
                 h => h.Key,
                 h => h.Value
-                    .Where(v => v is not null)
-                    .Cast<string>()
+                    .Where(static v => v is not null)
+                    .Select(static v => v!)
                     .ToArray());
     }
 }

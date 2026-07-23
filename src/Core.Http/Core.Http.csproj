@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Deterministic>true</Deterministic>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<PackageId>CoreSystem.Http</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
+		<Description>
+			Production-ready HTTP infrastructure library for .NET 8 providing reusable components for capturing and replaying HTTP responses in ASP.NET Core applications.
+		</Description>
+		<PackageTags>
+			HTTP;
+			ASP.NET Core;
+			Middleware;
+			Response;
+			ResponseCapture;
+			ResponseReplay;
+			HttpContext;
+			Infrastructure;
+			DependencyInjection;
+			.NET8
+		</PackageTags>
+		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Http</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<InformationalVersion>1.0.0</InformationalVersion>
+		<PackageReleaseNotes>
+			Initial stable release.
+			• HTTP response capture
+			• HTTP response replay
+			• Header preservation
+			• ASP.NET Core integration
+			• Dependency Injection support
+			• Production-ready implementation
+		</PackageReleaseNotes>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Net.Http.Headers" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="LICENSE" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Core.Http.UnitTests" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+	
+</Project>

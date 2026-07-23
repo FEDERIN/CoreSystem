@@ -1,11 +1,12 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Http;
-using Core.Cache.Http.Caching;
 using Core.Cache.Options;
 using Core.Cache.Attributes;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using Core.Http.Abstractions;
+using Core.Http.Responses;
 
 namespace Core.Cache.UnitTests.Http;
 
@@ -46,7 +47,7 @@ public sealed class HttpCacheHandlerTests
         nextCalled.Should().BeTrue();
 
         _cache.Verify(
-            x => x.GetAsync<CachedHttpResponse>(
+            x => x.GetAsync<CapturedResponse>(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
@@ -97,14 +98,15 @@ public sealed class HttpCacheHandlerTests
             .Setup(x => x.Generate(context))
             .Returns("customer:1");
 
-        var response = new CachedHttpResponse
+        var response = new CapturedResponse
         {
             Body = [],
-            StatusCode = 200
+            StatusCode = 200,
+            Headers = new Dictionary<string, string[]>()
         };
 
         _cache
-            .Setup(x => x.GetAsync<CachedHttpResponse>(
+            .Setup(x => x.GetAsync<CapturedResponse>(
                 "customer:1",
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
@@ -145,10 +147,10 @@ public sealed class HttpCacheHandlerTests
             .Returns("customer:1");
 
         _cache
-            .Setup(x => x.GetAsync<CachedHttpResponse>(
+            .Setup(x => x.GetAsync<CapturedResponse>(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CachedHttpResponse?)null);
+            .ReturnsAsync((CapturedResponse?)null);
 
         _responseCapture
             .Setup(x => x.CaptureAsync(
@@ -157,7 +159,8 @@ public sealed class HttpCacheHandlerTests
             .ReturnsAsync(new CapturedResponse
             {
                 Body = [],
-                StatusCode = 200
+                StatusCode = 200,
+                Headers = new Dictionary<string, string[]>()
             });
 
         // Act
@@ -197,10 +200,10 @@ public sealed class HttpCacheHandlerTests
             .Returns("customer:1");
 
         _cache
-            .Setup(x => x.GetAsync<CachedHttpResponse>(
+            .Setup(x => x.GetAsync<CapturedResponse>(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CachedHttpResponse?)null);
+            .ReturnsAsync((CapturedResponse?)null);
 
         _responseCapture
             .Setup(x => x.CaptureAsync(
@@ -209,7 +212,8 @@ public sealed class HttpCacheHandlerTests
             .ReturnsAsync(new CapturedResponse
             {
                 Body = [],
-                StatusCode = 200
+                StatusCode = 200,
+                Headers = new Dictionary<string, string[]>()
             });
 
         // Act
@@ -223,7 +227,7 @@ public sealed class HttpCacheHandlerTests
         _cache.Verify(
             x => x.SetAsync(
                 It.IsAny<string>(),
-                It.IsAny<CachedHttpResponse>(),
+                It.IsAny<CapturedResponse>(),
                 It.IsAny<TimeSpan?>(),
                 It.IsAny<string[]?>(),
                 It.IsAny<CancellationToken>()),
@@ -246,10 +250,10 @@ public sealed class HttpCacheHandlerTests
         _keyGenerator.Setup(x => x.Generate(context)).Returns("customer:1");
 
         _cache
-            .Setup(x => x.GetAsync<CachedHttpResponse>(
+            .Setup(x => x.GetAsync<CapturedResponse>(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CachedHttpResponse?)null);
+            .ReturnsAsync((CapturedResponse?)null);
 
         _responseCapture
             .Setup(x => x.CaptureAsync(
@@ -258,7 +262,8 @@ public sealed class HttpCacheHandlerTests
             .ReturnsAsync(new CapturedResponse
             {
                 Body = [],
-                StatusCode = 200
+                StatusCode = 200,
+                Headers = new Dictionary<string, string[]>()
             });
 
         // Act
@@ -272,7 +277,7 @@ public sealed class HttpCacheHandlerTests
         _cache.Verify(
             x => x.SetAsync(
                 "customer:1",
-                It.IsAny<CachedHttpResponse>(),
+                It.IsAny<CapturedResponse>(),
                 It.IsAny<TimeSpan?>(),
                 It.IsAny<string[]?>(),
                 It.IsAny<CancellationToken>()),

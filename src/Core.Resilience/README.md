@@ -209,12 +209,12 @@ Detailed documentation is available in the `docs/Resilience` folder.
 | 03-core-components.md | Framework components            |
 | 04-pipelines.md       | Pipeline lifecycle              |
 | 05-configuration.md   | Configuration guide             |
-| 06-retry.md           | Retry strategy                  |
-| 07-timeout.md         | Timeout strategy                |
-| 08-circuit-breaker.md | Circuit Breaker strategy        |
-| 09-observability.md   | Metrics and OpenTelemetry       |
-| 10-extensibility.md   | Extension points                |
-| roadmap.md            | Planned features                |
+| 05-retry.md           | Retry strategy                  |
+| 06-timeout.md         | Timeout strategy                |
+| 07-circuit-breaker.md | Circuit Breaker strategy        |
+| 08-observability.md   | Metrics and OpenTelemetry       |
+| 09-extensibility.md   | Extension points                |
+| 10-roadmap.md         | Planned features                |
 
 ---
 

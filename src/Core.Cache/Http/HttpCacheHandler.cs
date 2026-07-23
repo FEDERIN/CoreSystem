@@ -1,7 +1,8 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Attributes;
-using Core.Cache.Http.Caching;
 using Core.Cache.Options;
+using Core.Http.Abstractions;
+using Core.Http.Responses;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Cache.Http;
@@ -39,7 +40,7 @@ internal sealed class HttpCacheHandler(
         var key = keyGenerator.Generate(context);
 
         var cached =
-            await cache.GetAsync<CachedHttpResponse>(key);
+            await cache.GetAsync<CapturedResponse>(key);
 
         if (cached is not null)
         {
@@ -65,7 +66,7 @@ internal sealed class HttpCacheHandler(
 
         await cache.SetAsync(
             key,
-            new CachedHttpResponse
+            new CapturedResponse
             {
                 Body = response.Body,
                 StatusCode = response.StatusCode,

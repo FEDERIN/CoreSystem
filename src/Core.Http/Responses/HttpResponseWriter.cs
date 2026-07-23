@@ -1,14 +1,14 @@
-﻿using Core.Cache.Abstractions;
+﻿using Core.Http.Abstractions;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Cache.Http.Caching;
+namespace Core.Http.Responses;
 
 internal sealed class HttpResponseWriter
     : IHttpResponseWriter
 {
     public async Task WriteAsync(
         HttpContext context,
-        CachedHttpResponse response)
+        CapturedResponse response)
     {
         context.Response.StatusCode = response.StatusCode;
 
