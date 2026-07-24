@@ -54,6 +54,13 @@ public static class IdempotencyRegistration
     public static IApplicationBuilder UseCoreIdempotency(
         this IApplicationBuilder app)
     {
+        var options = app.ApplicationServices.GetRequiredService<IdempotencyOptions>();
+
+        if (!options.Enabled)
+        {
+            return app;
+        }
+
         return app.UseMiddleware<IdempotencyMiddleware>();
     }
 }

@@ -29,11 +29,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CoreSystem.Http" />
 		<PackageReference Include="CoreSystem.Memory" />
 		<PackageReference Include="CoreSystem.Observability.Abstractions" />
 		<PackageReference Include="CoreSystem.Redis" />
-		<PackageReference Include="CoreSystem.Resilience" />
 		<PackageReference Include="CoreSystem.Serialization" />
 		<PackageReference Include="MessagePack" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
@@ -57,5 +55,6 @@
 	
 	<ItemGroup>
 	  <ProjectReference Include="..\Core.Http\Core.Http.csproj" />
+	  <ProjectReference Include="..\Core.Resilience\Core.Resilience.csproj" />
 	</ItemGroup>
 </Project>
