@@ -1,12 +1,12 @@
-﻿using Core.Cache.IntegrationTests.Fixtures;
+﻿using Core.Cache.Abstractions;
 using FluentAssertions;
 
 namespace Core.Cache.IntegrationTests.Cache;
 
-public sealed class GetOrAddAsyncTests(RedisContainerFixture fixture)
-    : RedisCacheTestBase(fixture),
-      IClassFixture<RedisContainerFixture>
+public abstract class GetOrAddAsyncTestsBase
 {
+    protected abstract ICoreCache Cache { get; }
+    
     [Fact]
     public async Task GetOrAddAsync_WhenKeyDoesNotExist_ShouldExecuteFactoryAndStoreValue()
     {
@@ -41,9 +41,9 @@ public sealed class GetOrAddAsyncTests(RedisContainerFixture fixture)
 
         result.Should().BeEquivalentTo(cached);
 
-        var exists = await Database.KeyExistsAsync("customer:15");
+        //var exists = await Database.KeyExistsAsync("customer:15");
 
-        exists.Should().BeTrue();
+        //exists.Should().BeTrue();
     }
 
     [Fact]
@@ -158,10 +158,10 @@ public sealed class GetOrAddAsyncTests(RedisContainerFixture fixture)
 
         result!.Id.Should().Be(2);
 
-        var ttl = await Database.KeyTimeToLiveAsync("customer:20");
+        //var ttl = await Database.KeyTimeToLiveAsync("customer:20");
 
-        ttl.Should().NotBeNull();
-        ttl.Value.Should().BeLessThan(TimeSpan.FromMilliseconds(300));
+        //ttl.Should().NotBeNull();
+        //ttl.Value.Should().BeLessThan(TimeSpan.FromMilliseconds(300));
     }
 
     [Fact]

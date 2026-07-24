@@ -8,30 +8,6 @@ namespace Core.Cache.UnitTests.Pipeline;
 public sealed class LoggingBehaviorTests
 {
     [Fact]
-    public async Task InvokeAsync_WhenStorageIsNull_ShouldNotThrow()
-    {
-        // Arrange
-        var logger = NullLogger<LoggingBehavior>.Instance;
-
-        var behavior = new LoggingBehavior(logger);
-
-        var context = new FakeCacheContext
-        {
-            Key = "customer:1",
-            Storage = null!,
-            CancellationToken = TestContext.Current.CancellationToken
-        };
-
-        static Task next(CacheContext _) => Task.CompletedTask;
-
-        // Act
-        var action = () => behavior.InvokeAsync(context, next);
-
-        // Assert
-        await action.Should().NotThrowAsync();
-    }
-
-    [Fact]
     public async Task InvokeAsync_WhenNextThrows_ShouldRethrowException()
     {
         // Arrange

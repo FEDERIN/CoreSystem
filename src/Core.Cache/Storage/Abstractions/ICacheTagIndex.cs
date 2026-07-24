@@ -15,16 +15,4 @@ internal interface ICacheTagIndex<TProvider>
         string tag,
         Func<string, CancellationToken, Task> removeEntry,
         CancellationToken cancellationToken = default);
-
-    Task<IReadOnlyCollection<string>> GetKeysAsync(
-        string tag,
-        CancellationToken cancellationToken = default);
-
-    Task<long> CountAsync(
-        string tag,
-        CancellationToken cancellationToken = default);
-
-    Task<bool> ExistsAsync(
-        string tag,
-        CancellationToken cancellationToken = default);
 }

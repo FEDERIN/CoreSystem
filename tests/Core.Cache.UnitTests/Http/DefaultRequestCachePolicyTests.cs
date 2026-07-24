@@ -9,12 +9,14 @@ public sealed class DefaultRequestCachePolicyTests
 {
     private readonly DefaultRequestCachePolicy _policy = new();
 
-    [Fact]
-    public void CanCache_WhenRequestIsGet_ShouldReturnTrue()
+    [Theory]
+    [InlineData("Get")]
+    [InlineData("Head")]
+    public void CanCache_WhenRequestMethodIsSupported_ShouldReturnTrue(string method)
     {
         // Arrange
         var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Get;
+        context.Request.Method = HttpMethods.GetCanonicalizedValue(method);
 
         // Act
         var result = _policy.CanCache(context);
@@ -23,26 +25,15 @@ public sealed class DefaultRequestCachePolicyTests
         result.Should().BeTrue();
     }
 
-    [Fact]
-    public void CanCache_WhenRequestIsHead_ShouldReturnTrue()
+    [Theory]
+    [InlineData("Post")]
+    [InlineData("Put")]
+    [InlineData("Delete")]
+    public void CanCache_WhenRequestMethodIsNotSupported_ShouldReturnFalse(string method)
     {
         // Arrange
         var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Head;
-
-        // Act
-        var result = _policy.CanCache(context);
-
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public void CanCache_WhenRequestIsPost_ShouldReturnFalse()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Post;
+        context.Request.Method = HttpMethods.GetCanonicalizedValue(method);
 
         // Act
         var result = _policy.CanCache(context);
@@ -51,55 +42,15 @@ public sealed class DefaultRequestCachePolicyTests
         result.Should().BeFalse();
     }
 
-    [Fact]
-    public void CanCache_WhenRequestIsPut_ShouldReturnFalse()
+
+    [Theory]
+    [InlineData("Get")]
+    [InlineData("Head")]
+    public void CanCache_WhenRequestContainsAuthorizationHeader_ShouldReturnFalse(string method)
     {
         // Arrange
         var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Put;
-
-        // Act
-        var result = _policy.CanCache(context);
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public void CanCache_WhenRequestIsDelete_ShouldReturnFalse()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Delete;
-
-        // Act
-        var result = _policy.CanCache(context);
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public void CanCache_WhenAuthorizationHeaderExists_ShouldReturnFalse()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Get;
-        context.Request.Headers[HeaderNames.Authorization] = "Bearer token";
-
-        // Act
-        var result = _policy.CanCache(context);
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public void CanCache_WhenHeadRequestContainsAuthorizationHeader_ShouldReturnFalse()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-        context.Request.Method = HttpMethods.Head;
+        context.Request.Method = HttpMethods.GetCanonicalizedValue(method);
         context.Request.Headers[HeaderNames.Authorization] = "Bearer token";
 
         // Act

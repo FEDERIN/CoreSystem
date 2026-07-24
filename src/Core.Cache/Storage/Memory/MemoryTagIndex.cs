@@ -89,45 +89,5 @@ internal sealed class MemoryTagIndex : ICacheTagIndex<MemoryStorage>
         return Task.CompletedTask;
     }
 
-    public Task<IReadOnlyCollection<string>> GetKeysAsync(
-        string tag,
-        CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (!_tagKeys.TryGetValue(tag, out var keys))
-        {
-            return Task.FromResult<IReadOnlyCollection<string>>(Array.Empty<string>());
-        }
-
-        return Task.FromResult<IReadOnlyCollection<string>>(keys.Keys.ToArray());
-    }
-
-    public Task<long> CountAsync(
-        string tag,
-        CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        long count = _tagKeys.TryGetValue(tag, out var keys)
-            ? keys.Count
-            : 0;
-
-        return Task.FromResult(count);
-    }
-
-    public Task<bool> ExistsAsync(
-        string tag,
-        CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        bool exists =
-            _tagKeys.TryGetValue(tag, out var keys) &&
-            !keys.IsEmpty;
-
-        return Task.FromResult(exists);
-    }
-
     private static StringSet CreateSet() => new();
 }

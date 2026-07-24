@@ -4,6 +4,7 @@ using Core.Idempotency.DependencyInjection;
 using Core.Observability;
 using CoreSystem.Samples.Core.Services;
 using Serilog;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddScoped<IMyService, MyService>();
 
 
 var applyIdempotency = false;
+
+
+var redisSection = builder.Configuration.GetSection("RedisConnections:MainRedis");
 
 builder.Services.AddCoreIdempotency(options =>
 {
@@ -27,25 +31,9 @@ builder.Services.AddCoreIdempotency(options =>
 
     if (options.Provider == IdempotencyProviderType.Redis)
     {
-        if(options.Redis == null)
-            throw new InvalidOperationException(
-                "Idempotency:Redis is required when Redis is enabled.");
+        var redisConfiguration = CreateRedisConfiguration(redisSection);
 
-        var configurationName = options.Redis.Connection;
-
-        if (string.IsNullOrWhiteSpace(configurationName))
-            throw new InvalidOperationException(
-                "Idempotency:Redis:ConfigurationName is required when Redis is enabled.");
-
-        var redisSection = builder.Configuration.GetSection(
-            $"RedisConnections:{configurationName}") ?? throw new InvalidOperationException(
-                $"Redis connection configuration '{configurationName}' not found.");
-
-        options.Redis.Configuration = config =>
-        {
-            config.EndPoints.Add(redisSection["Host"]!);
-            config.Password = redisSection["Password"];
-        };
+        options.Redis.Configuration = redisConfiguration;
     }
 });
 
@@ -58,21 +46,9 @@ builder.Services.AddCoreCache(options =>
     if (!options.Redis.Enabled)
         return;
 
-    var configurationName = options.Redis.Connection;
+    var redisConfiguration = CreateRedisConfiguration(redisSection);
 
-    if (string.IsNullOrWhiteSpace(configurationName))
-        throw new InvalidOperationException(
-            "Cache:Redis:ConfigurationName is required when Redis is enabled.");
-
-    var redisSection = builder.Configuration.GetSection(
-        $"RedisConnections:{configurationName}") ?? throw new InvalidOperationException(
-            $"Redis connection configuration '{configurationName}' not found.");
-
-    options.Redis.Configuration = config =>
-    {
-        config.EndPoints.Add(redisSection["Host"]!);
-        config.Password = redisSection["Password"];
-    };
+    options.Redis.Configuration = redisConfiguration;
 
     options.InstanceName = "CoreSystem:App01";
 });
@@ -105,4 +81,40 @@ catch (Exception ex)
 finally
 {
     Log.CloseAndFlush();
+}
+
+static Action<ConfigurationOptions> CreateRedisConfiguration(IConfigurationSection redisSection)
+{
+    ValidateRedisConnection(redisSection);
+
+    return config =>
+    {
+        config.EndPoints.Add(redisSection["Host"]!);
+        config.Password = redisSection["Password"];
+    };
+}
+
+static void ValidateRedisConnection(IConfigurationSection redisSection)
+{
+    if (!redisSection.Exists())
+    {
+        throw new InvalidOperationException(
+            "The configuration section 'RedisConnections:MainRedis' was not found.");
+    }
+
+    var host = redisSection["Host"];
+
+    if (string.IsNullOrWhiteSpace(host))
+    {
+        throw new InvalidOperationException(
+            "RedisConnections:Default:Host is required.");
+    }
+
+    var password = redisSection["Password"];
+
+    if (string.IsNullOrWhiteSpace(password))
+    {
+        throw new InvalidOperationException(
+            "RedisConnections:Default:Password is required.");
+    }
 }
