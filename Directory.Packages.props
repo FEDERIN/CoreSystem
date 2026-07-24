@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
-    <PackageVersion Include="CoreSystem.Http" Version="1.0.2" />
+    <PackageVersion Include="CoreSystem.Http" Version="1.0.3" />
     <PackageVersion Include="CoreSystem.Memory" Version="1.0.0" />
     <PackageVersion Include="CoreSystem.Observability.Abstractions" Version="1.0.0" />
     <PackageVersion Include="CoreSystem.Redis" Version="1.0.0" />
