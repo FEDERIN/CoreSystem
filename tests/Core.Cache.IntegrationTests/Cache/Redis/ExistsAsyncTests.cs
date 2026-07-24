@@ -1,7 +1,7 @@
 ﻿using Core.Cache.IntegrationTests.Fixtures;
 using FluentAssertions;
 
-namespace Core.Cache.IntegrationTests.Cache;
+namespace Core.Cache.IntegrationTests.Cache.Redis;
 
 
 [Collection("Redis")]

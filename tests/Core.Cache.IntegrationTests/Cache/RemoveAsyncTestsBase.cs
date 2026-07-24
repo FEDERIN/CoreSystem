@@ -1,12 +1,12 @@
-﻿using Core.Cache.IntegrationTests.Fixtures;
+﻿using Core.Cache.Abstractions;
 using FluentAssertions;
 
 namespace Core.Cache.IntegrationTests.Cache;
 
-public sealed class RemoveAsyncTests(RedisContainerFixture fixture)
-    : RedisCacheTestBase(fixture),
-      IClassFixture<RedisContainerFixture>
+public abstract class RemoveAsyncTestsBase
 {
+    protected abstract ICoreCache Cache { get; }
+
     [Fact]
     public async Task RemoveAsync_WhenKeyExists_ShouldRemoveEntry()
     {

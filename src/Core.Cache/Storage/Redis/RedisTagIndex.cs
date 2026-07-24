@@ -1,4 +1,5 @@
 ﻿using Core.Cache.Storage.Abstractions;
+using Core.Cache.Storage.Abstractions.Redis;
 using StackExchange.Redis;
 
 namespace Core.Cache.Storage.Redis;
@@ -6,7 +7,7 @@ namespace Core.Cache.Storage.Redis;
 internal sealed class RedisTagIndex(
     IConnectionMultiplexer multiplexer,
     IKeyBuilder keyBuilder)
-    : ICacheTagIndex<RedisStorage>
+    : IRedisTagIndex
 {
     private readonly IDatabase _database = multiplexer.GetDatabase();
     private readonly IKeyBuilder _keyBuilder = keyBuilder;
@@ -96,9 +97,7 @@ internal sealed class RedisTagIndex(
         var members = await _database.SetMembersAsync(
             _keyBuilder.BuildTag(tag));
 
-        return members
-            .Select(x => x.ToString())
-            .ToArray();
+        return [.. members.Select(x => x.ToString())];
     }
 
     public Task<long> CountAsync(

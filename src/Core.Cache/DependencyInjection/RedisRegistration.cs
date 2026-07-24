@@ -3,6 +3,7 @@ using Core.Cache.Diagnostics;
 using Core.Cache.Options;
 using Core.Cache.Services.Rehydration;
 using Core.Cache.Storage.Abstractions;
+using Core.Cache.Storage.Abstractions.Redis;
 using Core.Cache.Storage.Redis;
 using Core.Cache.Storage.Rehydration;
 using Core.Observability.Abstractions;
@@ -21,7 +22,8 @@ internal static class RedisRegistration
     public static IServiceCollection AddCacheRedis(
     this IServiceCollection services, CacheOptions options)
     {
-        if (!options.Redis.Enabled ||
+        if (options.DefaultProvider != CacheProviderType.Redis ||
+            !options.Redis.Enabled ||
             options.Redis.Configuration is null)
         {
             services.AddSingleton<IHealthState, NoOpHealthState>();
@@ -37,7 +39,14 @@ internal static class RedisRegistration
         });
 
         services.AddSingleton<IKeyBuilder, RedisKeyBuilder>();
-        services.AddSingleton<ICacheTagIndex<RedisStorage>, RedisTagIndex>();
+
+        services.AddSingleton<RedisTagIndex>();
+
+        services.AddSingleton<ICacheTagIndex<RedisStorage>>(sp =>
+            sp.GetRequiredService<RedisTagIndex>());
+
+        services.AddSingleton<IRedisTagIndex>(sp =>
+            sp.GetRequiredService<RedisTagIndex>());
 
         services.AddSingleton<RedisStorage>(sp =>
             new RedisStorage(
@@ -57,12 +66,6 @@ internal static class RedisRegistration
 
         services.AddSingleton<IHealthCheckContributor,
             CacheHealthContributor>();
-
-
-        if (options.DefaultProvider != CacheProviderType.Redis)
-        {
-            return services;
-        }
 
         // Rehydration
         services.AddSingleton<IRehydrationSource, MemoryRehydrationSource>();
