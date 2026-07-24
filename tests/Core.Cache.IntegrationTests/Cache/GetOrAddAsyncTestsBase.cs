@@ -40,10 +40,6 @@ public abstract class GetOrAddAsyncTestsBase
         result.Should().NotBeNull();
 
         result.Should().BeEquivalentTo(cached);
-
-        //var exists = await Database.KeyExistsAsync("customer:15");
-
-        //exists.Should().BeTrue();
     }
 
     [Fact]
@@ -157,11 +153,6 @@ public abstract class GetOrAddAsyncTestsBase
         executions.Should().Be(2);
 
         result!.Id.Should().Be(2);
-
-        //var ttl = await Database.KeyTimeToLiveAsync("customer:20");
-
-        //ttl.Should().NotBeNull();
-        //ttl.Value.Should().BeLessThan(TimeSpan.FromMilliseconds(300));
     }
 
     [Fact]
