@@ -3,6 +3,6 @@
     internal sealed class OrderDto
     {
         public int Id { get; set; }
-        public string Number { get; set; }
+        public required string Number { get; set; }
     }
 }

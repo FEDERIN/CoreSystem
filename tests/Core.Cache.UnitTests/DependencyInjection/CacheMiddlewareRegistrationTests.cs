@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.TestHost;
-using Core.Cache.DependencyInjection;
-
+﻿using Core.Cache.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
 
 namespace Core.Cache.UnitTests.DependencyInjection;
 
@@ -11,16 +8,33 @@ public class CacheMiddlewareRegistrationTests
     [Fact]
     public async Task UseCoreCache_RegistersMiddlewareInPipeline()
     {
-        var builder = new WebHostBuilder()
-            .ConfigureServices(services => {
-                services.AddCoreCache(options => { });
-            })
-            .Configure(app => {
-                app.UseCoreCache();
-            });
+        var builder = WebApplication.CreateBuilder();
 
-        using var server = new TestServer(builder);
+        builder.Services.AddCoreCache(options => { });
 
-        Assert.NotNull(server.Host);
+        var app = builder.Build();
+
+        app.UseCoreCache();
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(app.Services);
+
+        await app.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public void UseCoreCache_WithoutRegistration_ShouldThrow()
+    {
+        var builder = WebApplication.CreateBuilder();
+
+        var app = builder.Build();
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            app.UseCoreCache();
+        });
+
+        Assert.Equal(CacheMessages.MissingRegistration, exception.Message);
     }
 }

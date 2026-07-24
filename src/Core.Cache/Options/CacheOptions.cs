@@ -69,8 +69,7 @@ public class CacheOptions
     /// stored in the fallback provider after the primary provider becomes
     /// available again.
     /// </remarks>
-    public TimeSpan RehydrationInterval { get; set; }
-        = TimeSpan.FromSeconds(30);
+    public TimeSpan RehydrationInterval { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
     /// 
@@ -90,7 +89,6 @@ public class CacheOptions
         Redis = new RedisOptions
         {
             Enabled = source.Redis.Enabled,
-            Connection = source.Redis.Connection,
             Configuration = source.Redis.Configuration
         };
     }
@@ -117,9 +115,4 @@ public class RedisOptions
     /// When disabled, the library uses the in-memory cache provider only.
     /// </remarks>
     public bool Enabled { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the name of the configuration section used to configure Redis.
-    /// </summary>
-    public string? Connection { get; set; }
 }

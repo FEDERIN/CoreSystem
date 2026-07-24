@@ -29,6 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CoreSystem.Http" />
 		<PackageReference Include="CoreSystem.Memory" />
 		<PackageReference Include="CoreSystem.Observability.Abstractions" />
 		<PackageReference Include="CoreSystem.Redis" />

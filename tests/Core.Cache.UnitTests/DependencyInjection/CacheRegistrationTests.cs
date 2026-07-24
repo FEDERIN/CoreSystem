@@ -40,6 +40,7 @@ public class CacheRegistrationTests
                     config.Password = "foobared";
                 }
             };
+            options.RehydrationInterval = TimeSpan.FromSeconds(15);
         });
 
         var provider = services.BuildServiceProvider();

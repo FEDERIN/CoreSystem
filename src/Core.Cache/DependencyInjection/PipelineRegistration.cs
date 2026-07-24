@@ -2,6 +2,7 @@
 using Core.Cache.Pipeline;
 using Core.Cache.Pipeline.Abstractions;
 using Core.Cache.Pipeline.Behaviors;
+using Core.Resilience.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Cache.DependencyInjection;
@@ -18,7 +19,11 @@ internal static class PipelineRegistration
         if (options.Redis.Enabled)
         {
             services.AddSingleton<FallbackBehavior>();
-            services.AddSingleton<ResilienceBehavior>();
+
+            if (services.Any(s => s.ServiceType == typeof(IResiliencePipelineProvider)))
+            {
+                services.AddSingleton<ResilienceBehavior>();
+            }
         }
 
         services.AddSingleton<ICachePipeline>(sp =>
@@ -32,7 +37,12 @@ internal static class PipelineRegistration
             if (options.Redis.Enabled)
             {
                 behaviors.Add(sp.GetRequiredService<FallbackBehavior>());
-                behaviors.Add(sp.GetRequiredService<ResilienceBehavior>());
+
+                var resilience = sp.GetService<ResilienceBehavior>();
+                if (resilience is not null)
+                {
+                    behaviors.Add(resilience);
+                }
             }
 
             return new CachePipeline(behaviors);

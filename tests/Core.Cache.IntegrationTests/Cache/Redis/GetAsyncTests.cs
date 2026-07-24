@@ -2,7 +2,7 @@
 using FluentAssertions;
 using StackExchange.Redis;
 
-namespace Core.Cache.IntegrationTests.Cache;
+namespace Core.Cache.IntegrationTests.Cache.Redis;
 
 public sealed class GetAsyncTests(RedisContainerFixture fixture)
     : RedisCacheTestBase(fixture),
