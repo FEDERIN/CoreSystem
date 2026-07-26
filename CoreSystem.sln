@@ -47,7 +47,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{EF9B0CA0
 		docs\Cache\Extensibility.md = docs\Cache\Extensibility.md
 		docs\Cache\GettingStarted.md = docs\Cache\GettingStarted.md
 		docs\Cache\HealthChecks.md = docs\Cache\HealthChecks.md
-		docs\Cache\HttpCache.md = docs\Cache\HttpCache.md
 		docs\Cache\index.md = docs\Cache\index.md
 		docs\Cache\Observability.md = docs\Cache\Observability.md
 		docs\Cache\Roadmap.md = docs\Cache\Roadmap.md

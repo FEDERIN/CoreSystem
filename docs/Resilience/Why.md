@@ -1,229 +1,65 @@
-# 🏗️ Architecture
+# Why CoreSystem.Resilience?
 
-`CoreSystem.Resilience` is built around the concept of **named resilience pipelines**.
+Modern distributed applications rarely fail because of business logic alone. They fail because of unreliable networks, overloaded services, temporary infrastructure issues, or downstream dependencies that become unavailable.
 
-Rather than coupling resilience strategies directly to application code, every protected operation is executed through an `IResiliencePipeline`. Each pipeline is composed of one or more resilience strategies, allowing infrastructure concerns to remain isolated from business logic.
+These failures are often **transient**, meaning that retrying the operation after a short delay is enough to recover successfully. Others require protecting the application by limiting requests or failing fast until the dependency becomes healthy again.
 
-The framework provides a lightweight abstraction over Polly while exposing a clean, provider-independent API that can evolve without affecting consuming applications.
+Without a consistent resilience strategy, every application ends up implementing its own retry loops, timeout handling, and circuit breaker logic. This leads to duplicated code, inconsistent behavior, and systems that become difficult to maintain and observe.
 
----
+CoreSystem.Resilience provides a unified and extensible way to apply resilience policies across your application while keeping business logic clean and focused.
 
-# Architectural Overview
+## The Problem
 
-Applications interact only with the public abstractions exposed by the framework.
+Applications communicating with external systems commonly experience situations such as:
 
-The `IResiliencePipelineProvider` resolves a named pipeline, which executes the configured resilience strategies before invoking the protected operation.
+- Temporary network interruptions.
+- Slow or unresponsive services.
+- Rate limiting from third-party APIs.
+- Database connectivity issues.
+- Short-lived cloud infrastructure failures.
+- Cascading failures between dependent services.
 
-```mermaid
-graph TD
+Handling these scenarios manually quickly becomes repetitive and error-prone.
 
-    App["Application"]
+## The Solution
 
-    App --> Provider["IResiliencePipelineProvider"]
+CoreSystem.Resilience centralizes resilience concerns into configurable pipelines that can be reused throughout your application.
 
-    Provider --> Pipeline["IResiliencePipeline"]
+Instead of scattering retry logic across the codebase, resilience policies are defined once and applied consistently.
 
-    Pipeline --> Retry["Retry Strategy"]
+Typical capabilities include:
 
-    Retry --> Timeout["Timeout Strategy"]
+- Retry for transient failures.
+- Timeout policies.
+- Circuit breakers.
+- Extensible resilience pipelines.
+- Built-in diagnostics and metrics.
+- Seamless integration with Dependency Injection.
 
-    Timeout --> Circuit["Circuit Breaker Strategy"]
+## Benefits
 
-    Circuit --> Execute["Protected Operation"]
-```
+Using CoreSystem.Resilience provides several advantages:
 
-This architecture separates business logic from resilience concerns while allowing new strategies to be introduced without changing application code.
+- Consistent resilience behavior across applications.
+- Separation of business logic from infrastructure concerns.
+- Reduced duplicated code.
+- Improved system stability.
+- Better observability through metrics and diagnostics.
+- Easy extensibility for custom resilience strategies.
 
----
+## When Should You Use It?
 
-# Design Goals
+CoreSystem.Resilience is recommended whenever your application communicates with external resources, including:
 
-The framework is designed around a few core principles.
+- HTTP APIs
+- Databases
+- Message brokers
+- Distributed caches
+- Cloud services
+- Any potentially unreliable dependency
 
-- Keep business code independent from resilience implementations.
-- Hide Polly behind a stable abstraction.
-- Support multiple named resilience pipelines.
-- Allow strategies to evolve without affecting consumers.
-- Integrate naturally with Dependency Injection.
-- Publish operational metrics using `System.Diagnostics.Metrics`.
+Even highly available services can experience transient failures. Applying resilience consistently helps applications remain responsive and recover automatically whenever possible.
 
----
+## Next Steps
 
-# Architectural Patterns
-
-`CoreSystem.Resilience` combines several well-established software design patterns.
-
-| Pattern | Purpose |
-|----------|---------|
-| **Builder** | Builds resilience pipelines from configuration. |
-| **Strategy** | Encapsulates retry, timeout, and circuit breaker behaviors. |
-| **Registry** | Stores named resilience pipelines. |
-| **Provider** | Resolves pipelines by their logical type. |
-| **Factory** | Creates Polly pipelines from framework configuration. |
-| **Decorator** | Collects metrics around pipeline execution. |
-
-These patterns keep the public API small while allowing the internal implementation to evolve independently.
-
----
-
-# Core Components
-
-The framework is composed of a small number of components, each with a single responsibility.
-
-| Component | Responsibility |
-|-----------|----------------|
-| **IResiliencePipeline** | Executes protected operations through the configured resilience strategies. |
-| **IResiliencePipelineProvider** | Resolves resilience pipelines by their logical type. |
-| **PipelineBuilder** | Builds Polly pipelines from framework options. |
-| **PipelineRegistry** | Stores all registered pipelines. |
-| **Retry Strategy Builder** | Configures retry policies. |
-| **Timeout Strategy Builder** | Configures timeout policies. |
-| **Circuit Breaker Strategy Builder** | Configures circuit breaker policies. |
-| **ResilienceMetrics** | Publishes execution metrics using `System.Diagnostics.Metrics`. |
-
----
-
-# Pipeline Construction
-
-During application startup, the framework builds every configured pipeline.
-
-Each strategy contributes its configuration to the final pipeline before it is registered.
-
-```mermaid
-graph LR
-
-    Options["ResilienceOptions"]
-
-    Options --> Builder["PipelineBuilder"]
-
-    Builder --> Retry["Retry"]
-
-    Builder --> Timeout["Timeout"]
-
-    Builder --> Circuit["Circuit Breaker"]
-
-    Circuit --> Polly["Polly Resilience Pipeline"]
-
-    Polly --> Registry["Pipeline Registry"]
-```
-
-Once registration completes, pipelines become immutable and can be safely reused throughout the application's lifetime.
-
----
-
-# Execution Lifecycle
-
-Every protected operation follows the same execution flow.
-
-The application resolves a pipeline, which executes each configured resilience strategy before invoking the protected operation.
-
-```mermaid
-sequenceDiagram
-
-    actor Client
-
-    participant Provider as IResiliencePipelineProvider
-    participant Pipeline as IResiliencePipeline
-    participant Retry
-    participant Timeout
-    participant CircuitBreaker
-    participant Operation
-
-    Client->>Provider: GetPipeline()
-    Provider-->>Client: Pipeline
-
-    Client->>Pipeline: ExecuteAsync()
-
-    Pipeline->>Retry: Execute
-    Retry->>Timeout: Continue
-    Timeout->>CircuitBreaker: Continue
-    CircuitBreaker->>Operation: Execute()
-
-    Operation-->>CircuitBreaker: Result
-    CircuitBreaker-->>Timeout: Result
-    Timeout-->>Retry: Result
-    Retry-->>Pipeline: Result
-    Pipeline-->>Client: Result
-```
-
-Each strategy participates transparently in the execution without requiring changes to application code.
-
----
-
-# Metrics Flow
-
-Every pipeline execution can publish operational metrics.
-
-Metrics are emitted using `System.Diagnostics.Metrics` and can be collected by any OpenTelemetry-compatible exporter.
-
-```mermaid
-graph LR
-
-    Operation["Protected Operation"]
-
-    Operation --> Pipeline["Resilience Pipeline"]
-
-    Pipeline --> Metrics["Resilience Metrics"]
-
-    Metrics --> SDM["System.Diagnostics.Metrics"]
-
-    SDM --> OTel["OpenTelemetry"]
-
-    OTel --> Backend["Monitoring Platform"]
-```
-
-Typical monitoring platforms include:
-
-- Prometheus
-- Grafana
-- Azure Monitor
-- Datadog
-- OTLP-compatible collectors
-
----
-
-# Dependency Injection
-
-The framework integrates with the standard ASP.NET Core Dependency Injection container.
-
-```mermaid
-graph TD
-
-    Registration["AddResilience()"]
-
-    Registration --> Options["ResilienceOptions"]
-
-    Registration --> Builder["PipelineBuilder"]
-
-    Builder --> Registry["PipelineRegistry"]
-
-    Registry --> Provider["IResiliencePipelineProvider"]
-
-    Provider --> Application["Application Services"]
-```
-
-Applications only depend on the public abstractions exposed by the framework.
-
----
-
-# Design Principles
-
-When extending the framework, follow these principles.
-
-* Single Responsibility Principle
-* Composition over inheritance
-* Keep strategies independent
-* Prefer abstractions over concrete implementations
-* Integrate through dependency injection
-* Preserve asynchronous execution
-* Maintain provider independence
-
-Following these principles helps ensure that custom extensions remain consistent with the framework architecture.
-
----
-
-# Summary
-
-`CoreSystem.Resilience` provides a modular architecture for executing protected operations through reusable resilience pipelines.
-
-By combining named pipelines, configurable strategies, dependency injection, and built-in metrics, the framework delivers a clean and extensible resilience layer while keeping application code focused on business logic.
+Continue with the **Architecture** section to understand how resilience pipelines are composed and how policies are executed internally.
