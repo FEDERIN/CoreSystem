@@ -17,8 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CC99C87C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CC99C87C-68B7-48BD-9903-804D628BC53A}"
 	ProjectSection(SolutionItems) = preProject
+		docs\GettingStarted.md = docs\GettingStarted.md
 		docs\idempotency-flow.mmd = docs\idempotency-flow.mmd
 		docs\idempotency-flow.png = docs\idempotency-flow.png
+		docs\index.md = docs\index.md
 		docs\observability-flow.mmd = docs\observability-flow.mmd
 		docs\observability-flow.png = docs\observability-flow.png
 	EndProjectSection
@@ -27,6 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{EF9A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{41535C27-8E2F-4AA0-8F66-C658319FCF79}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\documentation.yml = .github\workflows\documentation.yml
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
@@ -38,17 +41,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreSystem.Samples.Core", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{EF9B0CA0-5268-4D9A-A85C-7966829B1033}"
 	ProjectSection(SolutionItems) = preProject
-		docs\Cache\00-README.md = docs\Cache\00-README.md
-		docs\Cache\01-getting-started.md = docs\Cache\01-getting-started.md
-		docs\Cache\02-Why.md = docs\Cache\02-Why.md
-		docs\Cache\03-architecture-and-pipeline.md = docs\Cache\03-architecture-and-pipeline.md
-		docs\Cache\04-configuration.md = docs\Cache\04-configuration.md
-		docs\Cache\05-basic-usage.md = docs\Cache\05-basic-usage.md
-		docs\Cache\06-http-cache.md = docs\Cache\06-http-cache.md
-		docs\Cache\07-observability.md = docs\Cache\07-observability.md
-		docs\Cache\08-health-checks.md = docs\Cache\08-health-checks.md
-		docs\Cache\09-extensibility.md = docs\Cache\09-extensibility.md
-		docs\Cache\10-Roadmap.md = docs\Cache\10-Roadmap.md
+		docs\Cache\Architecture.md = docs\Cache\Architecture.md
+		docs\Cache\BasicUsage.md = docs\Cache\BasicUsage.md
+		docs\Cache\Configuration.md = docs\Cache\Configuration.md
+		docs\Cache\Extensibility.md = docs\Cache\Extensibility.md
+		docs\Cache\GettingStarted.md = docs\Cache\GettingStarted.md
+		docs\Cache\HealthChecks.md = docs\Cache\HealthChecks.md
+		docs\Cache\HttpCache.md = docs\Cache\HttpCache.md
+		docs\Cache\index.md = docs\Cache\index.md
+		docs\Cache\Observability.md = docs\Cache\Observability.md
+		docs\Cache\Roadmap.md = docs\Cache\Roadmap.md
+		docs\Cache\Why.md = docs\Cache\Why.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{82C00201-5B4D-466F-AF60-CB4729ED69D9}"
@@ -88,17 +91,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Resilience", "src\Core
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resilience", "Resilience", "{1A0ED75C-5E25-4205-A0A6-F55BBB1B129B}"
 	ProjectSection(SolutionItems) = preProject
-		docs\Resilience\00-README.md = docs\Resilience\00-README.md
-		docs\Resilience\01-getting-started.md = docs\Resilience\01-getting-started.md
-		docs\Resilience\02-architecture.md = docs\Resilience\02-architecture.md
-		docs\Resilience\03-pipelines.md = docs\Resilience\03-pipelines.md
-		docs\Resilience\04-configuration.md = docs\Resilience\04-configuration.md
-		docs\Resilience\05-retry.md = docs\Resilience\05-retry.md
-		docs\Resilience\06-timeout.md = docs\Resilience\06-timeout.md
-		docs\Resilience\07-circuit-breaker.md = docs\Resilience\07-circuit-breaker.md
-		docs\Resilience\08-metrics.md = docs\Resilience\08-metrics.md
-		docs\Resilience\09-extensibility.md = docs\Resilience\09-extensibility.md
-		docs\Resilience\10-Roadmap.md = docs\Resilience\10-Roadmap.md
+		docs\Resilience\Architecture.md = docs\Resilience\Architecture.md
+		docs\Resilience\CircuitBreaker.md = docs\Resilience\CircuitBreaker.md
+		docs\Resilience\Configuration.md = docs\Resilience\Configuration.md
+		docs\Resilience\Extensibility.md = docs\Resilience\Extensibility.md
+		docs\Resilience\GettingStarted.md = docs\Resilience\GettingStarted.md
+		docs\Resilience\index.md = docs\Resilience\index.md
+		docs\Resilience\Observability.md = docs\Resilience\Observability.md
+		docs\Resilience\Retry.md = docs\Resilience\Retry.md
+		docs\Resilience\Roadmap.md = docs\Resilience\Roadmap.md
+		docs\Resilience\Timeout.md = docs\Resilience\Timeout.md
+		docs\Resilience\Why.md = docs\Resilience\Why.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Resilience.UnitTests", "tests\Core.Resilience.UnitTests\Core.Resilience.UnitTests.csproj", "{00D19029-AEB1-47BC-A1DE-0DD185578A38}"
@@ -106,6 +109,27 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Http", "src\Core.Http\Core.Http.csproj", "{92AC1E64-DFD1-4D1F-B420-83331DD9BC71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Http.UnitTests", "tests\Core.Http.UnitTests\Core.Http.UnitTests.csproj", "{F26BDA0B-0679-4EE1-8015-0683DAFCDF25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{ADD117B0-3FA6-4A01-A1AD-D972B60D3978}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{A1AAA596-34A2-4EB2-89E3-7969F5266E7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{2D5DC536-3BF0-4636-8856-2A25B06E421B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{C41DB119-8A36-4E58-A566-4F24B948AAD9}"
+	ProjectSection(SolutionItems) = preProject
+		Architecture.md = Architecture.md
+		BestPractices.md = BestPractices.md
+		DependencyInjection.md = DependencyInjection.md
+		index.md = index.md
+		OpenTelemetry.md = OpenTelemetry.md
+		Performance.md = Performance.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{F5B84E9E-1C6F-45C9-8148-FE5AD45148B4}"
+	ProjectSection(SolutionItems) = preProject
+		mkdocs.yml = mkdocs.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -212,6 +236,10 @@ Global
 		{00D19029-AEB1-47BC-A1DE-0DD185578A38} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{92AC1E64-DFD1-4D1F-B420-83331DD9BC71} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F26BDA0B-0679-4EE1-8015-0683DAFCDF25} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{ADD117B0-3FA6-4A01-A1AD-D972B60D3978} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{A1AAA596-34A2-4EB2-89E3-7969F5266E7F} = {ADD117B0-3FA6-4A01-A1AD-D972B60D3978}
+		{2D5DC536-3BF0-4636-8856-2A25B06E421B} = {ADD117B0-3FA6-4A01-A1AD-D972B60D3978}
+		{C41DB119-8A36-4E58-A566-4F24B948AAD9} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

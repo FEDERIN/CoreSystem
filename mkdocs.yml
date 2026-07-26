@@ -1,0 +1,73 @@
+site_name: CoreSystem
+site_description: Production-ready .NET libraries for modern applications
+site_author: Federin Pastor Gutierrez Ortiz
+site_url: https://federin.github.io/CoreSystem/
+
+repo_name: FEDERIN/CoreSystem
+repo_url: https://github.com/FEDERIN/CoreSystem
+
+theme:
+  name: material
+  language: en
+
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+    - search.suggest
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+
+nav:
+  - Home: index.md
+
+  - Getting Started: GettingStarted.md
+
+  - Packages:
+
+      - Cache:
+          - Overview: Cache/index.md
+          - Getting Started: Cache/GettingStarted.md
+          - Why: Cache/Why.md
+          - Architecture: Cache/Architecture.md
+          - Configuration: Cache/Configuration.md
+          - Basic Usage: Cache/BasicUsage.md
+          - HTTP Cache: Cache/HttpCache.md
+          - Health Checks: Cache/HealthChecks.md
+          - Observability: Cache/Observability.md
+          - Extensibility: Cache/Extensibility.md
+          - Roadmap: Cache/Roadmap.md
+
+      - Resilience:
+          - Overview: Resilience/index.md
+          - Getting Started: Resilience/GettingStarted.md
+          - Why: Resilience/Why.md
+          - Architecture: Resilience/Architecture.md
+          - Configuration: Resilience/Configuration.md
+          - Retry: Resilience/Retry.md
+          - Timeout: Resilience/Timeout.md
+          - Circuit Breaker: Resilience/CircuitBreaker.md
+          - Observability: Resilience/Observability.md
+          - Extensibility: Resilience/Extensibility.md
+          - Roadmap: Resilience/Roadmap.md
+  - Guides:
+      - Home: Guides/index.md
+      - Architecture: Guides/Architecture.md
+      - Dependency Injection: Guides/DependencyInjection.md
+      - OpenTelemetry: Guides/OpenTelemetry.md
+      - Best Practices: Guides/BestPractices.md
+      - Performance: Guides/Performance.md
