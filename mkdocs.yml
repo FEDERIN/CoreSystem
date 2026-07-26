@@ -21,14 +21,15 @@ theme:
 
 plugins:
   - search
+  - mermaid2
 
 markdown_extensions:
   - admonition
   - tables
   - toc:
       permalink: true
+
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.inlinehilite
 

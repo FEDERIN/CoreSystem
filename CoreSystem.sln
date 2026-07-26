@@ -128,6 +128,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{F5B84E9E-1C6F-45C9-8148-FE5AD45148B4}"
 	ProjectSection(SolutionItems) = preProject
 		mkdocs.yml = mkdocs.yml
+		requirements.txt = requirements.txt
 	EndProjectSection
 EndProject
 Global
