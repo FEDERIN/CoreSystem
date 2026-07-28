@@ -13,13 +13,13 @@ CoreSystem.Resilience provides a clean abstraction over resilience strategies fo
 
 ## 📚 Table of Contents
 
-🚀 Getting Started
-🏗️ Architecture
-🧩 Core Components
-⚙️ Pipeline Configuration
-🔁 Retry Strategy
-⏱️ Timeout Strategy
-🔌 Circuit Breaker Strategy
-📊 Observability
-🧩 Extensibility
-🗺️ Roadmap
+- 🚀 Getting Started
+- 🏗️ Architecture
+- 🧩 Core Components
+- ⚙️ Pipeline Configuration
+- 🔁 Retry Strategy
+- ⏱️ Timeout Strategy
+- 🔌 Circuit Breaker Strategy
+- 📊 Observability
+- 🧩 Extensibility
+- 🗺️ Roadmap

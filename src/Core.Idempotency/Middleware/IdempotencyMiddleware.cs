@@ -8,5 +8,5 @@ internal sealed class IdempotencyMiddleware(
     IIdempotencyService service)
 {
     public Task InvokeAsync(HttpContext context)
-        => service.HandleAsync(context, next);
+        => service.HandleAsync(context, next, context.RequestAborted);
 }

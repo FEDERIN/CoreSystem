@@ -17,11 +17,15 @@ public interface IResponseCapture
     /// <param name="next">
     /// The delegate that represents the next middleware in the request pipeline.
     /// </param>
+    /// <param name="cancellationToken">
+    /// A token used to cancel the execution.
+    /// </param>
     /// <returns>
     /// A <see cref="CapturedResponse"/> containing the captured response body,
     /// status code, and headers.
     /// </returns>
     Task<CapturedResponse> CaptureAsync(
         HttpContext context,
-        RequestDelegate next);
+        RequestDelegate next,
+        CancellationToken cancellationToken = default);
 }

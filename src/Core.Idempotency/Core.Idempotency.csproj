@@ -6,23 +6,35 @@
 	<Nullable>enable</Nullable>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageId>CoreSystem.Idempotency</PackageId>
-	<Version>1.2.2</Version>
-<PackageReleaseNotes>$([System.IO.File]::ReadAllText($(MSBuildProjectDirectory)/CHANGELOG.md))</PackageReleaseNotes>
+	<Version>1.0.0</Version>
 	<Authors>Federin Pastor Gutierrez Ortiz</Authors>
-	<Description>Distributed Idempotency engine for .NET 8 with PostgreSQL and Redis providers, featuring native OpenTelemetry integration.</Description>
+	<Description>
+		Production-ready idempotency framework for ASP.NET Core that guarantees exactly-once request processing with Redis and PostgreSQL providers, request fingerprinting, response replay, and native OpenTelemetry support.
+	</Description>
 	<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
-	<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Idempotency</PackageProjectUrl>
+	<PackageProjectUrl>https://federin.github.io/CoreSystem/Idempotency</PackageProjectUrl>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageTags>Idempotency;PostgreSQL;Redis;OpenTelemetry;Observability;CloudNative</PackageTags>
+	<PackageTags>
+		Idempotency;
+		ASP.NET Core;
+		Middleware;
+		Distributed Systems;
+		Exactly Once;
+		Redis;
+		PostgreSQL;
+		OpenTelemetry;
+		Observability;
+		Cloud Native
+	</PackageTags>
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="CoreSystem.Http" />
     <PackageReference Include="CoreSystem.Observability.Abstractions" />
     <PackageReference Include="CoreSystem.Redis" />
     <PackageReference Include="CoreSystem.Serialization" />
     <PackageReference Include="Dapper" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Npgsql" />
@@ -32,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
-	  <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
 	  <None Include="LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
@@ -41,8 +52,12 @@
   </ItemGroup>
 	
  <ItemGroup>
-	 <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-		 <_Parameter1>Core.Idempotency.Tests</_Parameter1>
-	 </AssemblyAttribute>
+	 <InternalsVisibleTo Include="Core.Idempotency.UnitTests" />
+	 <InternalsVisibleTo Include="Core.Idempotency.IntegrationTests" />
+	 <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+ </ItemGroup>
+	
+ <ItemGroup>
+   <Folder Include="Internal\Capture\" />
  </ItemGroup>
 </Project>

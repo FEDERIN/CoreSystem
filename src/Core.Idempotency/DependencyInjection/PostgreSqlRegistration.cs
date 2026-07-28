@@ -14,8 +14,7 @@ internal static class PostgreSqlRegistration
         if (string.IsNullOrWhiteSpace(
                 options.PostgreSql.ConnectionString))
         {
-            throw new InvalidOperationException(
-                "PostgreSQL connection string is required.");
+            throw new InvalidOperationException(IdempotencyMessages.PostgreSqlConnectionStringRequired);
         }
 
         services.AddSingleton<PostgresIdempotencyStorage>();

@@ -27,11 +27,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="Xunit" />
+	  <ProjectReference Include="..\..\src\Core.Http\Core.Http.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Core.Http\Core.Http.csproj" />
+		<Using Include="Xunit" />
 	</ItemGroup>
 
 </Project>

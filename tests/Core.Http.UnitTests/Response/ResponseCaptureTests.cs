@@ -19,7 +19,8 @@ public class ResponseCaptureTests
             async ctx =>
             {
                 await ctx.Response.WriteAsync("Hello World");
-            });
+            }, 
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(
@@ -40,7 +41,8 @@ public class ResponseCaptureTests
             {
                 ctx.Response.StatusCode = StatusCodes.Status201Created;
                 return Task.CompletedTask;
-            });
+            },
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(
@@ -61,7 +63,8 @@ public class ResponseCaptureTests
             {
                 ctx.Response.Headers["X-Test"] = "Value";
                 return Task.CompletedTask;
-            });
+            },
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(response.Headers.ContainsKey("X-Test"));
@@ -85,7 +88,8 @@ public class ResponseCaptureTests
                 ctx.Response.Headers.TransferEncoding = "chunked";
 
                 return Task.CompletedTask;
-            });
+            },
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.DoesNotContain(
@@ -111,7 +115,8 @@ public class ResponseCaptureTests
             async ctx =>
             {
                 await ctx.Response.WriteAsync("Hello");
-            });
+            },
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Same(
@@ -135,7 +140,8 @@ public class ResponseCaptureTests
             async ctx =>
             {
                 await ctx.Response.WriteAsync("Hello");
-            });
+            },
+            TestContext.Current.CancellationToken);
 
         // Assert
         original.Position = 0;
@@ -158,7 +164,8 @@ public class ResponseCaptureTests
         // Act
         var response = await _sut.CaptureAsync(
             context,
-            _ => Task.CompletedTask);
+            _ => Task.CompletedTask,
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(response.Body);
@@ -184,7 +191,8 @@ public class ResponseCaptureTests
                     "Value2");
 
                 return Task.CompletedTask;
-            });
+            },
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(

@@ -17,7 +17,8 @@ internal static class RedisRegistration
     {
         if (options.Redis.Configuration is null)
         {
-            return services;
+            throw new InvalidOperationException(
+                IdempotencyMessages.RedisConfigurationRequired);
         }
 
         services.AddCoreRedis();

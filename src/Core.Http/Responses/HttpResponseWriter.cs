@@ -8,7 +8,8 @@ internal sealed class HttpResponseWriter
 {
     public async Task WriteAsync(
         HttpContext context,
-        CapturedResponse response)
+        CapturedResponse response,
+        CancellationToken cancellationToken = default)
     {
         context.Response.StatusCode = response.StatusCode;
 
@@ -22,6 +23,8 @@ internal sealed class HttpResponseWriter
 
         context.Response.ContentLength = response.Body.Length;
 
-        await context.Response.Body.WriteAsync(response.Body);
+        await context.Response.Body.WriteAsync(
+            response.Body,
+            cancellationToken);
     }
 }

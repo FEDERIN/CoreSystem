@@ -2,7 +2,6 @@
 using Core.Cache.Http;
 using Core.Cache.Options;
 using Core.Resilience.Abstractions;
-using Core.Resilience.DependencyInjection;
 using Core.Resilience.Options;
 using Core.Serialization.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -23,8 +22,9 @@ public static class CacheRegistration
         var options = new CacheOptions();
         configure(options);
 
+        services.AddSingleton(options);
+
         services
-            .AddSingleton<CacheOptions>(options)
             .AddLogging()
             .AddCoreSerialization(serialization =>
             {
@@ -36,15 +36,8 @@ public static class CacheRegistration
 
         if (options.Redis.Enabled)
         {
-            ConfigureDefaultRedisPipeline(options.Resilience);
-
-            services.AddCoreResilience(resilience =>
-            {
-                resilience.CopyFrom(options.Resilience);
-            });
+            services.PostConfigure<ResilienceOptions>(ConfigureRedisDefaults);
         }
-
-
 
         services
             .AddCachePipeline(options)
@@ -66,20 +59,22 @@ public static class CacheRegistration
         return app.UseMiddleware<CacheMiddleware>();
     }
 
-    private static void ConfigureDefaultRedisPipeline(
-    ResilienceOptions resilience)
+    private static void ConfigureRedisDefaults(ResilienceOptions options)
     {
-        resilience.AddPipeline(PipelineType.Redis, pipeline =>
+        if (options.ContainsPipeline(PipelineType.Redis))
+        {
+            ApplyRedisExceptions(options.GetPipeline(PipelineType.Redis));
+            return;
+        }
+
+        options.AddPipeline(PipelineType.Redis, pipeline =>
         {
             pipeline.Retry = new RetryOptions
             {
                 MaxRetryAttempts = 1,
                 Delay = TimeSpan.FromMilliseconds(100),
                 BackoffType = BackoffType.Constant
-            }
-            .Handle<RedisConnectionException>()
-            .Handle<RedisTimeoutException>()
-            .Handle<TimeoutException>();
+            };
 
             pipeline.CircuitBreaker = new CircuitBreakerOptions
             {
@@ -87,15 +82,27 @@ public static class CacheRegistration
                 SamplingDuration = TimeSpan.FromSeconds(30),
                 MinimumThroughput = 2,
                 BreakDuration = TimeSpan.FromSeconds(15)
-            }
-            .Handle<RedisConnectionException>()
-            .Handle<RedisTimeoutException>()
-            .Handle<TimeoutException>();
+            };
 
             pipeline.Timeout = new TimeoutOptions
             {
                 Timeout = TimeSpan.FromSeconds(2)
             };
+
+            ApplyRedisExceptions(pipeline);
         });
+    }
+
+    private static void ApplyRedisExceptions(PipelineOptions pipeline)
+    {
+        pipeline.Retry?
+            .Handle<RedisConnectionException>()
+            .Handle<RedisTimeoutException>()
+            .Handle<TimeoutException>();
+
+        pipeline.CircuitBreaker?
+            .Handle<RedisConnectionException>()
+            .Handle<RedisTimeoutException>()
+            .Handle<TimeoutException>();
     }
 }

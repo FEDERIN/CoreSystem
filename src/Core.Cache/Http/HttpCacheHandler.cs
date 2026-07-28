@@ -44,13 +44,13 @@ internal sealed class HttpCacheHandler(
 
         if (cached is not null)
         {
-            await responseWriter.WriteAsync(context, cached);
+            await responseWriter.WriteAsync(context, cached, context.RequestAborted);
 
             return;
         }
 
         var response =
-            await responseCapture.CaptureAsync(context, next);
+            await responseCapture.CaptureAsync(context, next, context.RequestAborted);
 
         if (!responsePolicy.CanCache(context))
             return;

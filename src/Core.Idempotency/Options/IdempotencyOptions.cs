@@ -24,9 +24,20 @@ public class IdempotencyOptions
     public IdempotencyProviderType Provider { get; set; }
         = IdempotencyProviderType.Redis;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public RedisOptions Redis { get; } = new();
 
+    /// <summary>
+    /// 
+    /// </summary>
     public PostgreSqlOptions PostgreSql { get; } = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public FingerprintOptions Fingerprint { get; } = new();
 
     /// <summary>
     /// Gets or sets an optional prefix applied to all generated cache keys.

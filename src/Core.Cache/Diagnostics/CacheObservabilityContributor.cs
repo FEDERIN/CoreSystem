@@ -7,7 +7,7 @@ namespace Core.Cache.Diagnostics;
 internal sealed class CacheObservabilityContributor : IObservabilityContributor
 {
     public IEnumerable<string> GetActivitySources()
-        => ["Core.Cache"];
+        => [CacheDiagnosticsConstants.MeterName];
 
     public void ConfigureObservability(IServiceCollection services, IConfiguration configuration)
     {

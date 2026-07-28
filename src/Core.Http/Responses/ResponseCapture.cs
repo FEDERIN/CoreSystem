@@ -8,7 +8,8 @@ internal sealed class ResponseCapture
 {
     public async Task<CapturedResponse> CaptureAsync(
         HttpContext context,
-        RequestDelegate next)
+        RequestDelegate next,
+        CancellationToken cancellationToken = default)
     {
         var original = context.Response.Body;
 
@@ -33,7 +34,9 @@ internal sealed class ResponseCapture
 
             memory.Position = 0;
 
-            await memory.CopyToAsync(original);
+            await memory.CopyToAsync(
+                original,
+                cancellationToken);
         }
     }
 
