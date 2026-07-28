@@ -4,13 +4,13 @@ namespace Core.Idempotency.Abstractions;
 
 internal interface IIdempotencyStorage
 {
-    Task<IdempotencyResponse?> GetAsync(
+    Task<IdempotencyEntry?> GetAsync(
         string key,
         CancellationToken ct = default);
 
     Task SetAsync(
         string key,
-        IdempotencyResponse response,
+        IdempotencyEntry entry,
         TimeSpan? expiration = null,
         CancellationToken ct = default);
 }

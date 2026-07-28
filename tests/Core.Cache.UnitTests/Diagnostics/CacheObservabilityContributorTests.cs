@@ -19,7 +19,7 @@ public sealed class CacheObservabilityContributorTests
 
         // Assert
         sources.Should().ContainSingle();
-        sources.Should().Contain("Core.Cache");
+        sources.Should().Contain(CacheDiagnosticsConstants.MeterName);
     }
 
     [Fact]

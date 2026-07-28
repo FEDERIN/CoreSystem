@@ -32,8 +32,6 @@ public abstract class RedisCacheTestBase
         {
             options.DefaultProvider = CacheProviderType.Redis;
 
-            // Si luego decides usar un prefijo, solo cambia esta línea.
-            // options.InstanceName = "CoreSystem";
             InstanceName = options.InstanceName ?? string.Empty;
 
             options.Redis.Configuration = config =>

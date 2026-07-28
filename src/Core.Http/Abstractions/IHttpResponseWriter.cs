@@ -19,10 +19,15 @@ public interface IHttpResponseWriter
     /// The captured response containing the body, status code, and headers
     /// to write.
     /// </param>
+    /// <param name="cancellationToken">
+    /// A token used to cancel the execution.
+    /// </param>
     /// <returns>
     /// A task that represents the asynchronous write operation.
     /// </returns>
     Task WriteAsync(
         HttpContext context,
-        CapturedResponse response);
+        CapturedResponse response,
+        CancellationToken cancellationToken = default
+        );
 }

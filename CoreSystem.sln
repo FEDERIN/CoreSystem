@@ -131,6 +131,44 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		requirements.txt = requirements.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Idempotency.UnitTests", "tests\Core.Idempotency.UnitTests\Core.Idempotency.UnitTests.csproj", "{7A20533B-9815-433E-8CBB-2513601FD241}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Idempotency.IntegrationTests", "tests\Core.Idempotency.IntegrationTests\Core.Idempotency.IntegrationTests.csproj", "{61EFB95B-34AC-4A47-BCAE-F7023DF1C16E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Idempotency", "Idempotency", "{F23B9C51-047F-4FA3-A1FB-ABC56E11E661}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Idempotency\Architecture.md = docs\Idempotency\Architecture.md
+		docs\Idempotency\Configuration.md = docs\Idempotency\Configuration.md
+		docs\Idempotency\Fingerprinting.md = docs\Idempotency\Fingerprinting.md
+		docs\Idempotency\GettingStarted.md = docs\Idempotency\GettingStarted.md
+		docs\Idempotency\idempotency-flow.mmd = docs\Idempotency\idempotency-flow.mmd
+		docs\Idempotency\idempotency-flow.png = docs\Idempotency\idempotency-flow.png
+		docs\Idempotency\index.md = docs\Idempotency\index.md
+		docs\Idempotency\Observability.md = docs\Idempotency\Observability.md
+		docs\Idempotency\RequestLifecycle.md = docs\Idempotency\RequestLifecycle.md
+		docs\Idempotency\ResponseCaching.md = docs\Idempotency\ResponseCaching.md
+		Roadmap.md = Roadmap.md
+		docs\Idempotency\Roadmap.md = docs\Idempotency\Roadmap.md
+		docs\Idempotency\Why.md = docs\Idempotency\Why.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{BECA65DF-EC9E-4F58-89D4-B6DFF54ADB11}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Idempotency\Providers\PostgreSQL.md = docs\Idempotency\Providers\PostgreSQL.md
+		docs\Idempotency\Providers\Redis.md = docs\Idempotency\Providers\Redis.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Errors", "Errors", "{2EAB20A6-DA00-40BD-B40D-5B1F38BB30AD}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Idempotency\Errors\idempotency-fingerprint-mismatch.md = docs\Idempotency\Errors\idempotency-fingerprint-mismatch.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{814BD65F-D5D4-4796-8EEB-83863F5F4CCD}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Idempotency\images\idempotency-flow.mmd = docs\Idempotency\images\idempotency-flow.mmd
+		docs\Idempotency\images\idempotency-flow.png = docs\Idempotency\images\idempotency-flow.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +247,14 @@ Global
 		{F26BDA0B-0679-4EE1-8015-0683DAFCDF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F26BDA0B-0679-4EE1-8015-0683DAFCDF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F26BDA0B-0679-4EE1-8015-0683DAFCDF25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A20533B-9815-433E-8CBB-2513601FD241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A20533B-9815-433E-8CBB-2513601FD241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A20533B-9815-433E-8CBB-2513601FD241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A20533B-9815-433E-8CBB-2513601FD241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EFB95B-34AC-4A47-BCAE-F7023DF1C16E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EFB95B-34AC-4A47-BCAE-F7023DF1C16E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EFB95B-34AC-4A47-BCAE-F7023DF1C16E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EFB95B-34AC-4A47-BCAE-F7023DF1C16E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -240,6 +286,12 @@ Global
 		{A1AAA596-34A2-4EB2-89E3-7969F5266E7F} = {ADD117B0-3FA6-4A01-A1AD-D972B60D3978}
 		{2D5DC536-3BF0-4636-8856-2A25B06E421B} = {ADD117B0-3FA6-4A01-A1AD-D972B60D3978}
 		{C41DB119-8A36-4E58-A566-4F24B948AAD9} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{7A20533B-9815-433E-8CBB-2513601FD241} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{61EFB95B-34AC-4A47-BCAE-F7023DF1C16E} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{F23B9C51-047F-4FA3-A1FB-ABC56E11E661} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{BECA65DF-EC9E-4F58-89D4-B6DFF54ADB11} = {F23B9C51-047F-4FA3-A1FB-ABC56E11E661}
+		{2EAB20A6-DA00-40BD-B40D-5B1F38BB30AD} = {F23B9C51-047F-4FA3-A1FB-ABC56E11E661}
+		{814BD65F-D5D4-4796-8EEB-83863F5F4CCD} = {F23B9C51-047F-4FA3-A1FB-ABC56E11E661}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

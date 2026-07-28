@@ -4,212 +4,151 @@
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Idempotency?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.15.1-purple?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
 ![Storage](https://img.shields.io/badge/Storage-Redis%20%7C%20PostgreSQL-green?style=for-the-badge)
-
 
 ---
 
 # 📖 Overview
 
-**CoreSystem.Idempotency** is a high-performance .NET 8 library designed to guarantee that critical operations such as payments, order creation, and transactional workflows are executed **exactly once**, even in scenarios involving retries, duplicated requests, or network failures.
+**CoreSystem.Idempotency** is a production-ready idempotency framework for ASP.NET Core that guarantees critical operations are executed **exactly once**, even when clients retry requests because of timeouts, network failures, or duplicate submissions.
 
-The library provides a distributed idempotency engine with multi-provider persistence support and built-in observability integrations.
+The framework transparently intercepts incoming requests, validates request fingerprints, persists successful responses, and safely replays previously completed operations.
 
----
-
-# 🎯 Why This Library?
-
-Implementing idempotency manually often introduces:
-
-- Boilerplate middleware
-- Duplicate business execution
-- Inconsistent storage logic
-- Poor traceability
-- Lack of metrics and diagnostics
-
-This library solves those challenges through a unified and extensible architecture.
+Designed for distributed systems, it provides provider-independent storage, built-in OpenTelemetry instrumentation, and a highly extensible architecture.
 
 ---
 
 # ✨ Features
 
-| Feature | Description |
-|---|---|
-| ⚡ High Performance | Optimized request interception pipeline |
-| 🗄 Multi-Provider | Redis or PostgreSQL support |
-| 📊 Observability | OpenTelemetry metrics & tracing |
-| ♻ Response Caching | Stores and replays original responses |
-| 🔒 Duplicate Prevention | Prevents re-execution of business operations |
-| 🧩 Extensible | Provider-based architecture |
-| 🏗 Auto Schema | Automatic PostgreSQL schema generation |
+- ✅ ASP.NET Core middleware
+- ✅ Exactly-once request processing
+- ✅ Response replay
+- ✅ Request fingerprint validation
+- ✅ Duplicate request detection
+- ✅ Redis provider
+- ✅ PostgreSQL provider
+- ✅ Configurable expiration
+- ✅ Configurable HTTP methods
+- ✅ Configurable request fingerprinting
+- ✅ OpenTelemetry Metrics
+- ✅ Production-ready architecture
 
 ---
 
-# 🧠 Architecture
+# 🚀 Quick Start
 
-## 🏗️ Architecture & Workflow
-
-![Idempotency Flow](https://raw.githubusercontent.com/FEDERIN/CoreSystem/main/docs/idempotency-flow.png)
-
----
-
-# 📦 Supported Providers
-
-| Provider | Technology |
-|---|---|
-| PostgreSQL | Dapper |
-| Redis | StackExchange.Redis |
-
----
-
-# 📊 Observability
-
-The library exposes native OpenTelemetry instrumentation for:
-
-- Request duration
-- Cache hits/misses
-- Duplicate detection
-- Storage latency
-- Exception tracking
-
-Compatible with:
-
-- Jaeger
-- Prometheus
-- Grafana
-- OTLP Collectors
-
----
-
-# 📦 Installation
+Install the package
 
 ```bash
 dotnet add package CoreSystem.Idempotency
 ```
 
----
+Register the services
 
-# ⚙️ Configuration
-
-## 🛠️ Infrastructure Setup (PostgreSQL)
-
-> [!IMPORTANT]
-> **Database Provisioning:** The library automatically creates the required table (`idempotency_keys`) and indexes, but it **requires the physical database to exist** in the server.
-
-Before running the application, ensure the database specified in your connection string is created:
-
-```sql
-CREATE DATABASE idempotency_db; -- or the name in your connection string (ConnectionStrings.Idempotency)
+```csharp
+builder.Services.AddIdempotencyProvider(builder.Configuration);
 ```
 
-### 🕒 Expiration Format (`TimeSpan`)
+Enable the middleware
 
-The `Expiration` field follows the standard .NET `TimeSpan` string format: `[d.]hh:mm:ss`. 
+```csharp
+app.UseIdempotency();
+```
 
-> [!CAUTION]
-> **Hour Overflow:** In .NET, the hour component must be between 0 and 23. If you specify `24:00:00`, the system will interpret it as **24 days** instead of 24 hours.
-
-To avoid misconfigurations, use the following guide:
-
-| Desired Duration | Config Value | Explanation |
-| :--- | :--- | :--- |
-| **1 Hour** | `01:00:00` | Standard `hh:mm:ss` |
-| **23 Hours** | `23:00:00` | Maximum hour value |
-| **24 Hours (1 Day)** | `1.00:00:00` | Use `d.hh:mm:ss` (note the dot) |
-| **30 Hours** | `1.06:00:00` | 1 Day + 6 Hours |
-| **7 Days** | `7.00:00:00` | 7 Days |
-
-## appsettings.json
+Configure the provider
 
 ```json
 {
-  "ConnectionStrings": {
-    "Idempotency": "Host=localhost;Port=5432;Database=idempotency_db;Username=admin;Password=admin"
-  },
   "Idempotency": {
     "Enabled": true,
-    "Provider": "PostgreSQL",
-    "AllowedMethods": [ "POST", "PUT", "DELETE" ],
+    "Provider": "Redis",
     "HeaderName": "X-Idempotency-Key",
-    "Expiration": "06:00:00",
-    "MeterName": "CoreSystem.Idempotency"
+    "AllowedMethods": [ "POST", "PUT", "DELETE" ],
+    "Expiration": "06:00:00"
   }
 }
 ```
 
----
-# 🚀 Quick Start
-
-## Register Services
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddIdempotencyProvider(builder.Configuration);
-
-var app = builder.Build();
-```
+That's all.
 
 ---
 
-## Enable Middleware
+# 🔒 How It Works
 
-```csharp
-app.UseIdempotency();
-
-app.Run();
-```
-
----
-
-# ⚙️ Request Lifecycle
-
-1. Client sends a request with `X-Idempotency-Key`
-2. Middleware checks storage provider
-3. If the key exists:
-   - Cached response is returned
-4. If the key does not exist:
-   - Business logic executes normally
-   - Response is persisted
-   - Response is returned to the client
-5. Telemetry is exported automatically
+1. The client sends a request with an **Idempotency-Key**.
+2. The middleware checks the configured storage provider.
+3. If the key already exists:
+   - The request fingerprint is validated.
+   - The stored response is replayed.
+4. Otherwise:
+   - The request executes normally.
+   - The response is persisted.
+   - Future retries return the stored response.
 
 ---
 
-# 🛠 Requirements
+# 📦 Supported Providers
 
-- .NET 8 SDK
-- PostgreSQL 16+ or Redis 7+
-- Optional OpenTelemetry Collector
+| Provider | Status |
+|----------|--------|
+| Redis | ✅ |
+| PostgreSQL | ✅ |
 
 ---
 
-# 🧪 Future Roadmap
+# 📊 Observability
 
-- [ ] SQL Server Provider
-- [ ] MongoDB Provider
+CoreSystem.Idempotency publishes OpenTelemetry metrics out of the box.
+
+Available telemetry includes:
+
+- Request processing
+- Duplicate detection
+- Response replay
+- Storage latency
+- Payload size
+
+Compatible with:
+
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Jaeger
+
+---
+
+# 📚 Documentation
+
+Complete documentation is available in the project documentation.
+
+It includes:
+
+- Getting Started
+- Architecture
+- Configuration
+- Fingerprinting
+- Response Replay
+- Storage Providers
+- Observability
+- Best Practices
+- Error Reference
+- Roadmap
+
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome.
+Contributions, bug reports, and feature requests are welcome.
 
-To contribute:
+If you'd like to contribute:
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a Pull Request
+1. Fork the repository.
+2. Create a feature branch.
+3. Submit a Pull Request.
 
 ---
 
 # 📄 License
 
 MIT License © Federin Pastor Gutierrez Ortiz
-
----
-
-# ⭐ Support
-
-If this project helped you, consider giving it a star on GitHub.

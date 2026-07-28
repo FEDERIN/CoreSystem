@@ -20,11 +20,17 @@ The framework is built on top of a modular ecosystem of specialized packages for
 |----------|----------------|
 | **CoreSystem.Cache** | Cache orchestration, execution pipeline, HTTP response caching, Cache-Aside, observability, and resilience |
 | **CoreSystem.Cache.Memory** | In-memory cache provider |
-| **CoreSystem.Cache.Redis** | Redis cache provider |
+| **CoreSystem.Redis** | Redis connectivity and distributed storage infrastructure |
 | **CoreSystem.Serialization** | JSON, MessagePack, and Protocol Buffers serialization |
+| **CoreSystem.Http** | HTTP abstractions used by the middleware |
+| **CoreSystem.Resilience** | Resilience policies, retries, timeouts, and fault handling for storage operations |
+| **CoreSystem.Observability** *(Optional)* | Ready-to-use OpenTelemetry instrumentation, metrics, tracing, and diagnostics for CoreSystem packages |
+| **CoreSystem.Observability.Abstractions** | Shared observability contracts for implementing custom instrumentation and integrations |
+
 
 > Installing **CoreSystem.Cache** automatically installs the required provider and serialization packages through NuGet dependencies.
 
+> **Optional:** Install **CoreSystem.Observability** to enable built-in OpenTelemetry metrics and tracing. Install **CoreSystem.Observability.Abstractions** only if you need to build custom observability components or integrations.
 ---
 
 ## 📚 Table of Contents

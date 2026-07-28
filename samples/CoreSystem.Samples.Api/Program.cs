@@ -1,7 +1,10 @@
+using Core.Cache.Abstractions;
 using Core.Cache.DependencyInjection;
+using Core.Cache.Options;
 using Core.Idempotency.Abstractions;
 using Core.Idempotency.DependencyInjection;
 using Core.Observability;
+using Core.Resilience.DependencyInjection;
 using CoreSystem.Samples.Core.Services;
 using Serilog;
 using StackExchange.Redis;
@@ -12,9 +15,22 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IMyService, MyService>();
 
 
+var cacheOptions = new CacheOptions();
 
-var applyIdempotency = false;
+builder.Configuration
+    .GetSection("Core:Cache")
+    .Bind(cacheOptions);
 
+if (cacheOptions.DefaultProvider == CacheProviderType.Redis 
+    && cacheOptions.Redis.Enabled)
+{
+    builder.Services.AddCoreResilience(options =>
+    {
+        builder.Configuration
+            .GetSection("Core:Resilience")
+            .Bind(options);
+    });
+}
 
 var redisSection = builder.Configuration.GetSection("RedisConnections:MainRedis");
 
@@ -27,8 +43,6 @@ builder.Services.AddCoreIdempotency(options =>
     if (!options.Enabled)
         return;
 
-    applyIdempotency = true;
-
     if (options.Provider == IdempotencyProviderType.Redis)
     {
         var redisConfiguration = CreateRedisConfiguration(redisSection);
@@ -39,9 +53,7 @@ builder.Services.AddCoreIdempotency(options =>
 
 builder.Services.AddCoreCache(options =>
 {
-    builder.Configuration
-        .GetSection("Core:Cache")
-        .Bind(options);
+    options.CopyFrom(cacheOptions);
 
     if (!options.Redis.Enabled)
         return;
@@ -58,15 +70,15 @@ builder.AddObservability(
     serviceName: "Minimal.Test.Api",
     serviceNamespace: "CoreSystems");
 
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
+app.UseExceptionHandler();
+
 app.UseObservabilityEndpoints();
-
-if (applyIdempotency)
-    app.UseCoreIdempotency();
-
+app.UseCoreIdempotency();
 app.UseCoreCache();
-
 
 try
 {

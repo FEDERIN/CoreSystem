@@ -1,4 +1,5 @@
 ﻿using Core.Idempotency.Abstractions;
+using Core.Idempotency.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
@@ -12,7 +13,7 @@ internal sealed class HeaderIdempotencyKeyResolver
         out string key)
     {
         var idempotency =
-            context.Request.Headers["Idempotency-Key"];
+            context.Request.Headers[HeaderNames.IdempotencyKey];
 
         if (StringValues.IsNullOrEmpty(idempotency))
         {
@@ -20,8 +21,7 @@ internal sealed class HeaderIdempotencyKeyResolver
             return false;
         }
 
-        key =
-            $"{context.Request.Method}:{context.Request.Path}:{idempotency}";
+        key = idempotency.ToString();
 
         return true;
     }

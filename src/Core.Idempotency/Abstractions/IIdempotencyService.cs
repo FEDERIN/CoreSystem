@@ -6,5 +6,6 @@ internal interface IIdempotencyService
 {
     Task HandleAsync(
         HttpContext context,
-        RequestDelegate next);
+        RequestDelegate next,
+        CancellationToken cancellationToken = default);
 }

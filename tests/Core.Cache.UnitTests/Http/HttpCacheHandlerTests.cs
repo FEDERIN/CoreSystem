@@ -119,7 +119,10 @@ public sealed class HttpCacheHandlerTests
         // Assert
 
         _responseWriter.Verify(
-            x => x.WriteAsync(context, response),
+            x => x.WriteAsync(
+                context,
+                response,
+                It.IsAny<CancellationToken>()),
             Times.Once);
 
         _responseCapture.VerifyNoOtherCalls();
@@ -155,7 +158,8 @@ public sealed class HttpCacheHandlerTests
         _responseCapture
             .Setup(x => x.CaptureAsync(
                 context,
-                It.IsAny<RequestDelegate>()))
+                It.IsAny<RequestDelegate>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new CapturedResponse
             {
                 Body = [],
@@ -174,7 +178,8 @@ public sealed class HttpCacheHandlerTests
         _responseCapture.Verify(
             x => x.CaptureAsync(
                 context,
-                It.IsAny<RequestDelegate>()),
+                It.IsAny<RequestDelegate>(),
+                It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -208,7 +213,8 @@ public sealed class HttpCacheHandlerTests
         _responseCapture
             .Setup(x => x.CaptureAsync(
                 context,
-                It.IsAny<RequestDelegate>()))
+                It.IsAny<RequestDelegate>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new CapturedResponse
             {
                 Body = [],
@@ -258,7 +264,8 @@ public sealed class HttpCacheHandlerTests
         _responseCapture
             .Setup(x => x.CaptureAsync(
                 context,
-                It.IsAny<RequestDelegate>()))
+                It.IsAny<RequestDelegate>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new CapturedResponse
             {
                 Body = [],

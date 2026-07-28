@@ -1,4 +1,5 @@
-﻿using Core.Idempotency.Abstractions;
+﻿using Core.Http.DependencyInjection;
+using Core.Idempotency.Abstractions;
 using Core.Idempotency.Middleware;
 using Core.Idempotency.Options;
 using Core.Serialization;
@@ -24,7 +25,10 @@ public static class IdempotencyRegistration
             {
                 serialization.DefaultSerializer = SerializerType.Json;
             })
-            .AddIdempotencyDiagnostics();
+            .AddCoreHttp()
+            .AddIdempotencyDiagnostics()
+            .AddFingerprint()
+            .AddExceptionHandling();
 
         if (!options.Enabled)
         {
@@ -42,18 +46,22 @@ public static class IdempotencyRegistration
                 break;
 
             default:
-                throw new NotSupportedException(
-                    $"Provider '{options.Provider}' is not supported.");
+                throw new NotSupportedException(IdempotencyMessages.UnsupportedProvider(options.Provider));
         }
-
         services.AddIdempotencyServices();
 
         return services;
     }
 
-    public static IApplicationBuilder UseCoreIdempotency(
-        this IApplicationBuilder app)
+    public static IApplicationBuilder UseCoreIdempotency(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
+        if (app.ApplicationServices.GetService<IIdempotencyService>() is null)
+        {
+            throw new InvalidOperationException(IdempotencyMessages.MissingRegistration);
+        }
+
         return app.UseMiddleware<IdempotencyMiddleware>();
     }
 }

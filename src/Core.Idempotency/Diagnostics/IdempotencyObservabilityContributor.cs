@@ -8,7 +8,7 @@ internal sealed class IdempotencyObservabilityContributor
     : IObservabilityContributor
 {
     public IEnumerable<string> GetActivitySources()
-        => ["Core.Idempotency"];
+        => [IdempotencyDiagnosticsConstants.MeterName];
 
     public void ConfigureObservability(
         IServiceCollection services,

@@ -23,7 +23,7 @@ public class HttpResponseWriterTests
         };
 
         // Act
-        await _writer.WriteAsync(context, response);
+        await _writer.WriteAsync(context, response, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(
@@ -49,7 +49,7 @@ public class HttpResponseWriterTests
         };
 
         // Act
-        await _writer.WriteAsync(context, response);
+        await _writer.WriteAsync(context, response, TestContext.Current.CancellationToken);
 
         // Assert
         context.Response.Body.Position = 0;
@@ -80,7 +80,7 @@ public class HttpResponseWriterTests
         };
 
         // Act
-        await _writer.WriteAsync(context, response);
+        await _writer.WriteAsync(context, response, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(
@@ -106,7 +106,7 @@ public class HttpResponseWriterTests
         };
 
         // Act
-        await _writer.WriteAsync(context, response);
+        await _writer.WriteAsync(context, response, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(
@@ -134,7 +134,7 @@ public class HttpResponseWriterTests
         };
 
         // Act
-        await _writer.WriteAsync(context, response);
+        await _writer.WriteAsync(context, response, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(
