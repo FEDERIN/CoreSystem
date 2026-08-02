@@ -169,6 +169,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{814BD6
 		docs\Idempotency\images\idempotency-flow.png = docs\Idempotency\images\idempotency-flow.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http", "Http", "{0021FB38-8236-472E-A6EF-D2DE8C7EC0E3}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Http\Architecture.md = docs\Http\Architecture.md
+		docs\Http\GettingStarted.md = docs\Http\GettingStarted.md
+		docs\Http\index.md = docs\Http\index.md
+		docs\Http\Why.md = docs\Http\Why.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -292,6 +300,7 @@ Global
 		{BECA65DF-EC9E-4F58-89D4-B6DFF54ADB11} = {F23B9C51-047F-4FA3-A1FB-ABC56E11E661}
 		{2EAB20A6-DA00-40BD-B40D-5B1F38BB30AD} = {F23B9C51-047F-4FA3-A1FB-ABC56E11E661}
 		{814BD65F-D5D4-4796-8EEB-83863F5F4CCD} = {F23B9C51-047F-4FA3-A1FB-ABC56E11E661}
+		{0021FB38-8236-472E-A6EF-D2DE8C7EC0E3} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

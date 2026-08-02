@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Core.Http.UnitTests.Response;
 
-public class HttpResponseWriterTests
+public sealed class HttpResponseWriterTests
 {
     private readonly HttpResponseWriter _writer = new();
 
@@ -19,6 +19,7 @@ public class HttpResponseWriterTests
         {
             StatusCode = StatusCodes.Status201Created,
             Body = [],
+            ContentType = "application/json",
             Headers = new Dictionary<string, string[]>()
         };
 
@@ -45,6 +46,7 @@ public class HttpResponseWriterTests
         {
             StatusCode = StatusCodes.Status200OK,
             Body = body,
+            ContentType = "application/json",
             Headers = new Dictionary<string, string[]>()
         };
 
@@ -73,6 +75,7 @@ public class HttpResponseWriterTests
         {
             StatusCode = StatusCodes.Status200OK,
             Body = [],
+            ContentType = "application/json",
             Headers = new Dictionary<string, string[]>
             {
                 ["x-test"] = ["value"]
@@ -102,6 +105,7 @@ public class HttpResponseWriterTests
         {
             StatusCode = StatusCodes.Status200OK,
             Body = body,
+            ContentType = "application/json",
             Headers = new Dictionary<string, string[]>()
         };
 
@@ -130,6 +134,7 @@ public class HttpResponseWriterTests
         {
             StatusCode = StatusCodes.Status200OK,
             Body = body,
+            ContentType = "application/json",
             Headers = new Dictionary<string, string[]>()
         };
 

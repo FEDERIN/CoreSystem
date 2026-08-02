@@ -59,9 +59,10 @@ In this example, the operation is executed up to **three additional times** befo
 |----------|-------------|---------|
 | Enabled | Enables or disables the strategy. | `true` |
 | MaxRetryAttempts | Maximum retry attempts. | `3` |
-| Delay | Initial delay between retries. | `00:00:02` |
+| Delay | Initial delay between retries. | `00:00:00.200` |
 | BackoffType | Delay calculation strategy. | Exponential |
 | UseJitter | Adds random delay to reduce retry storms. | `true` |
+| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
 
 ---
 
@@ -171,6 +172,29 @@ Only configured exception types are considered retryable.
 
 ---
 
+# Matching Inner Exceptions
+
+Some frameworks wrap transient exceptions before propagating them.
+
+Examples include:
+
+- Entity Framework Core
+- HttpClient
+- Azure SDK
+- AWS SDK
+- gRPC
+
+Enable `IncludeInnerExceptions` to inspect the complete exception chain when matching handled exceptions.
+
+```csharp
+pipeline.AddRetry(retry =>
+{
+    retry.Handle<NpgsqlException>();
+
+    retry.IncludeInnerExceptions = true;
+});
+
+---
 # Execution Flow
 
 ```mermaid
@@ -224,6 +248,8 @@ These metrics are compatible with OpenTelemetry exporters such as:
 
 ✅ Combine Retry with Circuit Breaker for unstable dependencies.
 
+✅ Enable IncludeInnerExceptions when using frameworks that wrap transient exceptions.
+
 ---
 
 # Common Scenarios
@@ -244,6 +270,12 @@ Retry is generally **not** recommended for:
 - Business rule violations
 - Non-idempotent operations unless carefully designed
 
+Retry is especially useful for:
+
+- EF Core transient database failures
+- Redis
+- HttpClient
+- Cloud SDKs
 ---
 
 # Summary

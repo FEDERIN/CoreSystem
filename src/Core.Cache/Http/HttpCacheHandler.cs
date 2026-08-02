@@ -70,6 +70,7 @@ internal sealed class HttpCacheHandler(
             {
                 Body = response.Body,
                 StatusCode = response.StatusCode,
+                ContentType = response.ContentType,
                 Headers = response.Headers
             },
             expiration,

@@ -102,6 +102,7 @@ public sealed class HttpCacheHandlerTests
         {
             Body = [],
             StatusCode = 200,
+            ContentType = "application/json",
             Headers = new Dictionary<string, string[]>()
         };
 
@@ -164,6 +165,7 @@ public sealed class HttpCacheHandlerTests
             {
                 Body = [],
                 StatusCode = 200,
+                ContentType = "application/json",
                 Headers = new Dictionary<string, string[]>()
             });
 
@@ -219,6 +221,7 @@ public sealed class HttpCacheHandlerTests
             {
                 Body = [],
                 StatusCode = 200,
+                ContentType = "application/json",
                 Headers = new Dictionary<string, string[]>()
             });
 
@@ -270,6 +273,7 @@ public sealed class HttpCacheHandlerTests
             {
                 Body = [],
                 StatusCode = 200,
+                ContentType = "application/json",
                 Headers = new Dictionary<string, string[]>()
             });
 

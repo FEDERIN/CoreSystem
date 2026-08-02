@@ -189,4 +189,171 @@ public sealed class RetryStrategyBuilderTests
         // Assert
         Assert.Equal(6, attempts);
     }
+
+    [Fact]
+    public async Task Configure_ShouldRetry_WhenInnerExceptionMatches()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            Retry = new RetryOptions
+            {
+                Enabled = true,
+                MaxRetryAttempts = 2,
+                Delay = TimeSpan.Zero,
+                IncludeInnerExceptions = true
+            }
+            .Handle<TimeoutException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        var attempts = 0;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            pipeline.ExecuteAsync(_ =>
+            {
+                attempts++;
+
+                throw new InvalidOperationException(
+                    "Outer exception",
+                    new TimeoutException("Transient failure"));
+            }, TestContext.Current.CancellationToken).AsTask());
+
+        // Assert
+        Assert.Equal(3, attempts);
+        Assert.NotNull(exception.InnerException);
+        Assert.IsType<TimeoutException>(exception.InnerException);
+    }
+
+    [Fact]
+    public async Task Configure_ShouldNotRetry_WhenInnerExceptionMatchesAndOptionIsDisabled()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            Retry = new RetryOptions
+            {
+                Enabled = true,
+                MaxRetryAttempts = 2,
+                Delay = TimeSpan.Zero,
+                IncludeInnerExceptions = false
+            }
+            .Handle<TimeoutException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        var attempts = 0;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            pipeline.ExecuteAsync(_ =>
+            {
+                attempts++;
+
+                throw new InvalidOperationException(
+                    "Outer exception",
+                    new TimeoutException("Transient failure"));
+            }, TestContext.Current.CancellationToken).AsTask());
+
+        // Assert
+        Assert.Equal(1, attempts);
+        Assert.NotNull(exception.InnerException);
+        Assert.IsType<TimeoutException>(exception.InnerException);
+    }
+
+    [Fact]
+    public async Task Configure_ShouldRetry_WhenNestedInnerExceptionMatches()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            Retry = new RetryOptions
+            {
+                Enabled = true,
+                MaxRetryAttempts = 2,
+                Delay = TimeSpan.Zero,
+                IncludeInnerExceptions = true
+            }
+            .Handle<TimeoutException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        var attempts = 0;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            pipeline.ExecuteAsync(_ =>
+            {
+                attempts++;
+
+                throw new InvalidOperationException(
+                    "Level 1",
+                    new HttpRequestException(
+                        "Level 2",
+                        new TimeoutException("Transient failure")));
+            }, TestContext.Current.CancellationToken).AsTask());
+
+        // Assert
+        Assert.Equal(3, attempts);
+
+        Assert.IsType<HttpRequestException>(exception.InnerException);
+        Assert.IsType<TimeoutException>(exception.InnerException.InnerException);
+    }
+
+    [Fact]
+    public async Task Configure_ShouldRetry_WhenAggregateExceptionContainsMatchingException()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            Retry = new RetryOptions
+            {
+                Enabled = true,
+                MaxRetryAttempts = 2,
+                Delay = TimeSpan.Zero,
+                IncludeInnerExceptions = true
+            }
+            .Handle<TimeoutException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        var attempts = 0;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<AggregateException>(() =>
+            pipeline.ExecuteAsync(_ =>
+            {
+                attempts++;
+
+                throw new AggregateException(
+                    new TimeoutException("Transient failure"));
+            }, TestContext.Current.CancellationToken).AsTask());
+
+        // Assert
+        Assert.Equal(3, attempts);
+
+        Assert.Single(exception.InnerExceptions);
+        Assert.IsType<TimeoutException>(exception.InnerExceptions[0]);
+    }
 }

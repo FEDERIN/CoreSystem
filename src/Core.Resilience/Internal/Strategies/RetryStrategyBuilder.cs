@@ -52,8 +52,9 @@ internal sealed class RetryStrategyBuilder(
 
         if (options.HandledExceptions.Count > 0)
         {
-            retry.ShouldHandle =
-                PredicateBuilderFactory.Create(options.HandledExceptions);
+            retry.ShouldHandle = options.IncludeInnerExceptions
+                ? ExceptionHandlingPredicateFactory.CreateRetryPredicate(options.HandledExceptions)
+                : PredicateBuilderFactory.Create(options.HandledExceptions);
         }
 
         return retry;

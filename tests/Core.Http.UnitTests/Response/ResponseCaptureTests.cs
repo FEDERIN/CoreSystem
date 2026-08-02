@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Core.Http.UnitTests.Response;
 
-public class ResponseCaptureTests
+public sealed class ResponseCaptureTests
 {
     private readonly ResponseCapture _sut = new();
 

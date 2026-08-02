@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Http.UnitTests.DependencyInjection;
 
-public class HttpRegistrationTests
+public sealed class HttpRegistrationTests
 {
     [Fact]
     public void AddCoreHttp_ShouldRegisterSingletonServices()

@@ -104,6 +104,8 @@ pipeline.AddRetry(retry =>
     retry.BackoffType = BackoffType.Exponential;
 
     retry.UseJitter = true;
+
+    retry.IncludeInnerExceptions = false;
 });
 ```
 
@@ -116,6 +118,7 @@ pipeline.AddRetry(retry =>
 | Delay            | Initial retry delay              | `500 ms`    |
 | BackoffType      | Delay calculation strategy       | Exponential |
 | UseJitter        | Randomizes retry delays          | `true`      |
+| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
 
 ---
 
@@ -157,6 +160,8 @@ pipeline.AddCircuitBreaker(circuitBreaker =>
     circuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
 
     circuitBreaker.SamplingDuration = TimeSpan.FromMinutes(1);
+
+    circuitBreaker.IncludeInnerExceptions = false;
 });
 ```
 
@@ -169,6 +174,7 @@ pipeline.AddCircuitBreaker(circuitBreaker =>
 | MinimumThroughput | Minimum requests before evaluation           | `10`         |
 | SamplingDuration  | Evaluation window                            | `1 minute`   |
 | BreakDuration     | Time the circuit remains open                | `30 seconds` |
+| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
 
 ---
 
@@ -185,7 +191,7 @@ pipeline.AddRetry(retry =>
 });
 ```
 
-Or multiple exception types.
+Or register multiple exception types at once.
 
 ```csharp
 retry.Handle(
@@ -197,6 +203,50 @@ Only matching exceptions will trigger the configured strategy.
 
 ---
 
+## Matching Inner Exceptions
+
+Some frameworks wrap the original exception before propagating it.
+
+Examples include:
+
+- Entity Framework Core
+- HttpClient
+- Azure SDK
+- AWS SDK
+- gRPC
+
+Enable `IncludeInnerExceptions` to inspect the complete exception chain when matching handled exceptions.
+
+```csharp
+pipeline.AddRetry(retry =>
+{
+    retry.Handle<NpgsqlException>();
+
+    retry.IncludeInnerExceptions = true;
+});
+```
+
+With this configuration, the retry strategy will also match exceptions wrapped by other frameworks, for example:
+
+```text
+InvalidOperationException
+└── NpgsqlException
+    └── SocketException
+```
+
+The same option is available for the Circuit Breaker strategy.
+
+```csharp
+pipeline.AddCircuitBreaker(circuitBreaker =>
+{
+    circuitBreaker.Handle<HttpRequestException>();
+
+    circuitBreaker.IncludeInnerExceptions = true;
+});
+```
+
+> By default, `IncludeInnerExceptions` is `false`, preserving Polly's standard exception matching behavior.
+----
 # Using appsettings.json
 
 The framework supports configuration binding using the .NET Options pattern.
@@ -214,7 +264,8 @@ Example:
             "MaxRetryAttempts": 3,
             "Delay": "00:00:00.500",
             "BackoffType": "Exponential",
-            "UseJitter": true
+            "UseJitter": true,
+            "IncludeInnerExceptions": true
           },
           "Timeout": {
             "Enabled": true,
@@ -225,7 +276,8 @@ Example:
             "FailureRatio": 0.5,
             "MinimumThroughput": 10,
             "SamplingDuration": "00:01:00",
-            "BreakDuration": "00:00:30"
+            "BreakDuration": "00:00:30",
+            "IncludeInnerExceptions": true
           }
         }
       }

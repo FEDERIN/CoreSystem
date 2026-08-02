@@ -52,6 +52,12 @@ nav:
           - Extensibility: Cache/Extensibility.md
           - Roadmap: Cache/Roadmap.md
 
+      - Http:
+          - Overview: Http/index.md
+          - Getting Started: Http/GettingStarted.md
+          - Why: Http/Why.md
+          - Architecture: Http/Architecture.md
+  
       - Resilience:
           - Overview: Resilience/index.md
           - Getting Started: Resilience/GettingStarted.md
@@ -65,22 +71,22 @@ nav:
           - Extensibility: Resilience/Extensibility.md
           - Roadmap: Resilience/Roadmap.md
             
-          - Idempotency:
-              - Overview: Idempotency/index.md
-              - Getting Started: Idempotency/GettingStarted.md
-              - Why Idempotency?: Idempotency/Why.md
-              - Architecture: Idempotency/Architecture.md
-              - Configuration: Idempotency/Configuration.md
-              - Providers:
-                  - Redis: Idempotency/Providers/Redis.md
-                  - PostgreSQL: Idempotency/Providers/PostgreSQL.md
-              - Fingerprinting: Idempotency/Fingerprinting.md
-              - Response Replay: Idempotency/ResponseReplay.md
-              - Request Lifecycle: Idempotency/RequestLifecycle.md
-              - Observability: Idempotency/Observability.md
-              - Errors:
-                  - Fingerprint Mismatch: Idempotency/Errors/idempotency-fingerprint-mismatch.md
-              - Roadmap: Idempotency/Roadmap.md
+      - Idempotency:
+          - Overview: Idempotency/index.md
+          - Getting Started: Idempotency/GettingStarted.md
+          - Why Idempotency?: Idempotency/Why.md
+          - Architecture: Idempotency/Architecture.md
+          - Configuration: Idempotency/Configuration.md
+          - Providers:
+              - Redis: Idempotency/Providers/Redis.md
+              - PostgreSQL: Idempotency/Providers/PostgreSQL.md
+          - Fingerprinting: Idempotency/Fingerprinting.md
+          - Response Replay: Idempotency/ResponseReplay.md
+          - Request Lifecycle: Idempotency/RequestLifecycle.md
+          - Observability: Idempotency/Observability.md
+          - Errors:
+              - Fingerprint Mismatch: Idempotency/Errors/idempotency-fingerprint-mismatch.md
+          - Roadmap: Idempotency/Roadmap.md
   - Guides:
       - Home: Guides/index.md
       - Architecture: Guides/Architecture.md

@@ -1,13 +1,10 @@
-﻿using Core.Serialization.Abstractions;
-using Core.Serialization.Json;
+﻿using Core.Serialization.Json;
 using Core.Serialization.MessagePack;
 using Core.Serialization.Protobuf;
 using FluentAssertions;
 using MessagePack;
-using Org.BouncyCastle.Ocsp;
-using Xunit;
 
-namespace Core.Serialization.UnitTests;
+namespace Core.Serialization.UnitTests.Factory;
 
 public class SerializerFactoryTests
 {

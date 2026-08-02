@@ -11,7 +11,7 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 		<PackageId>CoreSystem.Http</PackageId>
-		<Version>1.0.4</Version>
+		<Version>1.0.6</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>
 			Production-ready HTTP infrastructure library for .NET 8 providing reusable components for capturing and replaying HTTP responses in ASP.NET Core applications.
@@ -30,12 +30,12 @@
 		</PackageTags>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Http</PackageProjectUrl>
+		<PackageProjectUrl>https://federin.github.io/CoreSystem/Http</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<AssemblyVersion>1.0.4.0</AssemblyVersion>
-		<FileVersion>1.0.4.0</FileVersion>
-		<InformationalVersion>1.0.4</InformationalVersion>
+		<AssemblyVersion>1.0.6.0</AssemblyVersion>
+		<FileVersion>1.0.6.0</FileVersion>
+		<InformationalVersion>1.0.6</InformationalVersion>
 		<PackageReleaseNotes>
 			Initial stable release.
 			• HTTP response capture

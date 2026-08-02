@@ -21,6 +21,8 @@ public static class HttpRegistration
     public static IServiceCollection AddCoreHttp(
         this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         services.AddSingleton<IResponseCapture, ResponseCapture>();
         services.AddSingleton<IHttpResponseWriter, HttpResponseWriter>();
 

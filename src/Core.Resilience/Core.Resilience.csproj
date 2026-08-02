@@ -9,16 +9,16 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Resilience</PackageId>
-		<Version>1.0.3</Version>
-		<AssemblyVersion>1.0.3</AssemblyVersion>
-		<FileVersion>1.0.3.0</FileVersion>
-		<InformationalVersion>1.0.3</InformationalVersion>
+		<Version>1.0.4</Version>
+		<AssemblyVersion>1.0.4</AssemblyVersion>
+		<FileVersion>1.0.4.0</FileVersion>
+		<InformationalVersion>1.0.4</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>
 			Production-ready resilience framework for .NET 8 with named pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry integration.
 		</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/docs/Resilience</PackageProjectUrl>
+		<PackageProjectUrl>https://federin.github.io/CoreSystem/Resilience</PackageProjectUrl>
 		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<RepositoryType>git</RepositoryType>
@@ -41,7 +41,6 @@
 
   <ItemGroup>
     <PackageReference Include="CoreSystem.Observability.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Polly" />
 	<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
   </ItemGroup>

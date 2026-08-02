@@ -9,14 +9,14 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Cache</PackageId>
-		<Version>1.1.0</Version>
-		<AssemblyVersion>1.1.0</AssemblyVersion>
-		<FileVersion>1.1.0.0</FileVersion>
-		<InformationalVersion>1.1.0</InformationalVersion>
+		<Version>1.2.0</Version>
+		<AssemblyVersion>1.2.0</AssemblyVersion>
+		<FileVersion>1.2.0.0</FileVersion>
+		<InformationalVersion>1.2.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Distributed cache abstraction for .NET 8 supporting Redis and In-Memory providers, with native OpenTelemetry integration.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Cache</PackageProjectUrl>
+		<PackageProjectUrl>https://federin.github.io/CoreSystem/Cache</PackageProjectUrl>
 		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageTags>Distributed;Redis;MemoryCache;OpenTelemetry;Observability;CloudNative</PackageTags>
@@ -31,13 +31,10 @@
 	<ItemGroup>
 		<PackageReference Include="CoreSystem.Http" />
 		<PackageReference Include="CoreSystem.Memory" />
-		<PackageReference Include="CoreSystem.Observability.Abstractions" />
 		<PackageReference Include="CoreSystem.Redis" />
 		<PackageReference Include="CoreSystem.Resilience" />
 		<PackageReference Include="CoreSystem.Serialization" />
-		<PackageReference Include="MessagePack" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 	</ItemGroup>
 
 	<ItemGroup>

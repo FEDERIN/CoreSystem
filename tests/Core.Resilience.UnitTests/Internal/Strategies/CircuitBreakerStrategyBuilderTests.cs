@@ -3,6 +3,7 @@ using Core.Resilience.Internal.Constants;
 using Core.Resilience.Internal.Strategies;
 using Core.Resilience.Options;
 using Polly;
+using Polly.CircuitBreaker;
 
 
 namespace Core.Resilience.UnitTests.Internal.Strategies;
@@ -121,5 +122,109 @@ public sealed class CircuitBreakerStrategyBuilderTests
         var pipeline = builder.Build();
 
         Assert.NotNull(pipeline);
+    }
+
+    [Fact]
+    public async Task Configure_ShouldOpenCircuit_WhenInnerExceptionMatches()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            CircuitBreaker = new CircuitBreakerOptions
+            {
+                Enabled = true,
+                FailureRatio = 0.5,
+                MinimumThroughput = 2,
+                SamplingDuration = TimeSpan.FromMinutes(1),
+                BreakDuration = TimeSpan.FromMinutes(1),
+                IncludeInnerExceptions = true
+            }
+            .Handle<TimeoutException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            pipeline.ExecuteAsync(_ =>
+            {
+                throw new InvalidOperationException(
+                    "Outer",
+                    new TimeoutException());
+            }, TestContext.Current.CancellationToken).AsTask());
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            pipeline.ExecuteAsync(_ =>
+            {
+                throw new InvalidOperationException(
+                    "Outer",
+                    new TimeoutException());
+            }, TestContext.Current.CancellationToken).AsTask());
+
+        await Assert.ThrowsAsync<BrokenCircuitException>(() =>
+            pipeline.ExecuteAsync(_ => ValueTask.CompletedTask,
+                TestContext.Current.CancellationToken).AsTask());
+    }
+
+    [Fact]
+    public async Task Configure_ShouldNotOpenCircuit_WhenInnerExceptionMatchesButOptionIsDisabled()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            CircuitBreaker = new CircuitBreakerOptions
+            {
+                Enabled = true,
+                FailureRatio = 0.5,
+                MinimumThroughput = 2,
+                SamplingDuration = TimeSpan.FromMinutes(1),
+                BreakDuration = TimeSpan.FromMinutes(1),
+                IncludeInnerExceptions = false
+            }
+            .Handle<TimeoutException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        for (var i = 0; i < 3; i++)
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                pipeline.ExecuteAsync(_ =>
+                {
+                    throw new InvalidOperationException(
+                        "Outer",
+                        new TimeoutException());
+                }, TestContext.Current.CancellationToken).AsTask());
+        }
+    }
+
+    [Fact]
+    public void Configure_ShouldConfigurePredicate_WhenIncludeInnerExceptionsIsEnabled()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            CircuitBreaker = new CircuitBreakerOptions
+            {
+                Enabled = true,
+                IncludeInnerExceptions = true
+            }
+            .Handle<TimeoutException>()
+        };
+
+        // Act
+        _builder.Configure(builder, options);
+
+        // Assert
+        Assert.NotNull(builder.Build());
     }
 }

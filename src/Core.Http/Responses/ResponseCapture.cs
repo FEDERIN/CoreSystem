@@ -25,6 +25,7 @@ internal sealed class ResponseCapture
             {
                 Body = memory.ToArray(),
                 StatusCode = context.Response.StatusCode,
+                ContentType = context.Response.ContentType,
                 Headers = CaptureHeaders(context.Response)
             };
         }

@@ -59,7 +59,9 @@ internal sealed class CircuitBreakerStrategyBuilder(ResilienceMetrics metrics)
         if (options.HandledExceptions.Count > 0)
         {
             circuit.ShouldHandle =
-                PredicateBuilderFactory.Create(options.HandledExceptions);
+                options.IncludeInnerExceptions
+                ? ExceptionHandlingPredicateFactory.CreateCircuitBreakerPredicate(options.HandledExceptions)
+                : PredicateBuilderFactory.Create(options.HandledExceptions);
         }
 
         return circuit;

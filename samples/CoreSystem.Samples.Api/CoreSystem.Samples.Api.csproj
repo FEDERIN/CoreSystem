@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoreSystem.Idempotency" />
     <PackageReference Include="FGutierrez.Core.Observability" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core.Idempotency\Core.Idempotency.csproj" />
     <ProjectReference Include="..\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj" />
   </ItemGroup>
 

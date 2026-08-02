@@ -97,6 +97,8 @@ builder.Services.AddResilience(options =>
 
             cb.BreakDuration =
                 TimeSpan.FromSeconds(60);
+
+            cb.IncludeInnerExceptions = false;
         });
     });
 });
@@ -113,6 +115,7 @@ builder.Services.AddResilience(options =>
 | MinimumThroughput | Minimum number of executions before evaluation | 10 |
 | SamplingDuration | Evaluation time window | 30 seconds |
 | BreakDuration | Time the circuit remains open | 60 seconds |
+| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
 
 ---
 
@@ -191,6 +194,32 @@ In this configuration:
 
 ---
 
+# Handling Exceptions
+
+Circuit Breaker only considers exception types explicitly registered using Handle<TException>()
+
+```csharp
+cb.Handle<HttpRequestException>();
+
+cb.IncludeInnerExceptions = true;
+```
+
+---
+
+## Matching Inner Exceptions
+
+Some frameworks wrap transient exceptions before propagating them.
+
+Enable `IncludeInnerExceptions` to inspect the complete exception chain when matching handled exceptions.
+
+```csharp
+cb.Handle<HttpRequestException>();
+
+cb.IncludeInnerExceptions = true;
+```
+
+---
+
 # Built-in Metrics
 
 CoreSystem.Resilience automatically records Circuit Breaker metrics.
@@ -216,6 +245,8 @@ These metrics are published using `System.Diagnostics.Metrics` and are compatibl
 ✅ Avoid very short break durations.
 
 ✅ Monitor circuit transitions using OpenTelemetry.
+
+✅ Enable IncludeInnerExceptions when dependencies wrap transient exceptions.
 
 ---
 
