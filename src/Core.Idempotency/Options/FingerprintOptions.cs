@@ -1,5 +1,8 @@
 ﻿namespace Core.Idempotency.Options;
 
+/// <summary>
+/// Configuration options for request fingerprint generation and validation.
+/// </summary>
 public sealed class FingerprintOptions
 {
     /// <summary>
@@ -23,4 +26,21 @@ public sealed class FingerprintOptions
     /// </summary>
     public ISet<string> IncludedHeaders { get; } =
         new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Copies the values from another FingerprintOptions instance.
+    /// </summary>
+    /// <param name="source"></param>
+    public void CopyFrom(FingerprintOptions source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        Enabled = source.Enabled;
+        IncludeQueryString = source.IncludeQueryString;
+        IncludeContentType = source.IncludeContentType;
+        IncludedHeaders.Clear();
+        foreach (var header in source.IncludedHeaders)
+        {
+            IncludedHeaders.Add(header);
+        }
+    }
 }

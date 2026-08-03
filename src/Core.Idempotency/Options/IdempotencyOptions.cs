@@ -25,17 +25,17 @@ public class IdempotencyOptions
         = IdempotencyProviderType.Redis;
 
     /// <summary>
-    /// 
+    /// Gets the Redis-specific configuration options.
     /// </summary>
     public RedisOptions Redis { get; } = new();
 
     /// <summary>
-    /// 
+    /// Gets the PostgreSQL-specific configuration options.
     /// </summary>
     public PostgreSqlOptions PostgreSql { get; } = new();
 
     /// <summary>
-    /// 
+    /// Gets the fingerprint generation configuration options.
     /// </summary>
     public FingerprintOptions Fingerprint { get; } = new();
 
@@ -59,7 +59,6 @@ public class IdempotencyOptions
     /// Default is ["POST", "PUT"].
     /// </summary>
     public HashSet<string> AllowedMethods { get; } = ["POST", "PUT"];
-
 
     /// <summary>
     /// HTTP status codes that will be stored and replayed for
@@ -115,5 +114,25 @@ public class IdempotencyOptions
             AllowedMethods.Remove(
                 method.ToUpperInvariant());
         }
+    }
+
+    /// <summary>
+    /// Copies the configuration from another IdempotencyOptions instance.
+    /// </summary>
+    /// <param name="source"></param>
+    public void CopyFrom(IdempotencyOptions source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        Enabled = source.Enabled;
+        Provider = source.Provider;
+        InstanceName = source.InstanceName;
+        Expiration = source.Expiration;
+        Redis.CopyFrom(source.Redis);
+        PostgreSql.CopyFrom(source.PostgreSql);
+        Fingerprint.CopyFrom(source.Fingerprint);
+        AllowedMethods.Clear();
+        AllowedMethods.UnionWith(source.AllowedMethods);
+        CacheableStatusCodes.Clear();
+        CacheableStatusCodes.UnionWith(source.CacheableStatusCodes);
     }
 }
