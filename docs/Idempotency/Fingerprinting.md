@@ -127,17 +127,13 @@ These values should not affect request identity.
 
 ---
 
-# Fingerprint Mismatch
+### Fingerprint Mismatch
 
-If the same idempotency key is reused with a different fingerprint, the middleware throws an:
+When an existing idempotency key is reused with a different request fingerprint, `Core.Idempotency` throws an `IdempotencyFingerprintMismatchException`.
 
-```text
-IdempotencyFingerprintMismatchException
-```
+Consider mapping this exception to a `409 Conflict` response in your application's exception handling pipeline.
 
-This protects your application from replaying the response of a different request.
-
-See **Errors → Fingerprint Mismatch** for troubleshooting and resolution steps.
+See **Errors → Fingerprint Mismatch** for implementation examples and troubleshooting guidance.
 
 ---
 

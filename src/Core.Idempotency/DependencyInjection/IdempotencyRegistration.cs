@@ -27,8 +27,7 @@ public static class IdempotencyRegistration
             })
             .AddCoreHttp()
             .AddIdempotencyDiagnostics()
-            .AddFingerprint()
-            .AddExceptionHandling();
+            .AddFingerprint();
 
         if (!options.Enabled)
         {

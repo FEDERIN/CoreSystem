@@ -6,7 +6,10 @@
 	<Nullable>enable</Nullable>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageId>CoreSystem.Idempotency</PackageId>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
+	<AssemblyVersion>1.0.2</AssemblyVersion>
+	<FileVersion>1.0.2.0</FileVersion>
+	<InformationalVersion>1.0.2</InformationalVersion>
 	<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	<Description>
 		Production-ready idempotency framework for ASP.NET Core that guarantees exactly-once request processing with Redis and PostgreSQL providers, request fingerprinting, response replay, and native OpenTelemetry support.

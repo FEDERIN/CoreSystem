@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Core.Idempotency.ExceptionHandling;
+namespace CoreSystem.Samples.Infrastructure.ExceptionHandling;
 
 internal sealed class IdempotencyExceptionHandler(
     IProblemDetailsService problemDetailsService)
@@ -23,14 +23,14 @@ internal sealed class IdempotencyExceptionHandler(
 
         var problem = new ProblemDetails
         {
-            Type = "https://federin.github.io/CoreSystem/Idempotency/Errors/idempotency-fingerprint-mismatch/",
-            Title = "Idempotency fingerprint mismatch",
+            Type = IdempotencyFingerprintMismatchException.Type,
+            Title = IdempotencyFingerprintMismatchException.Title,
             Status = StatusCodes.Status409Conflict,
-            Detail = "The request does not match the original request associated with this idempotency key."
+            Detail = exception.Message
         };
 
         problem.Extensions["idempotencyKey"] =
-            context.Request.Headers["Idempotency-Key"]. ToString();
+            context.Request.Headers["Idempotency-Key"].ToString();
         context.Response.StatusCode = problem.Status.GetValueOrDefault();
 
         return await _problemDetailsService.TryWriteAsync(

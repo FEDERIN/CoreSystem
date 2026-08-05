@@ -1,18 +1,8 @@
 ﻿using Core.Idempotency.Abstractions;
 using Core.Idempotency.DependencyInjection;
-using Core.Idempotency.Diagnostics;
-using Core.Idempotency.ExceptionHandling;
-using Core.Idempotency.Fingerprint;
 using Core.Idempotency.Options;
-using Core.Idempotency.Storage.Abstractions;
-using Core.Idempotency.Storage.PostgreSQL;
-using Core.Observability.Abstractions;
 using FluentAssertions;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-
-using StackExchange.Redis;
-
 
 namespace Core.Idempotency.UnitTests.DependencyInjection;
 

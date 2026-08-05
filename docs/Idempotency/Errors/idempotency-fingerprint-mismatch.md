@@ -22,9 +22,15 @@ This error occurs when an incoming request reuses an existing **Idempotency-Key*
 
 A request fingerprint is a deterministic hash generated from the incoming request based on the configured fingerprint options.
 
-By default, the fingerprint is generated from the request body, but it can also include other request components such as headers, content type, query string, and additional values configured through `FingerprintOptions`.
+By default, the fingerprint is generated from the request body, but it can also include additional request components such as:
 
-For safety, CoreSystem.Idempotency only allows an idempotency key to be reused when the request is considered identical.
+- HTTP method
+- Request path
+- Query string
+- Content-Type
+- Selected request headers
+
+For safety, **CoreSystem.Idempotency** only allows an idempotency key to be reused when the incoming request is considered identical to the original request.
 
 ---
 
@@ -54,7 +60,11 @@ Content-Type: application/json
 }
 ```
 
-Since the generated fingerprint no longer matches the stored fingerprint, the middleware rejects the request and returns the following response.
+Since the generated fingerprint no longer matches the stored fingerprint, the middleware throws an `IdempotencyFingerprintMismatchException`.
+
+Applications typically translate this exception into a `409 Conflict` response.
+
+An ASP.NET Core application using **Problem Details** may produce a response similar to the following:
 
 ```http
 HTTP/1.1 409 Conflict
@@ -66,14 +76,77 @@ Content-Type: application/problem+json
   "type": "https://github.com/FEDERIN/CoreSystem/blob/main/docs/Idempotency/errors/idempotency-fingerprint-mismatch.md",
   "title": "Idempotency fingerprint mismatch",
   "status": 409,
-  "detail": "The request does not match the original request associated with this idempotency key.",
+  "detail": "The request fingerprint does not match the existing idempotency entry.",
   "idempotencyKey": "15"
 }
 ```
 
-!!! note
+> **Note**
+>
+> `Core.Idempotency` only throws the exception.
+> The application is responsible for converting it into an HTTP response.
 
-    The response follows the ASP.NET Core **Problem Details** format (`application/problem+json`).
+---
+
+## ASP.NET Core Integration
+
+Applications using ASP.NET Core can translate the exception into an RFC 7807 **Problem Details** response by registering an `IExceptionHandler`.
+
+```csharp
+using Core.Idempotency.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+internal sealed class IdempotencyExceptionHandler(
+    IProblemDetailsService problemDetailsService)
+    : IExceptionHandler
+{
+    private readonly IProblemDetailsService _problemDetailsService = problemDetailsService;
+
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext context,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        if (exception is not IdempotencyFingerprintMismatchException)
+        {
+            return false;
+        }
+
+        var problem = new ProblemDetails
+        {
+            Type = IdempotencyFingerprintMismatchException.Type,
+            Title = IdempotencyFingerprintMismatchException.Title,
+            Status = StatusCodes.Status409Conflict,
+            Detail = exception.Message
+        };
+
+        problem.Extensions["idempotencyKey"] =
+            context.Request.Headers["Idempotency-Key"].ToString();
+
+        context.Response.StatusCode = problem.Status.GetValueOrDefault();
+
+        return await _problemDetailsService.TryWriteAsync(
+            new ProblemDetailsContext
+            {
+                HttpContext = context,
+                ProblemDetails = problem,
+                Exception = exception
+            });
+    }
+}
+```
+
+Register the exception handler during application startup.
+
+```csharp
+builder.Services.AddExceptionHandler<IdempotencyExceptionHandler>();
+```
+
+> **Note**
+>
+> Applications that already implement a centralized exception handling pipeline (for example, a custom exception middleware or exception mapper) can map `IdempotencyFingerprintMismatchException` using their existing infrastructure instead of registering this handler.
 
 ---
 
@@ -87,22 +160,7 @@ This error is commonly caused by one of the following:
 - The `Content-Type` header changed.
 - A configured request header changed.
 - The query string changed (when included in the fingerprint).
-- Different fingerprint options are being used between requests.
-
----
-
-## Fingerprint Components
-
-Depending on the configured `FingerprintOptions`, the request fingerprint may include one or more of the following request components:
-
-- HTTP method
-- Request path
-- Query string
-- Request body
-- Content-Type
-- Selected request headers
-
-If any configured component changes while reusing the same idempotency key, the request fingerprint changes and this error is returned.
+- Different `FingerprintOptions` are being used between requests.
 
 ---
 
@@ -127,12 +185,12 @@ Allowing different requests to reuse the same idempotency key could result in:
 - Data inconsistencies.
 - Duplicate financial or transactional operations.
 
-To prevent these scenarios, CoreSystem.Idempotency validates both:
+To prevent these scenarios, **CoreSystem.Idempotency** validates both:
 
 - The idempotency key.
 - The generated request fingerprint.
 
-Only when both values match can the previously stored response be replayed safely.
+Only when both values match can the previously stored response be safely replayed.
 
 ---
 

@@ -6,6 +6,7 @@ using Core.Idempotency.DependencyInjection;
 using Core.Observability;
 using Core.Resilience.DependencyInjection;
 using CoreSystem.Samples.Core.Services;
+using CoreSystem.Samples.Infrastructure.DependencyInjection;
 using Serilog;
 using StackExchange.Redis;
 
@@ -34,22 +35,7 @@ if (cacheOptions.DefaultProvider == CacheProviderType.Redis
 
 var redisSection = builder.Configuration.GetSection("RedisConnections:MainRedis");
 
-builder.Services.AddCoreIdempotency(options =>
-{
-    builder.Configuration
-        .GetSection("Core:Idempotency")
-        .Bind(options);
-
-    if (!options.Enabled)
-        return;
-
-    if (options.Provider == IdempotencyProviderType.Redis)
-    {
-        var redisConfiguration = CreateRedisConfiguration(redisSection);
-
-        options.Redis.Configuration = redisConfiguration;
-    }
-});
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddCoreCache(options =>
 {

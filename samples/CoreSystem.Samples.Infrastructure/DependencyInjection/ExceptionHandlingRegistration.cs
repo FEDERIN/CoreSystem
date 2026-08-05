@@ -1,7 +1,7 @@
-﻿using Core.Idempotency.ExceptionHandling;
+﻿using CoreSystem.Samples.Infrastructure.ExceptionHandling;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.Idempotency.DependencyInjection;
+namespace CoreSystem.Samples.Infrastructure.DependencyInjection;
 
 internal static class ExceptionHandlingRegistration
 {
