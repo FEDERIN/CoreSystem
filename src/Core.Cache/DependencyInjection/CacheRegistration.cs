@@ -36,7 +36,7 @@ public static class CacheRegistration
 
         if (options.Redis.Enabled)
         {
-            services.PostConfigure<ResilienceOptions>(ConfigureRedisDefaults);
+            services.PostConfigure<ResilienceOptions>(EnrichRedisPipeline);
         }
 
         services
@@ -59,38 +59,14 @@ public static class CacheRegistration
         return app.UseMiddleware<CacheMiddleware>();
     }
 
-    private static void ConfigureRedisDefaults(ResilienceOptions options)
+    private static void EnrichRedisPipeline(ResilienceOptions options)
     {
-        if (options.ContainsPipeline(PipelineType.Redis))
+        if (!options.ContainsPipeline(PipelineType.Redis))
         {
-            ApplyRedisExceptions(options.GetPipeline(PipelineType.Redis));
             return;
         }
 
-        options.AddPipeline(PipelineType.Redis, pipeline =>
-        {
-            pipeline.Retry = new RetryOptions
-            {
-                MaxRetryAttempts = 1,
-                Delay = TimeSpan.FromMilliseconds(100),
-                BackoffType = BackoffType.Constant
-            };
-
-            pipeline.CircuitBreaker = new CircuitBreakerOptions
-            {
-                FailureRatio = 0.5,
-                SamplingDuration = TimeSpan.FromSeconds(30),
-                MinimumThroughput = 2,
-                BreakDuration = TimeSpan.FromSeconds(15)
-            };
-
-            pipeline.Timeout = new TimeoutOptions
-            {
-                Timeout = TimeSpan.FromSeconds(2)
-            };
-
-            ApplyRedisExceptions(pipeline);
-        });
+        ApplyRedisExceptions(options.GetPipeline(PipelineType.Redis));
     }
 
     private static void ApplyRedisExceptions(PipelineOptions pipeline)

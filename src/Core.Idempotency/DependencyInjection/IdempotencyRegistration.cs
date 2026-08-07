@@ -20,19 +20,20 @@ public static class IdempotencyRegistration
         configure(options);
 
         services
-            .AddSingleton(options)
-            .AddCoreSerialization(serialization =>
+            .AddSingleton(options);
+
+        if (!options.Enabled)
+        {
+            return services;
+        }
+        
+        services.AddCoreSerialization(serialization =>
             {
                 serialization.DefaultSerializer = SerializerType.Json;
             })
             .AddCoreHttp()
             .AddIdempotencyDiagnostics()
             .AddFingerprint();
-
-        if (!options.Enabled)
-        {
-            return services;
-        }
 
         switch (options.Provider)
         {
@@ -55,6 +56,13 @@ public static class IdempotencyRegistration
     public static IApplicationBuilder UseCoreIdempotency(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);
+
+        var options = app.ApplicationServices.GetRequiredService<IdempotencyOptions>();
+
+        if (!options.Enabled)
+        {
+            return app;
+        }
 
         if (app.ApplicationServices.GetService<IIdempotencyService>() is null)
         {
