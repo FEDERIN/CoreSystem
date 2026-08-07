@@ -35,19 +35,6 @@ public static class IdempotencyRegistration
             .AddIdempotencyDiagnostics()
             .AddFingerprint();
 
-        switch (options.Provider)
-        {
-            case IdempotencyProviderType.Redis:
-                services.AddIdempotencyRedis(options);
-                break;
-
-            case IdempotencyProviderType.PostgreSQL:
-                services.AddIdempotencyPostgreSql(options);
-                break;
-
-            default:
-                throw new NotSupportedException(IdempotencyMessages.UnsupportedProvider(options.Provider));
-        }
         services.AddIdempotencyServices();
 
         return services;

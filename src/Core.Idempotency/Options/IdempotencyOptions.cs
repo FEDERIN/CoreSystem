@@ -25,11 +25,6 @@ public class IdempotencyOptions
         = IdempotencyProviderType.Redis;
 
     /// <summary>
-    /// Gets the Redis-specific configuration options.
-    /// </summary>
-    public RedisOptions Redis { get; } = new();
-
-    /// <summary>
     /// Gets the PostgreSQL-specific configuration options.
     /// </summary>
     public PostgreSqlOptions PostgreSql { get; } = new();
@@ -127,7 +122,6 @@ public class IdempotencyOptions
         Provider = source.Provider;
         InstanceName = source.InstanceName;
         Expiration = source.Expiration;
-        Redis.CopyFrom(source.Redis);
         PostgreSql.CopyFrom(source.PostgreSql);
         Fingerprint.CopyFrom(source.Fingerprint);
         AllowedMethods.Clear();

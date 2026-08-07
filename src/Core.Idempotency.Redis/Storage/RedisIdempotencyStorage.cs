@@ -1,15 +1,16 @@
-﻿using Core.Idempotency.Abstractions;
-using Core.Idempotency.Diagnostics;
+﻿using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Models;
-using Core.Idempotency.Storage.Abstractions;
+using Core.Idempotency.Abstractions;
 using Core.Redis.Synchronization;
 using Core.Serialization.Abstractions;
 using StackExchange.Redis;
 using System.Diagnostics;
+using Core.Idempotency.Redis.Builders;
 
-namespace Core.Idempotency.Storage.Redis;
 
-internal sealed class RedisStorage(
+namespace Core.Idempotency.Redis.Storage;
+
+internal sealed class RedisIdempotencyStorage(
     IConnectionMultiplexer redis,
     IKeyBuilder keyBuilder,
     IPayloadSerializer payloadSerializer,

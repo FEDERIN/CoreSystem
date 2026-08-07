@@ -1,24 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
-using StackExchange.Redis;
+
 
 namespace CoreSystem.Samples.Infrastructure.Configuration;
 
 internal static class RedisConfigurationFactory
 {
-    public static Action<ConfigurationOptions> Create(
-        IConfiguration configuration,
-        string connectionName)
-    {
-        var section = configuration.GetSection($"RedisConnections:{connectionName}");
+    //public static Action<ConfigurationOptions> Create(
+    //    IConfiguration configuration,
+    //    string connectionName)
+    //{
+    //    var section = configuration.GetSection($"RedisConnections:{connectionName}");
 
-        Validate(section, connectionName);
+    //    Validate(section, connectionName);
 
-        return options =>
-        {
-            options.EndPoints.Add(section["Host"]!);
-            options.Password = section["Password"];
-        };
-    }
+    //    return options =>
+    //    {
+    //        options.EndPoints.Add(section["Host"]!);
+    //        options.Password = section["Password"];
+    //    };
+    //}
 
     private static void Validate(
         IConfigurationSection section,

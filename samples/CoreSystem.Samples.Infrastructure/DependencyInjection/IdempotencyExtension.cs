@@ -42,23 +42,23 @@ internal static class IdempotencyExtension
                 "At least one HTTP method must be configured for Core:Idempotency:AllowedMethods.");
         }
 
-        if (options.Provider == IdempotencyProviderType.Redis)
-        {
-            ConfigureRedis(options, configuration);
-        }
+        //if (options.Provider == IdempotencyProviderType.Redis)
+        //{
+        //    ConfigureRedis(options, configuration);
+        //}
 
         services.AddCoreIdempotency(_ => _.CopyFrom(options));
 
         return services;
     }
 
-    private static void ConfigureRedis(
-        IdempotencyOptions options,
-        IConfiguration configuration)
-    {
-        options.Redis.Configuration =
-            RedisConfigurationFactory.Create(
-                configuration,
-                "MainRedis");
-    }
+    //private static void ConfigureRedis(
+    //    IdempotencyOptions options,
+    //    IConfiguration configuration)
+    //{
+    //    options.Redis.Configuration =
+    //        RedisConfigurationFactory.Create(
+    //            configuration,
+    //            "MainRedis");
+    //}
 }
