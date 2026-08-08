@@ -4,13 +4,17 @@ This guide describes every configuration option available in **CoreSystem.Idempo
 
 You'll learn how to configure:
 
-- Framework options
-- Storage providers
+- Framework behavior
 - Request fingerprinting
 - Supported HTTP methods
 - Response expiration
-- OpenTelemetry
+- Instance naming
 - `appsettings.json` integration
+
+> **Note**
+>
+> Storage providers are configured independently.
+> See the provider-specific documentation for Redis and PostgreSQL configuration.
 
 ---
 
@@ -33,13 +37,11 @@ The framework can also be configured using `appsettings.json`.
 
 | Option | Description | Default |
 |----------|-------------|---------|
-| Enabled | Enables or disables the middleware | `true` |
-| Provider | Storage provider | `Redis` |
-| HeaderName | HTTP header containing the idempotency key | `X-Idempotency-Key` |
-| Expiration | Lifetime of stored responses | `24 hours` |
-| AllowedMethods | HTTP methods protected by the middleware | `POST`, `PUT` |
-| Fingerprint | Request fingerprint generation options | Default configuration |
-| MeterName | OpenTelemetry meter name | `CoreSystem.Idempotency` |
+| `Enabled` | Enables or disables the middleware | `true` |
+| `InstanceName` | Optional prefix used by storage providers | `null` |
+| `Expiration` | Lifetime of persisted responses | `30 minutes` |
+| `AllowedMethods` | HTTP methods protected by the middleware | `POST`, `PUT` |
+| `Fingerprint` | Request fingerprint generation options | Default configuration |
 
 ---
 
@@ -59,41 +61,22 @@ options.Enabled = false;
 
 ---
 
-# Storage Provider
+# Instance Name
 
-Select the persistence provider used to store idempotency records.
+`InstanceName` allows multiple applications or environments to safely share the same storage infrastructure.
 
-```csharp
-options.Provider =
-    StorageProviderType.Redis;
-```
-
-or
+Storage providers may use this value to prefix persisted keys and avoid collisions.
 
 ```csharp
-options.Provider =
-    StorageProviderType.PostgreSql;
+options.InstanceName = "Orders";
 ```
 
-Provider-specific configuration is described in the **Storage Providers** guide.
+Typical examples include:
 
----
-
-# Header Name
-
-Configure the HTTP header that contains the idempotency key.
-
-```csharp
-options.HeaderName =
-    "X-Idempotency-Key";
-```
-
-Example request:
-
-```http
-POST /orders HTTP/1.1
-X-Idempotency-Key: 9f0c52d5-aaf9-4f3d-a64b-3f8f21d4a71b
-```
+- Production
+- Staging
+- Development
+- Multi-tenant applications
 
 ---
 
@@ -119,7 +102,7 @@ options.RemoveAllowedMethods(
     "PUT");
 ```
 
-Requests using methods that are not included bypass the middleware.
+Requests using methods that are not configured bypass the middleware.
 
 ---
 
@@ -132,36 +115,31 @@ options.Expiration =
     TimeSpan.FromHours(24);
 ```
 
-Once the expiration time has elapsed, the request is treated as a new operation.
+After the expiration period, the request is treated as a new operation.
 
 ---
 
 # Request Fingerprinting
 
-Request fingerprinting prevents an idempotency key from being reused with a different request.
+Fingerprinting prevents an idempotency key from being reused with a different request.
 
 Example:
 
 ```csharp
-options.Fingerprint.IncludedHeaders.Add(
-    "X-Tenant-Id");
+options.Fingerprint.IncludedHeaders.Add("X-Tenant-Id");
 
-options.Fingerprint.IncludedHeaders.Add(
-    "X-Region");
+options.Fingerprint.IncludedHeaders.Add("X-Region");
 ```
 
-See **Fingerprinting** for a complete description of all available options.
-
----
-
-# OpenTelemetry
-
-Configure the meter name used by OpenTelemetry metrics.
+Additional options are also available.
 
 ```csharp
-options.MeterName =
-    "Orders.Api.Idempotency";
+options.Fingerprint.IncludeQueryString = true;
+
+options.Fingerprint.IncludeContentType = true;
 ```
+
+See **Fingerprinting** for a complete description of every available option.
 
 ---
 
@@ -172,18 +150,16 @@ options.MeterName =
   "Core": {
     "Idempotency": {
       "Enabled": true,
-      "Provider": "Redis",
-      "HeaderName": "X-Idempotency-Key",
+      "InstanceName": "Orders",
       "Expiration": "1.00:00:00",
       "AllowedMethods": [
         "POST",
         "PUT"
       ],
-      "MeterName": "Orders.Api.Idempotency",
       "Fingerprint": {
-        "Algorithm": "SHA256",
+        "Enabled": true,
         "IncludeQueryString": true,
-        "IncludeBody": true,
+        "IncludeContentType": true,
         "IncludedHeaders": [
           "X-Tenant-Id",
           "X-Region"
@@ -194,7 +170,7 @@ options.MeterName =
 }
 ```
 
-Bind the configuration:
+Bind the configuration.
 
 ```csharp
 builder.Services.AddCoreIdempotency(options =>
@@ -207,8 +183,44 @@ builder.Services.AddCoreIdempotency(options =>
 
 !!! note
 
-    The `Fingerprint` section customizes how request fingerprints are generated.
-    See the **Fingerprinting** guide for a detailed explanation of each option.
+    Storage provider configuration is performed separately.
+    See the Redis or PostgreSQL provider documentation for provider-specific settings.
+
+---
+
+# Storage Provider Configuration
+
+`CoreSystem.Idempotency` does not configure storage providers.
+
+After registering the framework, configure the provider package independently.
+
+Example:
+
+```csharp
+builder.Services
+    .AddCoreIdempotency(options =>
+    {
+        options.InstanceName = "Orders";
+    })
+    .AddCoreIdempotencyRedis(options =>
+    {
+        // Redis configuration
+    });
+```
+
+or
+
+```csharp
+builder.Services
+    .AddCoreIdempotency(options =>
+    {
+        options.InstanceName = "Orders";
+    })
+    .AddCoreIdempotencyPostgreSql(options =>
+    {
+        // PostgreSQL configuration
+    });
+```
 
 ---
 
@@ -218,10 +230,9 @@ builder.Services.AddCoreIdempotency(options =>
 
 | Setting | Value |
 |----------|-------|
-| Provider | Redis |
+| Instance Name | Development |
 | Expiration | 15 minutes |
 | Fingerprint | Default |
-| Meter Name | CoreSystem.Idempotency |
 
 ---
 
@@ -229,18 +240,17 @@ builder.Services.AddCoreIdempotency(options =>
 
 | Setting | Value |
 |----------|-------|
-| Provider | Redis or PostgreSQL |
+| Instance Name | Application name |
 | Expiration | 24 hours |
-| Fingerprint | Default + required headers |
-| Meter Name | Application-specific |
+| Fingerprint | Default + business headers |
 
 ---
 
 # Best Practices
 
+- Configure an `InstanceName` when multiple applications share the same storage.
 - Use UUIDs for idempotency keys.
 - Configure expiration according to your business requirements.
 - Protect only operations that modify application state.
 - Never reuse an idempotency key for different requests.
 - Include only stable headers when customizing request fingerprinting.
-- Use application-specific meter names when multiple services publish metrics.

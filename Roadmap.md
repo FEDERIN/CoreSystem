@@ -2,155 +2,164 @@
 
 This document outlines the planned evolution of **CoreSystem.Idempotency**.
 
-The roadmap provides visibility into the long-term direction of the project. Priorities may evolve based on community feedback, production experience, and ecosystem growth.
+The project continues to evolve toward a modular, provider-based idempotency platform for ASP.NET Core applications.
+
+Roadmap priorities may evolve based on production experience, community feedback, and ecosystem growth.
 
 ---
 
 # Guiding Principles
 
-CoreSystem.Idempotency will continue to evolve following these principles:
+CoreSystem.Idempotency evolves around the following principles:
 
 - Production-first
 - Cloud-native
-- Storage-provider independent
+- Provider-independent
 - Extensible architecture
 - OpenTelemetry-first
 - Backward compatibility whenever possible
 
 ---
 
-# ✅ Completed
-
-The following capabilities are already available.
+# ✅ Current Capabilities
 
 ## Core Framework
 
 - [x] ASP.NET Core middleware
-- [x] Dependency Injection integration
-- [x] Configurable middleware options
-- [x] Response replay
 - [x] Request fingerprinting
-- [x] Configurable idempotency header
+- [x] Response replay
 - [x] Configurable expiration
 - [x] Configurable HTTP methods
+- [x] Configurable fingerprint generation
+- [x] Dependency Injection integration
+- [x] Storage abstraction (`IIdempotencyStorage`)
+- [x] Built-in OpenTelemetry metrics
 
 ---
 
 ## Storage Providers
 
-- [x] Redis provider
-- [x] PostgreSQL provider
-- [x] Storage abstraction
-
----
-
-## Request Processing
-
-- [x] Request fingerprint validation
-- [x] Duplicate request detection
-- [x] Response persistence
-- [x] Configurable cacheable status codes
+- [x] CoreSystem.Idempotency.Redis
+- [x] CoreSystem.Idempotency.PostgreSql
 
 ---
 
 ## Observability
 
-- [x] OpenTelemetry Metrics
+- [x] Request metrics
+- [x] Cache hit/miss metrics
+- [x] Response replay metrics
 - [x] Storage latency metrics
 - [x] Payload size metrics
 
 ---
 
-# 🚧 Short-Term
+# 🚧 Near-Term Goals
 
-The next releases focus on improving flexibility and developer experience.
+The next releases focus on improving developer experience and extensibility.
 
-## Configuration
+## Documentation
 
-- [ ] Additional fingerprint configuration
-- [ ] Custom hash algorithms
-- [ ] Improved configuration validation
+- [ ] More end-to-end samples
+- [ ] Storage provider guides
+- [ ] Provider authoring guide
+- [ ] Migration guides
 
 ---
 
 ## Developer Experience
 
-- [ ] More samples
-- [ ] Expanded documentation
-- [ ] Analyzer package
+- [ ] Roslyn analyzer package
 - [ ] Source Link support
+- [ ] XML documentation improvements
+- [ ] Additional integration tests
 
 ---
 
 ## Observability
 
-- [ ] Additional metrics
+- [ ] Additional middleware metrics
 - [ ] Distributed tracing
-- [ ] Custom metric enrichment
+- [ ] Metric enrichment hooks
 
 ---
 
-# 🚀 Mid-Term
+# 🚀 Future Providers
 
-Future releases will expand provider support and extensibility.
+One of the primary goals of the architecture is enabling new storage providers without modifying the core framework.
 
-## Storage Providers
+Potential providers include:
 
 - [ ] SQL Server
 - [ ] MongoDB
 - [ ] Azure Cosmos DB
+- [ ] DynamoDB
+- [ ] MySQL
 
 ---
 
-## Extensibility
+# 🔌 Extensibility
 
-- [ ] Public storage provider SDK
+Future releases will continue expanding customization points.
+
+- [ ] Public provider SDK
 - [ ] Custom fingerprint providers
+- [ ] Custom fingerprint algorithms
 - [ ] Custom response serializers
+- [ ] Storage provider health checks
 
 ---
 
-## Performance
+# ⚡ Performance
+
+Continuous performance improvements remain a long-term objective.
 
 - [ ] Benchmark suite
 - [ ] Native AOT optimizations
 - [ ] Allocation reduction
+- [ ] Throughput benchmarks
+- [ ] Large payload optimizations
 
 ---
 
-# 🔮 Long-Term Vision
+# 🌍 Long-Term Vision
 
-Future versions aim to provide a complete distributed idempotency platform.
+The long-term vision is to establish CoreSystem.Idempotency as a complete provider-based idempotency platform.
 
-## Distributed Features
+Future areas include:
 
-- [ ] Multi-region replication support
+## Distributed Systems
+
+- [ ] Multi-region replication
 - [ ] Cross-region consistency strategies
-- [ ] Provider failover
+- [ ] Active/Active deployments
+- [ ] Provider failover strategies
 
 ---
 
 ## Enterprise Features
 
 - [ ] Administrative APIs
-- [ ] Storage diagnostics
 - [ ] Operational dashboards
+- [ ] Storage diagnostics
+- [ ] Retention policies
 
 ---
 
-## Ecosystem Integration
+## CoreSystem Ecosystem
 
-- [ ] Deeper CoreSystem.Observability integration
 - [ ] Health Checks
+- [ ] Deeper CoreSystem.Observability integration
 - [ ] Source Generator support
+- [ ] Additional provider packages
 
 ---
 
 # Community Ideas
 
-Ideas proposed by the community may be incorporated into future releases.
+Community feedback plays an important role in shaping future releases.
 
-Suggestions are welcome through:
+Ideas and suggestions are welcome through:
 
 - GitHub Issues
 - GitHub Discussions
@@ -163,15 +172,15 @@ Suggestions are welcome through:
 The project follows Semantic Versioning.
 
 | Version | Focus |
-|---------|-------|
-| **1.x** | Stability, documentation, production adoption |
-| **2.x** | Additional storage providers and extensibility |
-| **3.x** | Enterprise capabilities and distributed features |
+|----------|-------|
+| **1.x** | Stability, documentation, provider maturity |
+| **2.x** | Additional providers and extensibility |
+| **3.x** | Distributed capabilities and enterprise features |
 
 ---
 
 # Contributing
 
-If you'd like to contribute to any roadmap item, feel free to open an issue or submit a Pull Request.
+Contributions of any size are welcome.
 
-Community contributions are always welcome.
+Whether you're fixing bugs, improving documentation, implementing a storage provider, or proposing new ideas, community participation helps shape the future of CoreSystem.Idempotency.

@@ -1,36 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	<TargetFramework>net8.0</TargetFramework>
-	<ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<PackageId>CoreSystem.Idempotency</PackageId>
-	<Version>1.0.4</Version>
-	<AssemblyVersion>1.0.4</AssemblyVersion>
-	<FileVersion>1.0.4.0</FileVersion>
-	<InformationalVersion>1.0.4</InformationalVersion>
-	<Authors>Federin Pastor Gutierrez Ortiz</Authors>
-	<Description>
-		Production-ready idempotency framework for ASP.NET Core that guarantees exactly-once request processing with Redis and PostgreSQL providers, request fingerprinting, response replay, and native OpenTelemetry support.
-	</Description>
-	<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
-	<PackageProjectUrl>https://federin.github.io/CoreSystem/Idempotency</PackageProjectUrl>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageTags>
-		Idempotency;
-		ASP.NET Core;
-		Middleware;
-		Distributed Systems;
-		Exactly Once;
-		Redis;
-		PostgreSQL;
-		OpenTelemetry;
-		Observability;
-		Cloud Native
-	</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+		<PackageId>CoreSystem.Idempotency</PackageId>
+
+		<Version>2.0.0</Version>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+		<InformationalVersion>2.0.0</InformationalVersion>
+
+		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
+
+		<Description>
+			Production-ready idempotency framework for ASP.NET Core featuring exactly-once request processing, request fingerprinting, response replay, OpenTelemetry integration, and a provider-based storage architecture.
+		</Description>
+
+		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+		<PackageProjectUrl>https://federin.github.io/CoreSystem/Idempotency</PackageProjectUrl>
+
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+		<PackageTags>
+			Idempotency;
+			ASP.NET Core;
+			Middleware;
+			Distributed Systems;
+			Exactly Once;
+			Request Fingerprinting;
+			Response Replay;
+			OpenTelemetry;
+			Observability;
+			Cloud Native;
+			Provider Based;
+			Distributed APIs
+		</PackageTags>
+	</PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Internal\Capture\**" />

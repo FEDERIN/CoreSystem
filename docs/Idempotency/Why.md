@@ -1,31 +1,31 @@
-# Why CoreSystem.Idempotency?
+# ❓ Why CoreSystem.Idempotency?
 
-HTTP retries are a normal part of modern distributed systems.
+HTTP retries are an inevitable part of modern distributed systems.
 
-Clients retry requests because of network failures, timeouts, gateway errors, or uncertain response states. While retries improve reliability, they also introduce a significant challenge: ensuring that the same business operation is not executed multiple times.
+Clients retry requests because of network failures, timeouts, gateway errors, or uncertain response states. While retries improve reliability, they also introduce an important challenge: ensuring that the same business operation is never executed more than once.
 
-Operations such as payment processing, order creation, inventory updates, and financial transactions must be executed exactly once, regardless of how many times a client repeats the request.
+Operations such as payment processing, order creation, inventory updates, and financial transactions require **exactly-once execution**, regardless of how many times a client retries the request.
 
-Implementing idempotency independently in every application often results in duplicated middleware, inconsistent persistence strategies, limited observability, and complex storage implementations.
+Implementing idempotency independently in every application often results in duplicated middleware, inconsistent persistence strategies, limited observability, and tightly coupled infrastructure.
 
-CoreSystem.Idempotency provides a unified idempotency platform that coordinates these concerns while allowing applications to remain focused on business logic.
+CoreSystem.Idempotency provides a unified, provider-based idempotency platform that solves these concerns while allowing applications to remain focused on business logic.
 
 ---
 
 # The Problem
 
-Modern distributed applications frequently require capabilities such as:
+Modern distributed applications commonly require capabilities such as:
 
 - Preventing duplicate execution of critical operations.
 - Persisting idempotency state across multiple application instances.
 - Returning the original response for repeated requests.
-- Detecting when the same idempotency key is reused with different request data.
-- Supporting multiple distributed storage providers.
-- Measuring request execution, duplicate detection, and storage performance.
+- Detecting when an idempotency key is reused with different request data.
+- Supporting multiple storage technologies.
+- Measuring request execution and storage performance.
 - Integrating with OpenTelemetry.
-- Extensibility without modifying application code.
+- Remaining extensible without modifying application code.
 
-Although these capabilities are common in production systems, they are rarely implemented consistently. As a result, teams often build custom idempotency middleware that duplicates infrastructure code across projects.
+Although these requirements are common, they are often implemented differently in every application, leading to duplicated infrastructure and inconsistent behavior.
 
 ---
 
@@ -33,61 +33,107 @@ Although these capabilities are common in production systems, they are rarely im
 
 CoreSystem.Idempotency acts as the orchestration layer of the CoreSystem idempotency ecosystem.
 
-Instead of requiring every application to implement its own idempotency logic, incoming requests pass through a configurable middleware pipeline that validates idempotency keys, computes request fingerprints, coordinates persistence, and transparently replays previously stored responses.
+Instead of embedding storage-specific logic into the middleware, the framework coordinates request processing through a provider-independent architecture.
 
-This architecture coordinates specialized CoreSystem packages while exposing a single, unified API for application developers.
+The middleware is responsible for:
+
+- Validating idempotency requests.
+- Generating request fingerprints.
+- Coordinating response replay.
+- Delegating persistence through `IIdempotencyStorage`.
+- Publishing OpenTelemetry metrics.
+
+Storage implementations are distributed as independent provider packages.
+
+This architecture allows applications to switch persistence technologies—or introduce entirely new providers—without modifying the middleware.
+
+---
+
+# Package Architecture
 
 | Package | Responsibility |
 |----------|----------------|
-| **CoreSystem.Idempotency** | Idempotency middleware, request fingerprinting, response replay, and storage orchestration |
-| **CoreSystem.Redis** | Redis connectivity and distributed storage infrastructure |
-| **CoreSystem.Serialization** | JSON, MessagePack, and Protocol Buffers serialization |
-| **CoreSystem.Http** | HTTP abstractions used by the middleware |
-| **CoreSystem.Observability** *(Optional)* | Ready-to-use OpenTelemetry instrumentation, metrics, tracing, and diagnostics for CoreSystem packages |
-| **CoreSystem.Observability.Abstractions** | Shared observability contracts for implementing custom instrumentation and integrations |
+| **CoreSystem.Idempotency** | Middleware, request fingerprinting, response replay, storage abstractions, and orchestration |
+| **CoreSystem.Idempotency.Redis** | Redis storage provider |
+| **CoreSystem.Idempotency.PostgreSql** | PostgreSQL storage provider |
+| **CoreSystem.Serialization** | Serialization infrastructure |
+| **CoreSystem.Http** | HTTP abstractions |
+| **CoreSystem.Redis** | Redis connectivity infrastructure |
+| **CoreSystem.Observability** *(Optional)* | OpenTelemetry integration |
+| **CoreSystem.Observability.Abstractions** | Shared observability contracts |
 
-Applications remain independent from storage-specific implementations while benefiting from a production-ready idempotency platform.
+Applications depend only on the CoreSystem.Idempotency API while selecting the storage provider that best fits their environment.
 
 ---
 
 # Benefits
 
-Using CoreSystem.Idempotency provides several advantages:
+Using CoreSystem.Idempotency provides several advantages.
+
+## Reliability
 
 - Exactly-once execution for critical operations.
-- Distributed persistence across multiple application instances.
-- Automatic response replay for duplicate requests.
+- Automatic response replay.
 - Request fingerprint validation.
-- Provider-independent storage architecture.
-- Built-in observability and diagnostics.
+- Protection against accidental key reuse.
+
+---
+
+## Extensibility
+
+- Provider-independent architecture.
+- Pluggable storage providers.
+- Consistent storage contract through `IIdempotencyStorage`.
+- Future providers can be added without modifying the core framework.
+
+---
+
+## Operational Excellence
+
+- Built-in OpenTelemetry metrics.
 - Consistent serialization across providers.
-- Separation of business logic from infrastructure concerns.
-- Extensible middleware pipeline.
 - Production-ready defaults.
+- Separation of business logic from infrastructure.
 
 ---
 
 # When Should You Use CoreSystem.Idempotency?
 
-CoreSystem.Idempotency is recommended for applications that require reliable execution of state-changing operations, including:
+CoreSystem.Idempotency is recommended for applications that expose state-changing operations, including:
 
-- Payment processing.
-- Order creation.
-- Inventory management.
-- Financial transactions.
-- Distributed APIs.
-- Microservices.
-- Cloud-native applications.
-- Public APIs exposed to unreliable networks.
-- Systems requiring OpenTelemetry observability.
-- Production environments where duplicate execution must be prevented.
+- Payment processing
+- Order management
+- Inventory management
+- Financial transactions
+- Distributed APIs
+- Microservices
+- Cloud-native applications
+- Public APIs exposed to unreliable networks
 
-If your application does not expose operations that can be retried or duplicated, implementing idempotency may not be necessary.
+If duplicate execution could produce inconsistent business results, idempotency should be considered part of the application's architecture.
 
-CoreSystem.Idempotency is designed for applications that require a complete, extensible, and production-ready idempotency platform.
+---
+
+# Why a Provider-Based Architecture?
+
+Separating the middleware from persistence provides several advantages.
+
+- The core framework remains storage-independent.
+- Storage providers evolve independently.
+- Applications choose only the provider they need.
+- New providers can be introduced without changing the public API.
+- Monitoring, documentation, and behavior remain consistent across providers.
+
+This architecture keeps CoreSystem.Idempotency focused on coordinating idempotent request processing while allowing persistence technologies to evolve independently.
 
 ---
 
 # Next Steps
 
-Continue with the **Architecture** section to understand how the middleware processes requests, how storage providers are coordinated, how request fingerprints are generated, and how CoreSystem.Idempotency integrates with the CoreSystem ecosystem.
+Continue with the following guides to learn more:
+
+- **Getting Started** — Install and configure the framework.
+- **Architecture** — Understand the middleware and provider model.
+- **Configuration** — Configure framework behavior.
+- **Storage Providers** — Choose and configure a persistence provider.
+- **Fingerprinting** — Learn how request identity is validated.

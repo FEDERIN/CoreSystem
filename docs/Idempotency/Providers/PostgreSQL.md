@@ -1,26 +1,73 @@
-# PostgreSQL Provider
+# 🐘 PostgreSQL Provider
 
-The PostgreSQL provider stores idempotency records in a relational database using **Dapper**.
+`CoreSystem.Idempotency.PostgreSql` provides a PostgreSQL implementation of the `IIdempotencyStorage` abstraction.
 
-It is recommended for applications that already use PostgreSQL or require durable persistence across application restarts.
+It stores idempotency entries in a relational database using **Dapper**, making it an excellent choice for applications that already use PostgreSQL or require durable persistence across application restarts.
+
+---
+
+# Why PostgreSQL?
+
+Choose the PostgreSQL provider when your application requires:
+
+- Durable persistence
+- Relational storage
+- Transactional consistency
+- Existing PostgreSQL infrastructure
+- Long-lived idempotency records
+
+If your primary goal is ultra-low latency, consider the **Redis provider** instead.
 
 ---
 
 # Requirements
 
+Before using the provider, ensure you have:
+
 - PostgreSQL 16 or later
-- A database dedicated to idempotency or shared with your application
+- An existing PostgreSQL database
 - A valid connection string
+- `CoreSystem.Idempotency`
+- `CoreSystem.Idempotency.PostgreSql`
+
+---
+
+# Installation
+
+Install the provider package.
+
+```bash
+dotnet add package CoreSystem.Idempotency.PostgreSql
+```
+
+Then register the provider.
+
+```csharp
+builder.Services
+    .AddCoreIdempotency(options =>
+    {
+        builder.Configuration
+            .GetSection("Core:Idempotency")
+            .Bind(options);
+    })
+    .AddCoreIdempotencyPostgreSql(options =>
+    {
+        builder.Configuration
+            .GetSection("ConnectionStrings")
+            .Bind(options);
+    });
+```
 
 ---
 
 # Database Setup
 
-CoreSystem.Idempotency automatically creates the required table and indexes when the application starts.
+The provider automatically creates the required table and indexes during application startup.
 
 > **Important**
 >
-> The target database must already exist. The library does **not** create databases.
+> The PostgreSQL database must already exist.
+> The provider creates tables and indexes, but it does **not** create databases.
 
 Example:
 
@@ -44,9 +91,9 @@ Configure the PostgreSQL connection string.
 
 ---
 
-# Schema
+# Database Schema
 
-The provider creates the following table automatically.
+The provider automatically creates the following table.
 
 ```sql
 CREATE TABLE idempotency_keys
@@ -66,13 +113,15 @@ CREATE INDEX idx_idempotency_keys_expires_at
 ON idempotency_keys (expires_at);
 ```
 
+The schema is optimized for idempotency lookups and response replay.
+
 ---
 
 # Expired Records
 
-Expired records are not removed automatically.
+Expired entries are not removed automatically.
 
-Schedule a periodic cleanup job.
+Schedule a periodic cleanup task.
 
 Example:
 
@@ -82,15 +131,17 @@ FROM idempotency_keys
 WHERE expires_at <= NOW();
 ```
 
-The cleanup interval depends on your retention policy and expected request volume.
+The cleanup frequency depends on your retention policy and expected request volume.
 
 ---
 
 # Recommended Maintenance
 
-For production environments, consider scheduling:
+For production environments, schedule regular database maintenance.
 
-- Periodic cleanup of expired records
+Recommended operations include:
+
+- Cleanup of expired entries
 - VACUUM
 - ANALYZE
 
@@ -100,32 +151,70 @@ These operations help maintain query performance as the table grows.
 
 # How It Works
 
-When a request reaches the middleware:
+The PostgreSQL provider participates in the idempotency workflow through the `IIdempotencyStorage` abstraction.
 
-1. The idempotency key is extracted.
-2. A request fingerprint is generated.
-3. PostgreSQL is queried for an existing record.
-4. If found, the stored response is returned.
-5. Otherwise, the request executes normally.
-6. The response is persisted for future requests.
+```text
+Incoming Request
+        │
+        ▼
+Generate Fingerprint
+        │
+        ▼
+Lookup PostgreSQL
+        │
+  ┌─────┴─────┐
+  │           │
+Found      Not Found
+  │           │
+  ▼           ▼
+Replay    Execute Endpoint
+Response       │
+               ▼
+        Persist Response
+```
+
+The middleware coordinates the workflow while the PostgreSQL provider is responsible only for persistence.
 
 ---
 
 # When to Use PostgreSQL
 
-PostgreSQL is recommended when:
+The PostgreSQL provider is recommended when:
 
 - Your application already uses PostgreSQL.
 - Strong durability is required.
-- You prefer relational storage.
-- Redis is not available.
+- Responses must survive application restarts.
+- Operational simplicity is preferred over distributed caching.
+
+---
+
+# Performance Considerations
+
+Compared to in-memory or Redis-based storage, PostgreSQL typically provides:
+
+- Higher durability
+- Transactional guarantees
+- Higher read/write latency
+- Disk-based persistence
+
+Choose the provider that best matches your application's consistency and performance requirements.
 
 ---
 
 # Limitations
 
-Compared to Redis:
+Keep the following considerations in mind:
 
-- Higher latency
-- Disk I/O
-- Requires periodic cleanup of expired records
+- Expired entries require periodic cleanup.
+- Persistence depends on database availability.
+- Database maintenance is recommended for long-running deployments.
+
+---
+
+# Related Documentation
+
+- Getting Started
+- Configuration
+- Architecture
+- Request Lifecycle
+- Redis Provider

@@ -60,4 +60,28 @@ public class IdempotencyApplicationBuilderExtensionsTests
 
         result.Should().BeSameAs(app);
     }
+
+    [Fact]
+    public void UseCoreIdempotency_Should_Throw_When_IdempotencyService_Is_Not_Registered()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        services.AddSingleton(new IdempotencyOptions
+        {
+            Enabled = true
+        });
+
+        var provider = services.BuildServiceProvider();
+
+        var app = new ApplicationBuilder(provider);
+
+        // Act
+        var action = () => app.UseCoreIdempotency();
+
+        // Assert
+        action.Should()
+              .Throw<InvalidOperationException>()
+              .WithMessage(IdempotencyMessages.MissingRegistration);
+    }
 }

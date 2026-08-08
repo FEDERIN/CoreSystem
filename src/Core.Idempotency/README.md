@@ -5,128 +5,210 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
-![Storage](https://img.shields.io/badge/Storage-Redis%20%7C%20PostgreSQL-green?style=for-the-badge)
 
----
+A production-ready idempotency framework for **ASP.NET Core** that guarantees **exactly-once request execution** for distributed applications.
 
-# 📖 Overview
+CoreSystem.Idempotency transparently intercepts incoming requests, validates request fingerprints, persists successful responses through pluggable storage providers, and safely replays completed operations.
 
-**CoreSystem.Idempotency** is a production-ready idempotency framework for ASP.NET Core that guarantees critical operations are executed **exactly once**, even when clients retry requests because of timeouts, network failures, or duplicate submissions.
-
-The framework transparently intercepts incoming requests, validates request fingerprints, persists successful responses, and safely replays previously completed operations.
-
-Designed for distributed systems, it provides provider-independent storage, built-in OpenTelemetry instrumentation, and a highly extensible architecture.
+Designed around a provider-based architecture, the framework remains completely independent from the underlying persistence technology while providing built-in OpenTelemetry instrumentation and production-ready defaults.
 
 ---
 
 # ✨ Features
 
 - ✅ ASP.NET Core middleware
-- ✅ Exactly-once request processing
-- ✅ Response replay
+- ✅ Exactly-once request execution
 - ✅ Request fingerprint validation
+- ✅ Automatic response replay
 - ✅ Duplicate request detection
-- ✅ Redis provider
-- ✅ PostgreSQL provider
+- ✅ Provider-independent storage architecture
+- ✅ Configurable request fingerprinting
 - ✅ Configurable expiration
 - ✅ Configurable HTTP methods
-- ✅ Configurable request fingerprinting
-- ✅ OpenTelemetry Metrics
+- ✅ Built-in OpenTelemetry metrics
+- ✅ Extensible through `IIdempotencyStorage`
 - ✅ Production-ready architecture
+
+---
+
+# 📦 Available Storage Providers
+
+CoreSystem.Idempotency requires a storage provider.
+
+| Package | Description |
+|----------|-------------|
+| **CoreSystem.Idempotency.Redis** | Redis-based distributed storage |
+| **CoreSystem.Idempotency.PostgreSql** | PostgreSQL-based durable storage |
+
+Additional providers can be implemented by using the `IIdempotencyStorage` abstraction.
 
 ---
 
 # 🚀 Quick Start
 
-Install the package
+## 1. Install the framework
 
 ```bash
 dotnet add package CoreSystem.Idempotency
 ```
 
-Register the services
+## 2. Install a storage provider
 
-```csharp
-builder.Services.AddIdempotencyProvider(builder.Configuration);
+### Redis
+
+```bash
+dotnet add package CoreSystem.Idempotency.Redis
 ```
 
-Enable the middleware
+### PostgreSQL
 
-```csharp
-app.UseIdempotency();
+```bash
+dotnet add package CoreSystem.Idempotency.PostgreSql
 ```
 
-Configure the provider
+---
+
+## 3. Register the framework
+
+```csharp
+builder.Services
+    .AddCoreIdempotency(options =>
+    {
+        builder.Configuration
+            .GetSection("Core:Idempotency")
+            .Bind(options);
+    });
+```
+
+Register the storage provider.
+
+```csharp
+builder.Services.AddCoreIdempotencyRedis();
+```
+
+or
+
+```csharp
+builder.Services.AddCoreIdempotencyPostgreSql();
+```
+
+---
+
+## 4. Enable the middleware
+
+```csharp
+app.UseCoreIdempotency();
+```
+
+---
+
+## 5. Configure the framework
 
 ```json
 {
-  "Idempotency": {
-    "Enabled": true,
-    "Provider": "Redis",
-    "HeaderName": "X-Idempotency-Key",
-    "AllowedMethods": [ "POST", "PUT", "DELETE" ],
-    "Expiration": "06:00:00"
+  "Core": {
+    "Idempotency": {
+      "Enabled": true,
+      "InstanceName": "Orders",
+      "Expiration": "06:00:00",
+      "AllowedMethods": [
+        "POST",
+        "PUT"
+      ]
+    }
   }
 }
 ```
-
-That's all.
 
 ---
 
 # 🔒 How It Works
 
-1. The client sends a request with an **Idempotency-Key**.
-2. The middleware checks the configured storage provider.
-3. If the key already exists:
-   - The request fingerprint is validated.
-   - The stored response is replayed.
-4. Otherwise:
-   - The request executes normally.
-   - The response is persisted.
-   - Future retries return the stored response.
+```text
+Incoming Request
+        │
+        ▼
+Resolve Idempotency Key
+        │
+        ▼
+Generate Request Fingerprint
+        │
+        ▼
+Lookup IIdempotencyStorage
+        │
+  ┌─────┴─────┐
+  │           │
+Found      Not Found
+  │           │
+  ▼           ▼
+Replay    Execute Endpoint
+Response       │
+               ▼
+        Persist Response
+```
+
+Every duplicate request receives the original response without executing the application endpoint again.
 
 ---
 
-# 📦 Supported Providers
-
-| Provider | Status |
-|----------|--------|
-| Redis | ✅ |
-| PostgreSQL | ✅ |
-
----
-
-# 📊 Observability
+# 📊 Built-in Observability
 
 CoreSystem.Idempotency publishes OpenTelemetry metrics out of the box.
 
-Available telemetry includes:
+Available metrics include:
 
 - Request processing
-- Duplicate detection
+- Cache hits and misses
 - Response replay
-- Storage latency
-- Payload size
+- Storage read latency
+- Storage write latency
+- Persisted payload size
 
 Compatible with:
 
 - OpenTelemetry
 - Prometheus
 - Grafana
+- Azure Monitor
 - Jaeger
+- Elastic
+- Datadog
+
+---
+
+# 🏛️ Architecture
+
+CoreSystem.Idempotency coordinates the idempotency workflow while remaining completely independent from storage implementations.
+
+```text
+ASP.NET Core
+      │
+      ▼
+CoreSystem.Idempotency
+      │
+      ▼
+IIdempotencyStorage
+      │
+ ┌────┴────┐
+ ▼         ▼
+
+Redis   PostgreSQL
+
+Future Providers
+```
+
+This provider-based architecture allows new storage implementations to be introduced without modifying the core framework.
 
 ---
 
 # 📚 Documentation
 
-Complete documentation is available in the project documentation.
-
-It includes:
+The complete documentation includes:
 
 - Getting Started
 - Architecture
 - Configuration
+- Request Lifecycle
 - Fingerprinting
 - Response Replay
 - Storage Providers
@@ -139,7 +221,7 @@ It includes:
 
 # 🤝 Contributing
 
-Contributions, bug reports, and feature requests are welcome.
+Contributions, bug reports, feature requests, and new storage providers are always welcome.
 
 If you'd like to contribute:
 
