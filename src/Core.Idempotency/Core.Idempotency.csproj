@@ -42,8 +42,6 @@
     <PackageReference Include="CoreSystem.Http" />
     <PackageReference Include="CoreSystem.Observability.Abstractions" />
     <PackageReference Include="CoreSystem.Serialization" />
-    <PackageReference Include="Dapper" />
-    <PackageReference Include="Npgsql" />
 	<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +55,6 @@
 	
  <ItemGroup>
 	 <InternalsVisibleTo Include="Core.Idempotency.UnitTests" />
-	 <InternalsVisibleTo Include="Core.Idempotency.IntegrationTests" />
 	 <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
  </ItemGroup>
 </Project>

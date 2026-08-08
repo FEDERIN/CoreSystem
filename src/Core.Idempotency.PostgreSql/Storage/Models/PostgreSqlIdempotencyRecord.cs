@@ -1,5 +1,4 @@
-﻿
-namespace Core.Idempotency.Storage.PostgreSQL.Models;
+﻿namespace Core.Idempotency.PostgreSql.Storage.Models;
 
 internal sealed class PostgreSqlIdempotencyRecord
 {

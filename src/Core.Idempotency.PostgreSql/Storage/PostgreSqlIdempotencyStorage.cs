@@ -1,23 +1,23 @@
 ﻿using Core.Idempotency.Abstractions;
 using Core.Idempotency.Diagnostics;
 using Core.Idempotency.Models;
-using Core.Idempotency.Options;
-using Core.Idempotency.Storage.PostgreSQL.Models;
+using Core.Idempotency.PostgreSql.Options;
+using Core.Idempotency.PostgreSql.Storage.Models;
 using Core.Serialization.Abstractions;
 using Dapper;
 using Npgsql;
 using System.Diagnostics;
 
-namespace Core.Idempotency.Storage.PostgreSQL;
+namespace Core.Idempotency.PostgreSql.Storage;
 
-internal sealed class PostgresIdempotencyStorage(
-    IdempotencyOptions options,
+internal sealed class PostgreSqlIdempotencyStorage(
+    PostgreSqlOptions options,
     IPayloadSerializer serializer,
     IdempotencyMetrics metrics)
     : IIdempotencyStorage
 {
     private readonly string _connectionString =
-        options.PostgreSql.ConnectionString!;
+        options.ConnectionString!;
 
     public async Task<IdempotencyEntry?> GetAsync(
         string key,

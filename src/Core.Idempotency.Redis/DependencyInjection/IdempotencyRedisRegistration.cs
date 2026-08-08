@@ -10,34 +10,27 @@ using StackExchange.Redis;
 
 namespace Core.Idempotency.Redis.DependencyInjection;
 
-internal static class IdempotencyRedisRegistration
+public static class IdempotencyRedisRegistration
 {
-    public static IServiceCollection AddRedisIdempotency(
+    public static IServiceCollection AddCoreIdempotencyRedis(
         this IServiceCollection services,
-        RedisOptions options)
+        Action<RedisOptions> configure)
     {
-        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(configure);
 
-        if (services.All(d => d.ServiceType != typeof(IdempotencyOptions)))
-        {
-            throw new InvalidOperationException(
-                RedisMessages.IdempotencyRegistrationRequired);
-        }
+        EnsureIdempotencyRegistered(services);
 
-        if (options.Configuration is null)
-        {
-            throw new InvalidOperationException(
-                RedisMessages.RedisConfigurationRequired);
-        }
+        var options = BuildOptions(configure);
 
         services.AddCoreRedis();
 
+        services.AddSingleton(options);
+
         services.AddSingleton<IConnectionMultiplexer>(sp =>
         {
-            var factory =
-                sp.GetRequiredService<IRedisConnectionFactory>();
+            var factory = sp.GetRequiredService<IRedisConnectionFactory>();
 
-            return factory.Create(options.Configuration);
+            return factory.Create(options.Configuration!);
         });
 
         services.AddSingleton<IKeyBuilder>(sp =>
@@ -54,5 +47,32 @@ internal static class IdempotencyRedisRegistration
         services.AddSingleton<IIdempotencyStorage, RedisIdempotencyStorage>();
 
         return services;
+    }
+
+    private static RedisOptions BuildOptions(
+        Action<RedisOptions> configure)
+    {
+        var options = new RedisOptions();
+
+        configure(options);
+
+        if (options.Configuration is null)
+        {
+            throw new InvalidOperationException(
+                RedisMessages.RedisConfigurationRequired);
+        }
+
+        return options;
+    }
+
+    private static void EnsureIdempotencyRegistered(
+        IServiceCollection services)
+    {
+        if (services.All(
+                d => d.ServiceType != typeof(IdempotencyOptions)))
+        {
+            throw new InvalidOperationException(
+                RedisMessages.IdempotencyRegistrationRequired);
+        }
     }
 }

@@ -7,17 +7,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Dapper" />
+	  <PackageReference Include="Npgsql" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Core.Idempotency\Core.Idempotency.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CoreSystem.Redis" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<InternalsVisibleTo Include="Core.Idempotency.Redis.UnitTests" />
-		<InternalsVisibleTo Include="Core.Idempotency.Redis.IntegrationTests" />
+		<InternalsVisibleTo Include="Core.Idempotency.PostgreSql.UnitTests" />
+		<InternalsVisibleTo Include="Core.Idempotency.PostgreSql.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	</ItemGroup>
-
 </Project>

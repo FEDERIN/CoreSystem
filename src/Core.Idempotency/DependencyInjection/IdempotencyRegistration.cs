@@ -44,7 +44,9 @@ public static class IdempotencyRegistration
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        var options = app.ApplicationServices.GetRequiredService<IdempotencyOptions>();
+        var options = app.ApplicationServices.GetService<IdempotencyOptions>() 
+            ?? throw new InvalidOperationException(
+                IdempotencyMessages.MissingRegistration);
 
         if (!options.Enabled)
         {
@@ -53,7 +55,8 @@ public static class IdempotencyRegistration
 
         if (app.ApplicationServices.GetService<IIdempotencyService>() is null)
         {
-            throw new InvalidOperationException(IdempotencyMessages.MissingRegistration);
+            throw new InvalidOperationException(
+                IdempotencyMessages.MissingRegistration);
         }
 
         return app.UseMiddleware<IdempotencyMiddleware>();

@@ -1,6 +1,5 @@
-﻿namespace Core.Resilience.Builders.Abstractions;
+﻿namespace Core.Resilience.Abstractions;
 
-using Core.Resilience.Abstractions;
 using Core.Resilience.Options;
 
 /// <summary>
