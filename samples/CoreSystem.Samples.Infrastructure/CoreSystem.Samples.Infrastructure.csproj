@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core.Idempotency\Core.Idempotency.csproj" />
+    <ProjectReference Include="..\..\src\Core.Idempotency.PostgreSql\Core.Idempotency.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\Core.Idempotency.Redis\Core.Idempotency.Redis.csproj" />
   </ItemGroup>
 
 </Project>
