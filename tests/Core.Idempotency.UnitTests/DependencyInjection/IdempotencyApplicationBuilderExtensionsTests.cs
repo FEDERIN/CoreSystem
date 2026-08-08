@@ -1,5 +1,5 @@
-﻿using Core.Idempotency.Abstractions;
-using Core.Idempotency.DependencyInjection;
+﻿using Core.Idempotency.DependencyInjection;
+using Core.Idempotency.Options;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,32 +8,6 @@ namespace Core.Idempotency.UnitTests.DependencyInjection;
 
 public class IdempotencyApplicationBuilderExtensionsTests
 {
-    [Fact]
-    public void UseCoreIdempotency_Should_Return_ApplicationBuilder()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-
-
-        services.AddCoreIdempotency(options =>
-        {
-            options.Enabled = true;
-            options.Provider = IdempotencyProviderType.PostgreSQL;
-            options.PostgreSql.ConnectionString =
-                "Host=localhost;Database=idempotency;Username=test;Password=test";
-        });
-
-        var provider = services.BuildServiceProvider();
-
-        var app = new ApplicationBuilder(provider);
-
-        // Act
-        var result = app.UseCoreIdempotency();
-
-        // Assert
-        result.Should().BeSameAs(app);
-    }
-
     [Fact]
     public void UseCoreIdempotency_Should_Throw_When_ApplicationBuilder_Is_Null()
     {
@@ -66,5 +40,24 @@ public class IdempotencyApplicationBuilderExtensionsTests
         action.Should()
               .Throw<InvalidOperationException>()
               .WithMessage(IdempotencyMessages.MissingRegistration);
+    }
+
+    [Fact]
+    public void UseCoreIdempotency_Should_Return_ApplicationBuilder_When_Disabled()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingleton(new IdempotencyOptions
+        {
+            Enabled = false
+        });
+
+        var provider = services.BuildServiceProvider();
+
+        var app = new ApplicationBuilder(provider);
+
+        var result = app.UseCoreIdempotency();
+
+        result.Should().BeSameAs(app);
     }
 }

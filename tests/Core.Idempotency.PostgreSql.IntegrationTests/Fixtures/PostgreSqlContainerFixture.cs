@@ -2,7 +2,7 @@
 using Npgsql;
 using Testcontainers.PostgreSql;
 
-namespace Core.Idempotency.IntegrationTests.Fixtures;
+namespace Core.Idempotency.PostgreSql.IntegrationTests.Fixtures;
 
 public sealed class PostgreSqlContainerFixture : IAsyncLifetime
 {

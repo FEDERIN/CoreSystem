@@ -1,5 +1,4 @@
 ﻿using Core.Resilience.Abstractions;
-using Core.Resilience.Builders.Abstractions;
 using Core.Resilience.Exceptions;
 using Core.Resilience.Internal;
 using Core.Resilience.Options;

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 
-namespace Core.Idempotency.IntegrationTests.Storage;
+namespace Core.Idempotency.Redis.IntegrationTests.Storage;
 
 public abstract class IdempotencyTestsBase
 {

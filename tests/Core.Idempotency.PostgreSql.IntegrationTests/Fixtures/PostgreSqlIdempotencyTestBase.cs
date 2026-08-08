@@ -1,12 +1,12 @@
-﻿using Core.Idempotency.Abstractions;
-using Core.Idempotency.DependencyInjection;
+﻿using Core.Idempotency.DependencyInjection;
+using Core.Idempotency.PostgreSql.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.Idempotency.IntegrationTests.Fixtures;
+namespace Core.Idempotency.PostgreSql.IntegrationTests.Fixtures;
 
 public abstract class PostgreSqlIdempotencyTestBase : IDisposable
 {
@@ -28,25 +28,25 @@ public abstract class PostgreSqlIdempotencyTestBase : IDisposable
             services.AddCoreIdempotency(options =>
             {
                 options.Enabled = true;
-                options.Provider = IdempotencyProviderType.PostgreSQL;
-
-                options.PostgreSql.ConnectionString = fixture.ConnectionString;
                 options.Fingerprint.Enabled = true;
                 options.Fingerprint.IncludeQueryString = true;
                 options.Fingerprint.IncludeContentType = true;
                 options.Fingerprint.IncludedHeaders.Add("Authorization");
             });
-            services.AddProblemDetails();
+
+            services.AddCoreIdempotencyPostgreSql(options =>
+            {
+                options.ConnectionString = fixture.ConnectionString;
+            });
+
         });
 
         builder.Configure(app =>
         {
-            app.UseExceptionHandler();
-            app.UseRouting();
-
-            app.UseCoreIdempotency();
-
-            app.UseEndpoints(configureEndpoints);
+            app
+            .UseRouting()
+            .UseCoreIdempotency()
+            .UseEndpoints(configureEndpoints);
         });
 
         _server = new TestServer(builder);

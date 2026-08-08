@@ -9,7 +9,45 @@ namespace Core.Idempotency.UnitTests.DependencyInjection;
 public class IdempotencyDiagnosticsRegistrationTests
 {
     [Fact]
-    public void AddCoreIdempotency_Should_Register_IdempotencyMetrics()
+    public void AddCoreIdempotency_Should_Register_IdempotencyMetrics_When_Enabled()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddCoreIdempotency(options =>
+        {
+            options.Enabled = true;
+        });
+
+        var provider = services.BuildServiceProvider();
+
+        // Assert
+        provider.GetRequiredService<IdempotencyMetrics>();
+    }
+
+    [Fact]
+    public void AddCoreIdempotency_Should_Register_ObservabilityContributor_When_Enabled()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddCoreIdempotency(options =>
+        {
+            options.Enabled = true;
+        });
+
+        var provider = services.BuildServiceProvider();
+
+        // Assert
+        provider.GetServices<IObservabilityContributor>()
+                .Should()
+                .ContainSingle(x => x is IdempotencyObservabilityContributor);
+    }
+
+    [Fact]
+    public void AddCoreIdempotency_Should_Not_Register_IdempotencyMetrics_When_Disabled()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -23,11 +61,13 @@ public class IdempotencyDiagnosticsRegistrationTests
         var provider = services.BuildServiceProvider();
 
         // Assert
-        provider.GetRequiredService<IdempotencyMetrics>();
+        provider.GetService<IdempotencyMetrics>()
+                .Should()
+                .BeNull();
     }
 
     [Fact]
-    public void AddCoreIdempotency_Should_Register_ObservabilityContributor()
+    public void AddCoreIdempotency_Should_Not_Register_ObservabilityContributor_When_Disabled()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -43,6 +83,6 @@ public class IdempotencyDiagnosticsRegistrationTests
         // Assert
         provider.GetServices<IObservabilityContributor>()
                 .Should()
-                .ContainSingle(x => x is IdempotencyObservabilityContributor);
+                .BeEmpty();
     }
 }

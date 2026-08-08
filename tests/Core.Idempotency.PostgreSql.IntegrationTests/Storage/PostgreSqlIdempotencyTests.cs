@@ -1,9 +1,9 @@
-﻿using Core.Idempotency.IntegrationTests.Fixtures;
+﻿using Core.Idempotency.PostgreSql.IntegrationTests.Fixtures;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Core.Idempotency.IntegrationTests.Storage.PostgreSql;
+namespace Core.Idempotency.PostgreSql.IntegrationTests.Storage;
 
 public sealed class PostgreSqlIdempotencyTests(PostgreSqlContainerFixture fixture)
     : IdempotencyTestsBase,
