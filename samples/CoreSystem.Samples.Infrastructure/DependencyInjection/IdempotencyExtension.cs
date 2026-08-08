@@ -1,6 +1,7 @@
-﻿using Core.Idempotency.Abstractions;
-using Core.Idempotency.DependencyInjection;
+﻿using Core.Idempotency.DependencyInjection;
 using Core.Idempotency.Options;
+using Core.Idempotency.Redis.DependencyInjection;
+using Core.Idempotency.PostgreSql.DependencyInjection;
 using CoreSystem.Samples.Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,10 +22,13 @@ internal static class IdempotencyExtension
         }
 
         var options = new IdempotencyOptions();
+
         section.Bind(options);
 
         if (!options.Enabled)
+        {
             return services;
+        }
 
         section.ReplaceIfConfigured(
             "AllowedMethods",
@@ -42,23 +46,46 @@ internal static class IdempotencyExtension
                 "At least one HTTP method must be configured for Core:Idempotency:AllowedMethods.");
         }
 
-        if (options.Provider == IdempotencyProviderType.Redis)
-        {
-            ConfigureRedis(options, configuration);
-        }
+        services.AddCoreIdempotency(
+            _ => _.CopyFrom(options));
 
-        services.AddCoreIdempotency(_ => _.CopyFrom(options));
+        ConfigureProvider(
+            services,
+            configuration,
+            section);
 
         return services;
     }
 
-    private static void ConfigureRedis(
-        IdempotencyOptions options,
-        IConfiguration configuration)
+    private static void ConfigureProvider(
+        IServiceCollection services,
+        IConfiguration configuration,
+        IConfigurationSection section)
     {
-        options.Redis.Configuration =
-            RedisConfigurationFactory.Create(
-                configuration,
-                "MainRedis");
+        var provider =
+            section.GetValue<string>("Provider");
+
+        switch (provider)
+        {
+            case "Redis":
+                services.AddCoreIdempotencyRedis(options =>
+                {
+                    options.Configuration =
+                        RedisConfigurationFactory.Create(
+                            configuration,
+                            "MainRedis");
+                });
+                break;
+
+            case "PostgreSql":
+                services.AddCoreIdempotencyPostgreSql(options =>
+                {
+                    options.ConnectionString =
+                        PostgreSqlConfigurationFactory.Create(
+                            configuration,
+                            "MainPostgreSql");
+                });
+                break;
+        }
     }
 }

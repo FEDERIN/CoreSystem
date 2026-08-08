@@ -1,5 +1,4 @@
-﻿using Core.Idempotency.Abstractions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Core.Idempotency.Options;
 
@@ -13,26 +12,6 @@ public class IdempotencyOptions
     /// Default is true.
     /// </summary>
     public bool Enabled { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the default cache provider used by the library.
-    /// </summary>
-    /// <remarks>
-    /// If not specified, the library selects the appropriate provider
-    /// based on the registered services.
-    /// </remarks>
-    public IdempotencyProviderType Provider { get; set; }
-        = IdempotencyProviderType.Redis;
-
-    /// <summary>
-    /// Gets the Redis-specific configuration options.
-    /// </summary>
-    public RedisOptions Redis { get; } = new();
-
-    /// <summary>
-    /// Gets the PostgreSQL-specific configuration options.
-    /// </summary>
-    public PostgreSqlOptions PostgreSql { get; } = new();
 
     /// <summary>
     /// Gets the fingerprint generation configuration options.
@@ -124,11 +103,8 @@ public class IdempotencyOptions
     {
         ArgumentNullException.ThrowIfNull(source);
         Enabled = source.Enabled;
-        Provider = source.Provider;
         InstanceName = source.InstanceName;
         Expiration = source.Expiration;
-        Redis.CopyFrom(source.Redis);
-        PostgreSql.CopyFrom(source.PostgreSql);
         Fingerprint.CopyFrom(source.Fingerprint);
         AllowedMethods.Clear();
         AllowedMethods.UnionWith(source.AllowedMethods);

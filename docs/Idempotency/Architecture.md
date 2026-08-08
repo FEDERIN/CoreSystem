@@ -2,9 +2,11 @@
 
 `CoreSystem.Idempotency` is built around a middleware-centric architecture that guarantees a request is executed only once.
 
-Instead of allowing every incoming request to reach the application, the middleware intercepts the request, validates the idempotency key, generates a request fingerprint, and consults the configured storage provider before deciding whether the request should be executed or a previously stored response should be returned.
+The framework coordinates the idempotency workflow while remaining completely independent from the underlying storage technology.
 
-This design separates idempotency concerns from application code while allowing different storage providers to be introduced without changing the public API.
+Instead of allowing every incoming request to reach the application, the middleware intercepts the request, resolves the idempotency key, generates a request fingerprint, and delegates persistence to an implementation of `IIdempotencyStorage`.
+
+This provider-based architecture keeps the core library storage-agnostic while allowing additional storage providers to be introduced without modifying the framework.
 
 ```mermaid
 flowchart LR
@@ -21,9 +23,9 @@ flowchart LR
 
     Decision -->|No| Endpoint["ASP.NET Core Endpoint"]
 
-    Endpoint --> StorageSave["Store Response"]
+    Endpoint --> Persist["Persist Response"]
 
-    StorageSave --> Client
+    Persist --> Client
 
     Decision -->|Yes| Replay["Replay Cached Response"]
 
@@ -37,25 +39,26 @@ flowchart LR
 CoreSystem.Idempotency is designed around a few core principles:
 
 - Execute business operations exactly once.
-- Keep application code independent from storage implementations.
+- Keep the framework independent from storage implementations.
 - Detect request modifications through fingerprinting.
-- Support multiple distributed storage providers.
+- Support pluggable storage providers.
 - Keep infrastructure concerns isolated from business logic.
+- Allow new providers without modifying the core library.
 
 ---
 
 # 🏛️ Architectural Patterns
 
-The framework combines a small set of architectural patterns.
+The framework combines several architectural patterns.
 
 | Pattern | Purpose |
 |----------|---------|
-| **Middleware** | Intercepts every incoming HTTP request before it reaches the application. |
-| **Strategy** | Allows different storage providers and fingerprint algorithms to be selected. |
-| **Provider Pattern** | Abstracts Redis and PostgreSQL behind a common `IIdempotencyStorage` interface. |
-| **Decorator** | Wraps the request execution to capture and persist the generated response. |
+| **Middleware** | Intercepts incoming HTTP requests before they reach the application. |
+| **Strategy** | Allows different implementations of request fingerprinting and storage. |
+| **Provider Pattern** | Delegates persistence to implementations of `IIdempotencyStorage`. |
+| **Decorator** | Captures and persists successful responses for future replay. |
 
-Together, these patterns keep the framework extensible while minimizing the impact on application code.
+These patterns keep the framework extensible while minimizing the impact on application code.
 
 ---
 
@@ -65,11 +68,12 @@ The framework is composed of the following components.
 
 | Component | Responsibility |
 |-----------|----------------|
-| **IdempotencyMiddleware** | Intercepts requests and coordinates the idempotency workflow. |
-| **IRequestFingerprintGenerator** | Generates a deterministic fingerprint for each request. |
-| **IIdempotencyStorage** | Stores and retrieves idempotent responses. |
-| **IIdempotencyKeyGenerator** | Generates unique idempotency keys when required. |
-| **IResponseCapture** | Captures the HTTP response for later replay. |
+| **IdempotencyMiddleware** | Coordinates the complete idempotency workflow. |
+| **IIdempotencyStorage** | Abstraction responsible for persisting idempotency entries. |
+| **IRequestFingerprintProvider** | Computes deterministic request fingerprints. |
+| **IIdempotencyKeyResolver** | Resolves the idempotency key from the incoming request. |
+| **IResponseCapture** | Captures the generated HTTP response before persistence. |
+| **IHttpResponseWriter** | Replays previously stored responses. |
 
 Each component has a single responsibility and can evolve independently.
 
@@ -91,27 +95,27 @@ sequenceDiagram
 
     Client->>Middleware: HTTP Request
 
-    Middleware->>Fingerprint: Generate fingerprint
+    Middleware->>Fingerprint: Generate Fingerprint
 
-    Fingerprint-->>Middleware: Hash
+    Fingerprint-->>Middleware: Request Fingerprint
 
-    Middleware->>Storage: Lookup key
+    Middleware->>Storage: Lookup Entry
 
-    alt Existing Key
+    alt Existing Entry
 
-        Storage-->>Middleware: Stored response
+        Storage-->>Middleware: Stored Response
 
-        Middleware-->>Client: Replay response
+        Middleware-->>Client: Replay Response
 
-    else New Key
+    else New Request
 
-        Middleware->>Endpoint: Execute request
+        Middleware->>Endpoint: Execute Request
 
-        Endpoint-->>Middleware: HTTP response
+        Endpoint-->>Middleware: HTTP Response
 
-        Middleware->>Storage: Persist response
+        Middleware->>Storage: Persist Response
 
-        Middleware-->>Client: Return response
+        Middleware-->>Client: Return Response
 
     end
 ```
@@ -120,7 +124,7 @@ sequenceDiagram
 
 # 🔐 Request Fingerprinting
 
-Every request is transformed into a deterministic fingerprint before storage lookup.
+Before querying the storage provider, the middleware computes a deterministic fingerprint of the incoming request.
 
 The fingerprint may include:
 
@@ -130,42 +134,47 @@ The fingerprint may include:
 - Request body
 - Selected HTTP headers
 
-If the same idempotency key is reused with a different fingerprint, the middleware rejects the request by throwing an `IdempotencyFingerprintMismatchException`.
+If an existing idempotency entry is found but its fingerprint differs from the incoming request, the middleware throws an `IdempotencyFingerprintMismatchException`.
 
-See **Fingerprinting** for details.
+See **Fingerprinting** for implementation details.
 
 ---
 
-# 🗄️ Storage Layer
+# 🗄️ Storage Providers
 
-The storage layer is completely independent from the middleware.
+The middleware never communicates with a storage technology directly.
 
-Every provider implements the same abstraction.
+Instead, it depends exclusively on the `IIdempotencyStorage` abstraction.
 
 ```mermaid
 graph LR
 
-    Middleware --> Storage["IIdempotencyStorage"]
+    Middleware["IdempotencyMiddleware"]
+        --> Storage["IIdempotencyStorage"]
 
-    Storage --> Redis["RedisStorage"]
+    Storage --> Redis["Core.Idempotency.Redis"]
 
-    Storage --> PostgreSQL["PostgreSqlStorage"]
+    Storage --> PostgreSQL["Core.Idempotency.PostgreSql"]
+
+    Storage -.-> Future["Custom Provider"]
 ```
 
-Current providers:
+Each provider is distributed as an independent package.
 
-- Redis
-- PostgreSQL
+Current providers include:
 
-Additional providers can be introduced without modifying the middleware.
+- Core.Idempotency.Redis
+- Core.Idempotency.PostgreSql
+
+Additional providers can be introduced by implementing `IIdempotencyStorage`, without requiring changes to `Core.Idempotency`.
 
 ---
 
 # ♻️ Response Replay
 
-After a successful request execution, the framework stores:
+After a successful request execution, the middleware persists:
 
-- Status code
+- HTTP status code
 - Response headers
 - Response body
 - Request fingerprint
@@ -173,4 +182,4 @@ After a successful request execution, the framework stores:
 
 When an identical request is received with the same idempotency key, the stored response is replayed immediately without executing the application endpoint again.
 
-This guarantees that business operations are executed exactly once while providing consistent responses to clients.
+This guarantees that business operations execute exactly once while providing deterministic responses across retries.

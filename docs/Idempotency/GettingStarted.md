@@ -1,13 +1,13 @@
 # 🚀 Getting Started
 
-Welcome to **CoreSystem.Idempotency**, a production-ready distributed idempotency library for **.NET 8**.
+Welcome to **CoreSystem.Idempotency**, a production-ready idempotency framework for **.NET 8**.
 
 In this guide you'll learn how to:
 
-- Install the package
-- Configure the framework
+- Install the framework
+- Install a storage provider
+- Configure the middleware
 - Register the services
-- Enable the middleware
 - Execute your first idempotent request
 
 > **Estimated time:** 5 minutes
@@ -20,44 +20,71 @@ Before getting started, ensure you have:
 
 - .NET 8 SDK
 - An ASP.NET Core application
-- Redis 7+ or PostgreSQL 16+
+- One supported storage provider
 
 ---
 
-## Choose a Storage Provider
+# Choose a Storage Provider
 
-CoreSystem.Idempotency requires a persistent storage provider to store request fingerprints and cached responses.
+`CoreSystem.Idempotency` requires a storage provider to persist idempotency entries.
 
 Currently supported providers:
 
-- Redis
-- PostgreSQL
+- **CoreSystem.Idempotency.Redis**
+- **CoreSystem.Idempotency.PostgreSql**
 
-Each provider has its own setup guide, configuration, and operational recommendations.
+Each provider has its own installation, configuration, and operational guidance.
 
 See **Storage Providers** for more information.
 
-# Step 1 — Install the Package
+---
 
-Install the NuGet package.
+# Step 1 — Install the Framework
+
+Install the core framework.
 
 ```bash
 dotnet add package CoreSystem.Idempotency
 ```
 
-Installing **CoreSystem.Idempotency** automatically installs the required CoreSystem packages through NuGet dependencies.
+The package contains:
+
+- Idempotency middleware
+- Request fingerprinting
+- Response replay
+- Storage abstractions
+- Built-in observability
+
 ---
 
-# Step 2 — Configure the Framework
+# Step 2 — Install a Storage Provider
 
-Configure the framework in your `appsettings.json`.
+Choose the provider that best fits your application.
+
+### Redis
+
+```bash
+dotnet add package CoreSystem.Idempotency.Redis
+```
+
+### PostgreSQL
+
+```bash
+dotnet add package CoreSystem.Idempotency.PostgreSql
+```
+
+---
+
+# Step 3 — Configure the Framework
+
+Configure the framework in `appsettings.json`.
 
 ```json
 {
   "Core": {
     "Idempotency": {
       "Enabled": true,
-      "Provider": "Redis"
+      "InstanceName": "Orders"
     }
   }
 }
@@ -66,26 +93,51 @@ Configure the framework in your `appsettings.json`.
 !!! note
 
     The configuration shown above contains only the minimum required settings.
-    See **Configuration** for all available options.
+    See **Configuration** for the complete list of available options.
+
 ---
 
-# Step 3 — Register the Framework
+# Step 4 — Register the Services
 
-Register CoreSystem.Idempotency during application startup.
+Register the framework.
 
 ```csharp
-builder.Services.AddCoreIdempotency(options =>
+builder.Services
+    .AddCoreIdempotency(options =>
+    {
+        builder.Configuration
+            .GetSection("Core:Idempotency")
+            .Bind(options);
+    });
+```
+
+Then register the storage provider.
+
+### Redis
+
+```csharp
+builder.Services.AddCoreIdempotencyRedis(options =>
 {
-    builder.Configuration
-        .GetSection("Core:Idempotency")
-        .Bind(options);
+    // Configure Redis
 });
 ```
 
-`AddCoreIdempotency()` registers the middleware, storage abstractions, request fingerprinting services, and all required dependencies in the ASP.NET Core dependency injection container.
+### PostgreSQL
+
+```csharp
+builder.Services.AddCoreIdempotencyPostgreSql(options =>
+{
+    // Configure PostgreSQL
+});
+```
+
+`AddCoreIdempotency()` registers the middleware, request fingerprinting services, diagnostics, and storage abstractions.
+
+The provider package registers the corresponding `IIdempotencyStorage` implementation.
+
 ---
 
-# Step 4 — Enable the Middleware
+# Step 5 — Enable the Middleware
 
 Configure the ASP.NET Core request pipeline.
 
@@ -97,13 +149,15 @@ app.UseCoreIdempotency();
 app.Run();
 ```
 
-# Step 5 — Send an Idempotent Request
+---
 
-Include an idempotency key in every request that should be executed only once.
+# Step 6 — Send an Idempotent Request
+
+Include an idempotency key in every request that should execute only once.
 
 ```http
 POST /orders HTTP/1.1
-X-Idempotency-Key: 8db99b84-6b57-41e3-ae66-98c4d4a2d9d5
+Idempotency-Key: 8db99b84-6b57-41e3-ae66-98c4d4a2d9d5
 Content-Type: application/json
 
 {
@@ -112,4 +166,17 @@ Content-Type: application/json
 }
 ```
 
-If the same request is received again with the same idempotency key, the previously stored response is returned instead of executing the business operation again.
+The first request is processed normally and its response is persisted by the configured storage provider.
+
+Subsequent requests using the same idempotency key and an identical request fingerprint receive the previously stored response without executing the endpoint again.
+
+---
+
+# Next Steps
+
+Now that the framework is running, continue with:
+
+- **Configuration**
+- **Architecture**
+- **Fingerprinting**
+- **Storage Providers**

@@ -1,45 +1,90 @@
 # ⚡ CoreSystem.Idempotency
 
-CoreSystem.Idempotency is a production-ready idempotency framework for .NET 8.
+CoreSystem.Idempotency is a production-ready idempotency library for ASP.NET Core and .NET 8.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Idempotency?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Idempotency?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
-![Storage](https://img.shields.io/badge/Storage-Redis%20%7C%20PostgreSQL-green?style=for-the-badge)
 
 It guarantees that critical operations are executed exactly once, even when clients retry requests because of timeouts, network failures, or duplicate submissions.
 
-The framework provides request fingerprinting, distributed persistence, response replay, OpenTelemetry integration, and a provider-based architecture that supports multiple storage backends.
+The framework provides request fingerprinting, response replay, OpenTelemetry integration, and a provider-based architecture that enables pluggable storage providers.
 
-## 📦 CoreSystem Ecosystem
+---
+
+## ✨ Features
+
+- Middleware-based idempotency for ASP.NET Core
+- Exactly-once request execution
+- Response capture and replay
+- Request fingerprint validation
+- Provider-based storage architecture
+- Extensible through `IIdempotencyStorage`
+- Built-in OpenTelemetry metrics
+- Storage-provider independent design
+
+---
+
+## 📦 Package Architecture
+
+CoreSystem.Idempotency contains the middleware and the orchestration logic.
+
+Storage providers are distributed as independent packages.
 
 | Package | Responsibility |
 |----------|----------------|
-| **CoreSystem.Idempotency** | Idempotency middleware, request fingerprinting, response replay, and storage orchestration |
-| **CoreSystem.Redis** | Redis connectivity and distributed storage infrastructure |
+| **CoreSystem.Idempotency** | Middleware, request fingerprinting, response replay, storage abstractions, and orchestration |
+| **CoreSystem.Idempotency.Redis** | Redis storage provider |
+| **CoreSystem.Idempotency.PostgreSql** | PostgreSQL storage provider |
 | **CoreSystem.Serialization** | JSON, MessagePack, and Protocol Buffers serialization |
 | **CoreSystem.Http** | HTTP abstractions used by the middleware |
-| **CoreSystem.Observability** *(Optional)* | Ready-to-use OpenTelemetry instrumentation, metrics, tracing, and diagnostics for CoreSystem packages |
-| **CoreSystem.Observability.Abstractions** | Shared observability contracts for implementing custom instrumentation and integrations |
+| **CoreSystem.Redis** | Redis connectivity infrastructure used by the Redis provider |
+| **CoreSystem.Observability** *(Optional)* | OpenTelemetry metrics, tracing, and diagnostics |
+| **CoreSystem.Observability.Abstractions** | Shared observability contracts |
 
+> **CoreSystem.Idempotency** requires a storage provider.
+>
+> Choose one of the available provider packages:
+>
+> - **CoreSystem.Idempotency.Redis**
+> - **CoreSystem.Idempotency.PostgreSql**
 
-> Installing **CoreSystem.Idempotency** automatically installs the selected storage provider through NuGet dependencies.
+> **Optional:** Install **CoreSystem.Observability** to enable built-in OpenTelemetry metrics and tracing.
 
-> **Optional:** Install **CoreSystem.Observability** to enable built-in OpenTelemetry metrics and tracing. Install **CoreSystem.Observability.Abstractions** only if you need to build custom observability components or integrations.
 ---
 
-## 📚 Table of Contents
+## 🏛️ High-Level Architecture
 
-- Getting Started
-- Why CoreSystem.Idempotency?
-- Architecture
-- Configuration
-- Storage Providers
-- Fingerprinting
-- Response Replay
-- Observability
-- Errors
-- Best Practices
-- Roadmap
+```mermaid
+flowchart TD
+
+    App["ASP.NET Core Application"]
+
+    App --> Core["CoreSystem.Idempotency"]
+
+    Core --> Storage["IIdempotencyStorage"]
+
+    Storage --> Redis["Core.Idempotency.Redis"]
+
+    Storage --> PostgreSql["Core.Idempotency.PostgreSql"]
+
+    Storage -.-> Custom["Custom Provider"]
+```
+
+---
+
+## 📚 Documentation
+
+- 🚀 Getting Started
+- ❓ Why CoreSystem.Idempotency?
+- 🏗️ Architecture
+- ⚙️ Configuration
+- 🗄️ Storage Providers
+- 🔐 Fingerprinting
+- ♻️ Response Replay
+- 📊 Observability
+- ❌ Errors
+- ✅ Best Practices
+- 🛣️ Roadmap

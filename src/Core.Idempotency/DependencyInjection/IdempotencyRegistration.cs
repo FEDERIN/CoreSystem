@@ -35,19 +35,6 @@ public static class IdempotencyRegistration
             .AddIdempotencyDiagnostics()
             .AddFingerprint();
 
-        switch (options.Provider)
-        {
-            case IdempotencyProviderType.Redis:
-                services.AddIdempotencyRedis(options);
-                break;
-
-            case IdempotencyProviderType.PostgreSQL:
-                services.AddIdempotencyPostgreSql(options);
-                break;
-
-            default:
-                throw new NotSupportedException(IdempotencyMessages.UnsupportedProvider(options.Provider));
-        }
         services.AddIdempotencyServices();
 
         return services;
@@ -57,7 +44,9 @@ public static class IdempotencyRegistration
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        var options = app.ApplicationServices.GetRequiredService<IdempotencyOptions>();
+        var options = app.ApplicationServices.GetService<IdempotencyOptions>() 
+            ?? throw new InvalidOperationException(
+                IdempotencyMessages.MissingRegistration);
 
         if (!options.Enabled)
         {
@@ -66,7 +55,8 @@ public static class IdempotencyRegistration
 
         if (app.ApplicationServices.GetService<IIdempotencyService>() is null)
         {
-            throw new InvalidOperationException(IdempotencyMessages.MissingRegistration);
+            throw new InvalidOperationException(
+                IdempotencyMessages.MissingRegistration);
         }
 
         return app.UseMiddleware<IdempotencyMiddleware>();

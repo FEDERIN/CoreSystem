@@ -2,7 +2,7 @@
 
 namespace Core.Idempotency.Abstractions;
 
-internal interface IIdempotencyStorage
+public interface IIdempotencyStorage
 {
     Task<IdempotencyEntry?> GetAsync(
         string key,

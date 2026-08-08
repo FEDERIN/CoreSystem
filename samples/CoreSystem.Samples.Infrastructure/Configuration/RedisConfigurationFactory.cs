@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 
+
 namespace CoreSystem.Samples.Infrastructure.Configuration;
 
 internal static class RedisConfigurationFactory
