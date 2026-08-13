@@ -1,55 +1,17 @@
-using Core.Cache.Abstractions;
 using Core.Cache.DependencyInjection;
-using Core.Cache.Options;
-using Core.Idempotency.Abstractions;
 using Core.Idempotency.DependencyInjection;
 using Core.Observability;
-using Core.Resilience.DependencyInjection;
+using CoreSystem.Samples.Core.Interfaces;
 using CoreSystem.Samples.Core.Services;
 using CoreSystem.Samples.Infrastructure.DependencyInjection;
 using Serilog;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<IMyService, MyService>();
-
-
-var cacheOptions = new CacheOptions();
-
-builder.Configuration
-    .GetSection("Core:Cache")
-    .Bind(cacheOptions);
-
-if (cacheOptions.DefaultProvider == CacheProviderType.Redis 
-    && cacheOptions.Redis.Enabled)
-{
-    builder.Services.AddCoreResilience(options =>
-    {
-        builder.Configuration
-            .GetSection("Core:Resilience")
-            .Bind(options);
-    });
-}
-
-var redisSection = builder.Configuration.GetSection("RedisConnections:MainRedis");
-
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddCoreCache(options =>
-{
-    options.CopyFrom(cacheOptions);
-
-    if (!options.Redis.Enabled)
-        return;
-
-    var redisConfiguration = CreateRedisConfiguration(redisSection);
-
-    options.Redis.Configuration = redisConfiguration;
-
-    options.InstanceName = "CoreSystem:App01";
-});
 
 builder.AddObservability(
     environment: builder.Environment.EnvironmentName,
@@ -61,7 +23,6 @@ builder.Services.AddProblemDetails();
 var app = builder.Build();
 
 app.UseExceptionHandler();
-
 app.UseObservabilityEndpoints();
 app.UseCoreIdempotency();
 app.UseCoreCache();
@@ -79,40 +40,4 @@ catch (Exception ex)
 finally
 {
     Log.CloseAndFlush();
-}
-
-static Action<ConfigurationOptions> CreateRedisConfiguration(IConfigurationSection redisSection)
-{
-    ValidateRedisConnection(redisSection);
-
-    return config =>
-    {
-        config.EndPoints.Add(redisSection["Host"]!);
-        config.Password = redisSection["Password"];
-    };
-}
-
-static void ValidateRedisConnection(IConfigurationSection redisSection)
-{
-    if (!redisSection.Exists())
-    {
-        throw new InvalidOperationException(
-            "The configuration section 'RedisConnections:MainRedis' was not found.");
-    }
-
-    var host = redisSection["Host"];
-
-    if (string.IsNullOrWhiteSpace(host))
-    {
-        throw new InvalidOperationException(
-            "RedisConnections:Default:Host is required.");
-    }
-
-    var password = redisSection["Password"];
-
-    if (string.IsNullOrWhiteSpace(password))
-    {
-        throw new InvalidOperationException(
-            "RedisConnections:Default:Password is required.");
-    }
 }

@@ -1,6 +1,5 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Storage.Abstractions;
-using Core.Cache.Storage.Rehydration.Tracking;
 using Core.Memory.Synchronization;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -12,7 +11,7 @@ internal sealed class MemoryStorage(
     IAsyncKeyLock lockProvider,
     ICacheEntryFactory entryFactory,
     ICacheEntryInspector entryInspector,
-    IRehydrationTracker rehydrationTracker)
+    ICacheKeyTracker keyTracker)
     : ICacheStorage
 {
     private readonly IMemoryCache _memoryCache = memoryCache;
@@ -20,7 +19,7 @@ internal sealed class MemoryStorage(
     private readonly IAsyncKeyLock _lockProvider = lockProvider;
     private readonly ICacheEntryFactory _entryFactory = entryFactory;
     private readonly ICacheEntryInspector _entryInspector = entryInspector;
-    private readonly IRehydrationTracker _rehydrationTracker = rehydrationTracker;
+    private readonly ICacheKeyTracker _keyTracker = keyTracker;
 
     public Task<T?> GetAsync<T>(
         string key,
@@ -48,32 +47,41 @@ internal sealed class MemoryStorage(
                 DateTimeOffset.UtcNow.Add(expiration.Value);
         }
 
+        var effectiveOptions = 
+            options ?? CacheEntryOptions.Default;
+
         var wrapper = _entryFactory.Create(
             value,
-            options ?? CacheEntryOptions.Default,
-            absoluteExpiration);
+            effectiveOptions,
+            absoluteExpiration,
+            tags);
 
         var cacheOptions = new MemoryCacheEntryOptions();
 
         if (expiration.HasValue)
         {
-            cacheOptions.SetAbsoluteExpiration(expiration.Value);
+            cacheOptions.SetAbsoluteExpiration(
+                expiration.Value);
         }
 
-        cacheOptions.RegisterPostEvictionCallback((evictedKey, _, _, _) =>
-        {
-            var cacheKey = (string)evictedKey;
+        cacheOptions.RegisterPostEvictionCallback(
+            (evictedKey, _, _, _) =>
+            {
+                var cacheKey = (string)evictedKey;
+                _ = _tagIndex.RemoveKeyAsync(cacheKey);
+                _keyTracker.Untrack(cacheKey);
 
-            _ = _tagIndex.RemoveKeyAsync(cacheKey);
+            });
 
-            _rehydrationTracker.Untrack(cacheKey);
-        });
-
-        _memoryCache.Set(key, wrapper, cacheOptions);
-
-        _rehydrationTracker.Track(
+        _memoryCache.Set(
             key,
-            wrapper.Origin);
+            wrapper,
+            cacheOptions);
+
+        if (effectiveOptions.TrackForRehydration)
+        {
+            _keyTracker.Track(key);
+        }
 
         if (tags is { Length: > 0 })
         {
@@ -92,7 +100,7 @@ internal sealed class MemoryStorage(
             key,
             ct);
 
-        _rehydrationTracker.Untrack(key);
+        _keyTracker.Untrack(key);
 
         _memoryCache.Remove(key);
     }
@@ -113,8 +121,6 @@ internal sealed class MemoryStorage(
             tag,
             (key, _) =>
             {
-                _rehydrationTracker.Untrack(key);
-
                 _memoryCache.Remove(key);
 
                 return Task.CompletedTask;
@@ -164,8 +170,12 @@ internal sealed class MemoryStorage(
         string key,
         out T? value)
     {
-        if (_memoryCache.TryGetValue(key, out object? entry) &&
-            _entryInspector.TryGetValue(entry, out value))
+        if (_memoryCache.TryGetValue(
+                key,
+                out object? entry) &&
+            _entryInspector.TryGetValue(
+                entry,
+                out value))
         {
             return true;
         }

@@ -6,11 +6,10 @@ using Core.Resilience.Abstractions;
 namespace Core.Cache.Pipeline.Behaviors;
 
 internal sealed class ResilienceBehavior(
-    IResiliencePipelineProvider provider)
+    IResiliencePipeline pipeline)
     : ICacheBehavior
 {
-    private readonly IResiliencePipeline _pipeline =
-        provider.GetPipeline(PipelineType.Redis);
+    private readonly IResiliencePipeline _pipeline = pipeline;
 
     public Task InvokeAsync(
         CacheContext context,

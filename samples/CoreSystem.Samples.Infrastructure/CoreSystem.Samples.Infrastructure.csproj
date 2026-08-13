@@ -11,4 +11,8 @@
     <PackageReference Include="CoreSystem.Idempotency.Redis" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj" />
+  </ItemGroup>
+
 </Project>

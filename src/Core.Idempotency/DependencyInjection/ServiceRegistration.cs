@@ -1,4 +1,5 @@
 ﻿using Core.Idempotency.Abstractions;
+using Core.Idempotency.Internal;
 using Core.Idempotency.KeyResolution;
 using Core.Idempotency.Services;
 using Microsoft.Extensions.DependencyInjection;

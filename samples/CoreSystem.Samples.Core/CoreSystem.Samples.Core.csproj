@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core.Cache\Core.Cache.csproj" />
+    <ProjectReference Include="..\..\src\Core.Cache.Redis\Core.Cache.Redis.csproj" />
   </ItemGroup>
 
 </Project>
