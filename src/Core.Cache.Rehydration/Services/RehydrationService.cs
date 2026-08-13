@@ -1,11 +1,13 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Rehydration.Abstractions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Cache.Rehydration.Services;
 
 internal sealed class RehydrationService(
-    IPrimaryHealthState primaryHealthState,
+    //IPrimaryHealthState primaryHealthState,
+    HealthCheckService healthCheckService,
     ICacheRehydrator rehydrator,
     ILogger<RehydrationService> logger)
     : IRehydrationService
@@ -15,8 +17,19 @@ internal sealed class RehydrationService(
     public async Task ExecuteCycleAsync(
         CancellationToken cancellationToken)
     {
+        var report =
+            await healthCheckService.CheckHealthAsync(
+                cancellationToken);
+
+        var primaryChecks =
+            report.Entries
+                .Where(x => x.Value.Tags.Contains("primary"))
+                .ToList();
+
         var primaryHealthy =
-            primaryHealthState.IsHealthy;
+            primaryChecks.Count > 0 &&
+            primaryChecks.All(
+                x => x.Value.Status == HealthStatus.Healthy);
 
         if (primaryHealthy)
         {
