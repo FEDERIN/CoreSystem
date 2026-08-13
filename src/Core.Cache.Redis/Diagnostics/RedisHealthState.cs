@@ -5,14 +5,11 @@ namespace Core.Cache.Redis.Diagnostics;
 
 internal sealed class RedisHealthState : 
     IHealthState,
-    IPrimaryHealthState,
     IPrimaryHealthStateWriter
 {
     private volatile bool _healthy = true;
 
     public bool IsRedisHealthy => _healthy;
-
-    public bool IsHealthy => _healthy;
 
     public HealthTransition Update(bool healthy)
     {

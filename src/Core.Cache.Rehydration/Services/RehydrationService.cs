@@ -1,12 +1,10 @@
-﻿using Core.Cache.Abstractions;
-using Core.Cache.Rehydration.Abstractions;
+﻿using Core.Cache.Rehydration.Abstractions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Cache.Rehydration.Services;
 
 internal sealed class RehydrationService(
-    //IPrimaryHealthState primaryHealthState,
     HealthCheckService healthCheckService,
     ICacheRehydrator rehydrator,
     ILogger<RehydrationService> logger)

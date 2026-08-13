@@ -82,9 +82,6 @@ public static class CacheRedisRegistration
         services.AddSingleton<IHealthState>(
             sp => sp.GetRequiredService<RedisHealthState>());
 
-        services.AddSingleton<IPrimaryHealthState>(
-            sp => sp.GetRequiredService<RedisHealthState>());
-
         services.AddSingleton<IPrimaryHealthStateWriter>(
             sp => sp.GetRequiredService<RedisHealthState>());
 
