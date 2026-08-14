@@ -10,4 +10,10 @@
     <ProjectReference Include="..\Core.Cache\Core.Cache.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<InternalsVisibleTo Include="Core.Cache.Rehydration.UnitTests" />
+	<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
 </Project>
+

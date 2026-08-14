@@ -14,9 +14,9 @@ public class CacheOptions
 {
     /// <summary>
     /// Master switch to enable or disable the cache logic.
-    /// Default is false.
+    /// Default is true.
     /// </summary>
-    public bool Enabled { get; set; }
+    public bool Enabled { get; set; } = true;
 
     /// <summary>
     /// Gets or sets an optional prefix applied to generated cache keys.
@@ -51,7 +51,7 @@ public class CacheOptions
     public SerializerType SerializerType { get; set; } = SerializerType.Json;
 
     /// <summary>
-    /// 
+    /// Copies the configuration values from another <see cref="CacheOptions"/> instance.
     /// </summary>
     /// <param name="source"></param>
     public void CopyFrom(CacheOptions source)

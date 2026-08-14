@@ -206,6 +206,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Redis", "src\Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Rehydration", "src\Core.Cache.Rehydration\Core.Cache.Rehydration.csproj", "{256F90FE-4EB1-4AC2-BB31-F423EDBFFE1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Rehydration.UnitTests", "tests\Core.Cache.Rehydration.UnitTests\Core.Cache.Rehydration.UnitTests.csproj", "{41B60CDC-88B9-4BE6-9CF4-7672C69D4267}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -324,6 +326,10 @@ Global
 		{256F90FE-4EB1-4AC2-BB31-F423EDBFFE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{256F90FE-4EB1-4AC2-BB31-F423EDBFFE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{256F90FE-4EB1-4AC2-BB31-F423EDBFFE1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41B60CDC-88B9-4BE6-9CF4-7672C69D4267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41B60CDC-88B9-4BE6-9CF4-7672C69D4267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41B60CDC-88B9-4BE6-9CF4-7672C69D4267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41B60CDC-88B9-4BE6-9CF4-7672C69D4267}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -378,6 +384,7 @@ Global
 		{1B51457C-9C99-4FDE-9F79-D85899A1A76F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{85FB40CE-30ED-452D-9DE5-E35385709BC6} = {1B51457C-9C99-4FDE-9F79-D85899A1A76F}
 		{256F90FE-4EB1-4AC2-BB31-F423EDBFFE1A} = {1B51457C-9C99-4FDE-9F79-D85899A1A76F}
+		{41B60CDC-88B9-4BE6-9CF4-7672C69D4267} = {3841D26E-9ED6-43A6-9547-9E12A7E47762}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

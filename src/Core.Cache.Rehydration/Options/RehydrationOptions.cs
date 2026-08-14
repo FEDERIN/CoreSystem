@@ -23,8 +23,12 @@ public sealed class RehydrationOptions
     ///// available again.
     ///// </remarks>
     public TimeSpan Interval { get; set; } =
-        TimeSpan.FromSeconds(30); 
+        TimeSpan.FromSeconds(30);
 
+    /// <summary>
+    /// Copies the configuration values from another <see cref="RehydrationOptions"/> instance.
+    /// </summary>
+    /// <param name="other"></param>
     public void CopyFrom(RehydrationOptions other)
     {
         ArgumentNullException.ThrowIfNull(other);
