@@ -200,6 +200,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resilience", "Resilience", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Idempotency", "Idempotency", "{1E6D4C81-0307-4C3A-A06A-1C78DB4BF238}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Rehydration", "src\Core.Cache.Rehydration\Core.Cache.Rehydration.csproj", "{1765B10F-5063-B3EC-BD85-0397607C7FD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -310,6 +312,10 @@ Global
 		{A5CB3D6F-EC62-4E7F-BE38-5CBF4811E7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5CB3D6F-EC62-4E7F-BE38-5CBF4811E7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5CB3D6F-EC62-4E7F-BE38-5CBF4811E7D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -361,6 +367,7 @@ Global
 		{8C6F6DCD-085E-421B-B86B-B2FE17C95AA5} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{5E20CCB9-89C8-4122-BD09-F339FB72E273} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{1E6D4C81-0307-4C3A-A06A-1C78DB4BF238} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}
