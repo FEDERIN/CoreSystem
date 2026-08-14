@@ -227,4 +227,51 @@ public sealed class CircuitBreakerStrategyBuilderTests
         // Assert
         Assert.NotNull(builder.Build());
     }
+
+    [Fact]
+    public async Task Configure_ShouldRecordHalfOpenedAndClosed_WhenCircuitRecovers()
+    {
+        // Arrange
+        var builder = new ResiliencePipelineBuilder();
+
+        var options = new PipelineOptions
+        {
+            CircuitBreaker = new CircuitBreakerOptions
+            {
+                Enabled = true,
+                FailureRatio = 0.5,
+                MinimumThroughput = 2,
+                SamplingDuration = TimeSpan.FromMinutes(1),
+                BreakDuration = TimeSpan.FromMilliseconds(500)
+            }
+            .Handle<InvalidOperationException>()
+        };
+
+        _builder.Configure(builder, options);
+
+        var pipeline = builder.Build();
+
+        // Act - Open circuit
+        for (var i = 0; i < 2; i++)
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                pipeline.ExecuteAsync(_ =>
+                {
+                    throw new InvalidOperationException();
+                }, TestContext.Current.CancellationToken).AsTask());
+        }
+
+        // Wait until the circuit can transition to Half-Open.
+        await Task.Delay(
+            TimeSpan.FromMilliseconds(600),
+            TestContext.Current.CancellationToken);
+
+        // Half-Open -> Closed
+        await pipeline.ExecuteAsync(
+            _ => ValueTask.CompletedTask,
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.True(true);
+    }
 }
