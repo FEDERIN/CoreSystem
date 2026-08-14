@@ -9,6 +9,9 @@ internal sealed class MetricsBehavior(
     CacheMetrics metrics)
     : ICacheBehavior
 {
+    public int Order =>
+    (int)CacheBehaviorOrder.Metrics;
+
     public async Task InvokeAsync(
         CacheContext context,
         CacheDelegate next)

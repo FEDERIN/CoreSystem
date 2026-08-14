@@ -18,6 +18,7 @@ public sealed class GetOrAddCacheContext<T> : CacheContext, ICacheMetricContext
         Result = await Storage.GetOrAddAsync(
             Key,
             Factory,
+            EntryOptions,
             Expiration,
             Tags,
             CancellationToken);

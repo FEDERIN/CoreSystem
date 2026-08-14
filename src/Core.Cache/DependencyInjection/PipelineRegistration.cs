@@ -1,8 +1,7 @@
-﻿using Core.Cache.Options;
+﻿using Core.Cache.Abstractions;
 using Core.Cache.Pipeline;
 using Core.Cache.Pipeline.Abstractions;
 using Core.Cache.Pipeline.Behaviors;
-using Core.Resilience.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Cache.DependencyInjection;
@@ -10,22 +9,8 @@ namespace Core.Cache.DependencyInjection;
 internal static class PipelineRegistration
 {
     public static IServiceCollection AddCachePipeline(
-        this IServiceCollection services,
-        CacheOptions options)
+        this IServiceCollection services)
     {
-        services.AddSingleton<LoggingBehavior>();
-        services.AddSingleton<MetricsBehavior>();
-
-        if (options.Redis.Enabled)
-        {
-            services.AddSingleton<FallbackBehavior>();
-
-            if (services.Any(s => s.ServiceType == typeof(IResiliencePipelineProvider)))
-            {
-                services.AddSingleton<ResilienceBehavior>();
-            }
-        }
-
         services.AddSingleton<ICachePipeline>(sp =>
         {
             var behaviors = new List<ICacheBehavior>
@@ -34,15 +19,21 @@ internal static class PipelineRegistration
                 sp.GetRequiredService<MetricsBehavior>()
             };
 
-            if (options.Redis.Enabled)
-            {
-                behaviors.Add(sp.GetRequiredService<FallbackBehavior>());
+            var resilience =
+                sp.GetService<ResilienceBehavior>();
 
-                var resilience = sp.GetService<ResilienceBehavior>();
-                if (resilience is not null)
-                {
-                    behaviors.Add(resilience);
-                }
+            if (resilience is not null)
+            {
+                behaviors.Add(resilience);
+            }
+
+            var resolver =
+                sp.GetRequiredService<ICacheStorageResolver>();
+
+            if (resolver.HasFallback)
+            {
+                behaviors.Add(
+                    sp.GetRequiredService<FallbackBehavior>());
             }
 
             return new CachePipeline(behaviors);

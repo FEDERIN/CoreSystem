@@ -9,12 +9,18 @@ namespace Core.Cache.Pipeline.Behaviors;
 
 internal sealed class FallbackBehavior(
     ICacheStorageResolver resolver,
+    IPrimaryHealthStateWriter primaryHealthState,
     ILogger<FallbackBehavior> logger) : ICacheBehavior
 {
     private readonly ICacheStorageResolver _resolver = resolver;
     private readonly ILogger<FallbackBehavior> _logger = logger;
 
-    public async Task InvokeAsync(CacheContext context, CacheDelegate next)
+    public int Order =>
+
+    (int)CacheBehaviorOrder.Fallback;
+    public async Task InvokeAsync(
+        CacheContext context,
+        CacheDelegate next)
     {
         try
         {
@@ -22,17 +28,21 @@ internal sealed class FallbackBehavior(
         }
         catch (Exception ex)
         {
-            if (!_resolver.HasFallback)
+            var fallback = _resolver.Fallback;
+
+            if (fallback is null)
             {
                 throw;
             }
+
+            primaryHealthState.MarkUnavailable();
 
             _logger.LogWarning(
                 ex,
                 "Primary storage failed. Switching to fallback.");
 
             context.Exception = ex;
-            context.Storage = _resolver.Fallback;
+            context.Storage = fallback;
             context.EntryOptions = CacheEntryOptions.Rehydrate;
 
             await context.ExecuteAsync();
