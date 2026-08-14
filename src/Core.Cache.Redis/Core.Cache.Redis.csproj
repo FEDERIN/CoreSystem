@@ -32,8 +32,8 @@
 	</ItemGroup>
 	
 	<ItemGroup>	
-		<!--<InternalsVisibleTo Include="Core.Cache.UnitTests" />
-		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />-->
+		<InternalsVisibleTo Include="Core.Cache.Redis.UnitTests" />
+		<!--<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />-->
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	</ItemGroup>
 	

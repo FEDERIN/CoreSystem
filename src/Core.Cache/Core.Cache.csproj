@@ -41,6 +41,7 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="Core.Cache.Redis" />
 		<InternalsVisibleTo Include="Core.Cache.Rehydration" />
+		<InternalsVisibleTo Include="Core.Cache.Redis.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.Rehydration.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
