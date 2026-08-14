@@ -18,7 +18,7 @@ public sealed class ResilienceRegistrationTests
         var services = new ServiceCollection();
 
         // Act
-        var result = services.AddCoreResilience();
+        var result = services.AddCoreResilience(options => { });
 
         // Assert
         Assert.Same(services, result);
@@ -31,7 +31,7 @@ public sealed class ResilienceRegistrationTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddCoreResilience();
+        services.AddCoreResilience(options => { });
 
         // Assert
         var descriptor = Assert.Single(
@@ -54,7 +54,7 @@ public sealed class ResilienceRegistrationTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddCoreResilience();
+        services.AddCoreResilience(options => { });
 
         // Assert
         var descriptor = Assert.Single(
@@ -77,7 +77,7 @@ public sealed class ResilienceRegistrationTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddCoreResilience();
+        services.AddCoreResilience(options => { });
 
         // Assert
         var descriptor = Assert.Single(
@@ -100,7 +100,7 @@ public sealed class ResilienceRegistrationTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddCoreResilience();
+        services.AddCoreResilience(options => { });
 
         using var provider = services.BuildServiceProvider();
 
@@ -129,11 +129,11 @@ public sealed class ResilienceRegistrationTests
         using var provider = services.BuildServiceProvider();
 
         // Assert
-        var configured = provider
-            .GetRequiredService<IOptions<ResilienceOptions>>()
-            .Value;
+        var configured =
+            provider.GetRequiredService<ResilienceOptions>();
 
-        Assert.True(configured.ContainsPipeline(PipelineType.Redis));
+        Assert.True(
+            configured.ContainsPipeline(PipelineType.Redis));
     }
 
     private static void ConfigureDefaultRedisPipeline(

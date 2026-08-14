@@ -9,6 +9,11 @@ namespace Core.Cache.Pipeline.Abstractions;
 public interface ICacheBehavior
 {
     /// <summary>
+    /// Gets the order of the behavior in the pipeline.
+    /// </summary>
+    int Order { get; }
+
+    /// <summary>
     /// Invokes the behavior in the pipeline.
     /// </summary>
     /// <param name="context">The context of the current cache operation.</param>

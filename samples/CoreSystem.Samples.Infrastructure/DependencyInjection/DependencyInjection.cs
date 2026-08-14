@@ -9,6 +9,7 @@ public static class DependencyInjection
     {
         services
             .AddRepositories()
+            .AddRedisResilienceInfrastructure(config)
             .AddIdempotencyInfrastructure(config)
             .AddCacheInfrastructure(config)
             .AddExceptionHandling();

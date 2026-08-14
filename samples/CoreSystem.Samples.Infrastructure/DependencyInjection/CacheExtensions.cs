@@ -2,6 +2,7 @@
 using Core.Cache.Options;
 using Core.Cache.Redis.DependencyInjection;
 using Core.Cache.Rehydration.DependencyInjection;
+using Core.Cache.Rehydration.Options;
 using CoreSystem.Samples.Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,18 +11,21 @@ namespace CoreSystem.Samples.Infrastructure.DependencyInjection;
 
 internal static class CacheExtensions
 {
-    public static IServiceCollection AddCacheInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCacheInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        var section = configuration.GetSection("Core:Cache");
+        var cacheSection =
+            configuration.GetSection("Core:Cache");
 
-        var options = new CacheOptions();
+        var cacheOptions = new CacheOptions();
 
-        section.Bind(options);
+        cacheSection.Bind(cacheOptions);
 
         services.AddCoreCache(
-            _ => _.CopyFrom(options));
+            _ => _.CopyFrom(cacheOptions));
 
-        if (options.Enabled == false)
+        if (!cacheOptions.Enabled)
         {
             return services;
         }
@@ -29,11 +33,24 @@ internal static class CacheExtensions
         var providerConfigured = ConfigureProvider(
             services,
             configuration,
-            section);
+            cacheSection);
 
-        if (providerConfigured)
+        if (!providerConfigured)
         {
-            services.AddCoreCacheRehydration();
+            return services;
+        }
+
+        var rehydrationSection =
+            configuration.GetSection("Core:Rehydration");
+
+        var rehydrationOptions = new RehydrationOptions();
+
+        rehydrationSection.Bind(rehydrationOptions);
+
+        if (rehydrationOptions.Enabled)
+        {
+            services.AddCoreCacheRehydration(
+                _ => _.CopyFrom(rehydrationOptions));
         }
 
         return services;

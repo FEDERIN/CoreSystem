@@ -4,9 +4,11 @@ using Core.Cache.Pipeline.Delegates;
 
 namespace Core.Cache.Pipeline;
 
-internal sealed class CachePipeline(IEnumerable<ICacheBehavior> behaviors) : ICachePipeline
+internal sealed class CachePipeline(
+    IEnumerable<ICacheBehavior> behaviors) : ICachePipeline
 {
-    private readonly IReadOnlyList<ICacheBehavior> _behaviors = [..behaviors];
+    private readonly IReadOnlyList<ICacheBehavior> _behaviors =
+        [.. behaviors.OrderBy(x => x.Order)];
 
     public Task ExecuteAsync(
         CacheContext context,
@@ -14,12 +16,14 @@ internal sealed class CachePipeline(IEnumerable<ICacheBehavior> behaviors) : ICa
     {
         CacheDelegate next = terminal;
 
-        for (int i = _behaviors.Count - 1; i >= 0; i--)
+        for (var i = _behaviors.Count - 1; i >= 0; i--)
         {
             var behavior = _behaviors[i];
             var current = next;
 
-            next = ctx => behavior.InvokeAsync(ctx, current);
+            next = ctx => behavior.InvokeAsync(
+                ctx,
+                current);
         }
 
         return next(context);

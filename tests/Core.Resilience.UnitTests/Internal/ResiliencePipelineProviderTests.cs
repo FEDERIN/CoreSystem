@@ -16,7 +16,9 @@ public sealed class ResiliencePipelineProviderTests
 
         var options = new ResilienceOptions();
 
-        options.AddPipeline(PipelineType.Redis, _ => { });
+        options.AddPipeline(
+            PipelineType.Redis,
+            _ => { });
 
         var builder = new Mock<IPipelineBuilder>();
 
@@ -27,16 +29,19 @@ public sealed class ResiliencePipelineProviderTests
             .Returns(pipeline.Object);
 
         var registry = new PipelineRegistry(
-            Microsoft.Extensions.Options.Options.Create(options),
+            options,
             builder.Object);
 
         var provider = new ResiliencePipelineProvider(registry);
 
         // Act
-        var result = provider.GetPipeline(PipelineType.Redis);
+        var result = provider.GetPipeline(
+            PipelineType.Redis);
 
         // Assert
-        Assert.Same(pipeline.Object, result);
+        Assert.Same(
+            pipeline.Object,
+            result);
     }
 
     [Fact]
@@ -48,13 +53,13 @@ public sealed class ResiliencePipelineProviderTests
         var builder = new Mock<IPipelineBuilder>();
 
         var registry = new PipelineRegistry(
-            Microsoft.Extensions.Options.Options.Create(options),
+            options,
             builder.Object);
 
         var provider = new ResiliencePipelineProvider(registry);
 
         // Act & Assert
-        Assert.Throws<ResiliencePipelineNotFoundException>(() =>
-            provider.GetPipeline(PipelineType.Redis));
+        Assert.Throws<ResiliencePipelineNotFoundException>(
+            () => provider.GetPipeline(PipelineType.Redis));
     }
 }

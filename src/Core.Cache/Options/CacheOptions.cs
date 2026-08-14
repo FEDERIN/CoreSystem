@@ -16,7 +16,7 @@ public class CacheOptions
     /// Master switch to enable or disable the cache logic.
     /// Default is false.
     /// </summary>
-    public bool Enabled { get; set; } = false;
+    public bool Enabled { get; set; }
 
     /// <summary>
     /// Gets or sets an optional prefix applied to generated cache keys.
@@ -49,16 +49,6 @@ public class CacheOptions
     /// Supported serializers include JSON, MessagePack, and Protocol Buffers.
     /// </remarks>
     public SerializerType SerializerType { get; set; } = SerializerType.Json;
-
-    ///// <summary>
-    ///// Gets or sets the interval between cache rehydration cycles.
-    ///// </summary>
-    ///// <remarks>
-    ///// Cache rehydration attempts to restore entries that were temporarily
-    ///// stored in the fallback provider after the primary provider becomes
-    ///// available again.
-    ///// </remarks>
-    //public TimeSpan RehydrationInterval { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
     /// 

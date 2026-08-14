@@ -131,6 +131,7 @@ internal sealed class MemoryStorage(
     public async Task<T?> GetOrAddAsync<T>(
         string key,
         Func<CancellationToken, Task<T>> factory,
+        CacheEntryOptions? options = null,
         TimeSpan? expiration = null,
         string[]? tags = null,
         CancellationToken ct = default)
@@ -157,7 +158,7 @@ internal sealed class MemoryStorage(
             await SetAsync(
                 key,
                 value,
-                null,
+                options,
                 expiration,
                 tags,
                 ct);

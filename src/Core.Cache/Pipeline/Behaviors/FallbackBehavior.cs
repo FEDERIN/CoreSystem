@@ -15,6 +15,9 @@ internal sealed class FallbackBehavior(
     private readonly ICacheStorageResolver _resolver = resolver;
     private readonly ILogger<FallbackBehavior> _logger = logger;
 
+    public int Order =>
+
+    (int)CacheBehaviorOrder.Fallback;
     public async Task InvokeAsync(
         CacheContext context,
         CacheDelegate next)

@@ -25,7 +25,6 @@
 	<ItemGroup>
 		<PackageReference Include="CoreSystem.Http" />
 		<PackageReference Include="CoreSystem.Memory" />
-		<PackageReference Include="CoreSystem.Resilience" />
 		<PackageReference Include="CoreSystem.Serialization" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
 	</ItemGroup>
@@ -45,5 +44,9 @@
 		<InternalsVisibleTo Include="Core.Cache.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\Core.Resilience\Core.Resilience.csproj" />
 	</ItemGroup>
 </Project>

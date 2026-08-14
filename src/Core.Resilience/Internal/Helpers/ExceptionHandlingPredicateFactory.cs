@@ -23,6 +23,8 @@ internal static class ExceptionHandlingPredicateFactory
         Exception? exception,
         IReadOnlyCollection<Type> exceptionTypes)
     {
+        var test = $"[RESILIENCE] Exception: {exception?.GetType().FullName ?? "NULL"}";
+
         return exception is not null &&
                ExceptionMatcher.Matches(exception, exceptionTypes);
     }

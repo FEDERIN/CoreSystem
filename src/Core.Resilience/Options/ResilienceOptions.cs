@@ -4,6 +4,8 @@ namespace Core.Resilience.Options;
 
 public sealed class ResilienceOptions
 {
+    public bool Enabled { get; set; } = true;
+
     public Dictionary<PipelineType, PipelineOptions> Pipelines { get; } = [];
 
     public void AddPipeline(

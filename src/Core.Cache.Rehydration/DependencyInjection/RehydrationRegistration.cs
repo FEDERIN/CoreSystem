@@ -2,6 +2,7 @@
 using Core.Cache.Rehydration.Abstractions;
 using Core.Cache.Rehydration.Background;
 using Core.Cache.Rehydration.Memory;
+using Core.Cache.Rehydration.Options;
 using Core.Cache.Rehydration.Primary;
 using Core.Cache.Rehydration.Services;
 using Core.Cache.Storage.Abstractions;
@@ -12,9 +13,11 @@ namespace Core.Cache.Rehydration.DependencyInjection;
 public static class RehydrationRegistration
 {
     public static IServiceCollection AddCoreCacheRehydration(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        Action<RehydrationOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
 
         var cacheOptions = GetCacheOptions(services);
 
@@ -24,6 +27,13 @@ public static class RehydrationRegistration
         }
 
         EnsurePrimaryRegistered(services);
+
+        var rehydrationOptions = BuildOptions(configure);
+
+        services.AddSingleton(rehydrationOptions);
+
+        if (!rehydrationOptions.Enabled)
+            return services;
 
         services.AddSingleton<IRehydrationSource,
             MemoryRehydrationSource>();
@@ -54,6 +64,16 @@ public static class RehydrationRegistration
             throw new InvalidOperationException(
                 RehydrationMessages.CacheRegistrationRequired);
         }
+
+        return options;
+    }
+
+    private static RehydrationOptions BuildOptions(
+        Action<RehydrationOptions> configure)
+    {
+        var options = new RehydrationOptions();
+
+        configure(options);
 
         return options;
     }
