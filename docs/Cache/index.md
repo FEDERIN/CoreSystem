@@ -8,22 +8,19 @@
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
 
-CoreSystem.Cache is a production-ready distributed caching framework for .NET 8.
+CoreSystem.Cache is a distributed caching framework for .NET 8.
 
-It provides a high-performance cache execution pipeline with Cache-Aside support, HTTP response caching, resilience, health checks, and OpenTelemetry integration.
+It provides a unified cache API with Cache-Aside support, HTTP response caching, resilience, fallback storage, health checks, and OpenTelemetry metrics.
 
-The framework is built on top of a modular ecosystem of specialized packages for cache providers and serialization.
+The framework is built around a pipeline architecture that separates cache operations from storage providers and cross-cutting behaviors.
 
 ## 📦 CoreSystem Ecosystem
 
 | Package | Responsibility |
 |----------|----------------|
-| **CoreSystem.Cache** | Cache orchestration, execution pipeline, HTTP response caching, Cache-Aside, observability, and resilience |
-| **CoreSystem.Cache.Memory** | In-memory cache provider |
-| **CoreSystem.Redis** | Redis connectivity and distributed storage infrastructure |
+| **CoreSystem.Memory** | In-memory cache provider |
 | **CoreSystem.Serialization** | JSON, MessagePack, and Protocol Buffers serialization |
 | **CoreSystem.Http** | HTTP abstractions used by the middleware |
-| **CoreSystem.Resilience** | Resilience policies, retries, timeouts, and fault handling for storage operations |
 | **CoreSystem.Observability** *(Optional)* | Ready-to-use OpenTelemetry instrumentation, metrics, tracing, and diagnostics for CoreSystem packages |
 | **CoreSystem.Observability.Abstractions** | Shared observability contracts for implementing custom instrumentation and integrations |
 
@@ -31,6 +28,10 @@ The framework is built on top of a modular ecosystem of specialized packages for
 > Installing **CoreSystem.Cache** automatically installs the required provider and serialization packages through NuGet dependencies.
 
 > **Optional:** Install **CoreSystem.Observability** to enable built-in OpenTelemetry metrics and tracing. Install **CoreSystem.Observability.Abstractions** only if you need to build custom observability components or integrations.
+
+> **CoreSystem.Cache** can operate with the in-memory provider without requiring an external cache provider.
+
+> When an external provider such as Redis is configured, additional CoreSystem packages can provide Redis storage, resilience, and cache rehydration capabilities.
 ---
 
 ## 📚 Table of Contents
@@ -43,5 +44,4 @@ The framework is built on top of a modular ecosystem of specialized packages for
 - HTTP Response Caching
 - Observability
 - Health Checks
-- Extensibility
 - Roadmap

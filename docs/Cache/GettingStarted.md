@@ -1,6 +1,6 @@
 # 🚀 Getting Started
 
-Welcome to **CoreSystem.Cache**, a production-ready distributed caching framework for **.NET 8**.
+Welcome to **CoreSystem.Cache**, a distributed caching framework for **.NET 8**.
 
 In this guide you'll learn how to:
 
@@ -31,8 +31,6 @@ Install the NuGet package.
 dotnet add package CoreSystem.Cache
 ```
 
-> Installing **CoreSystem.Cache** automatically installs the required provider and serialization packages through NuGet dependencies.
-
 ---
 
 # Step 2 — Register the Framework
@@ -42,16 +40,12 @@ Register the framework in your application's dependency injection container.
 ```csharp
 builder.Services.AddCoreCache(options =>
 {
-    options.Redis.Configuration = redis =>
-    {
-        redis.EndPoints.Add("localhost:6379");
-    };
 });
 ```
 
-> Looking for advanced configuration options?
->
-> See **04-configuration.md**.
+By default, `CoreSystem.Cache` can operate using its in-memory cache provider.
+
+External providers such as Redis can be configured when the corresponding provider packages are used.
 
 ---
 
@@ -147,4 +141,3 @@ If you encounter an issue or have a suggestion:
 - Submit a Pull Request.
 
 Contributions are always welcome.
----

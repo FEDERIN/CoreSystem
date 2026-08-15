@@ -2,9 +2,9 @@
 
 `CoreSystem.Cache` is built around a composable pipeline architecture that separates cache operations from storage implementations.
 
-Instead of interacting directly with Redis or Memory, every cache operation is represented by a `CacheContext` and executed through the `CachePipeline`. During execution, cross-cutting concerns such as logging, metrics, resilience, and automatic fallback are applied before the operation reaches the selected storage provider.
+Instead of interacting directly with Redis or Memory, cache operations are represented by a `CacheContext` and executed through the `CachePipeline`. Cross-cutting concerns such as logging, metrics, resilience, and fallback are applied through pipeline behaviors before the operation reaches the selected storage provider.
 
-This architecture keeps business code independent from infrastructure concerns while allowing new behaviors and storage providers to be introduced without changing the public API.
+This architecture keeps application code independent from storage implementations while allowing new behaviors and providers to be introduced without changing the public cache API.
 
 ```mermaid
 graph TD
@@ -21,15 +21,15 @@ graph TD
 
     Logging --> Metrics["MetricsBehavior"]
 
-    Metrics --> Fallback["FallbackBehavior"]
+    Metrics --> Resilience["ResilienceBehavior"]
 
-    Fallback --> Resilience["ResilienceBehavior"]
+    Resilience --> Fallback["FallbackBehavior"]
 
-    Resilience --> Execute["CacheContext.ExecuteAsync()"]
+    Fallback --> Execute["CacheContext.ExecuteAsync()"]
 
     Execute --> Resolver["ICacheStorageResolver"]
 
-    Resolver --> Redis["RedisStorage"]
+    Resolver --> Primary["Primary Storage"]
 
     Resolver --> Memory["MemoryStorage"]
 ```
@@ -38,129 +38,107 @@ graph TD
 
 ## 🎯 Design Goals
 
-The framework is designed around a few core architectural principles:
+The framework is designed around a few architectural principles:
 
-- Keep business code independent from storage providers.
-- Centralize cross-cutting concerns through a composable execution pipeline.
-- Support multiple cache providers behind a single abstraction.
-- Allow new behaviors to be introduced without modifying the cache service.
+- Keep application code independent from storage providers.
+- Centralize cross-cutting concerns through the cache pipeline.
+- Support multiple storage providers behind a common abstraction.
+- Allow behaviors to be added without modifying the cache service.
 - Keep storage implementations isolated from application code.
 
 ---
 
 # 🏛️ Architectural Patterns
 
-`CoreSystem.Cache` is built on a combination of well-established architectural and design patterns. Each pattern addresses a specific concern while keeping the framework modular, extensible, and maintainable.
+`CoreSystem.Cache` combines several patterns to keep the framework modular and extensible.
 
 | Pattern | Purpose |
 |----------|---------|
-| **Pipeline** | Executes every cache operation through a configurable chain of reusable behaviors. |
-| **Chain of Responsibility** | Allows each behavior to observe, enrich, or modify an operation before delegating to the next behavior. |
-| **Strategy** | Enables interchangeable implementations for storage providers, serializers, and distributed locks. |
-| **Factory** | Creates operation-specific `CacheContext` instances that encapsulate the execution state for each cache operation. |
-| **Provider Pattern** | Abstracts Memory and Redis behind a common `ICacheStorage` interface. |
-| **Cache-Aside** | Simplifies cache population through the built-in `GetOrAddAsync()` workflow. |
-
-These patterns work together to separate business logic from infrastructure concerns while allowing new behaviors and storage providers to be introduced without changing the public API.
+| **Pipeline** | Executes cache operations through reusable behaviors. |
+| **Chain of Responsibility** | Allows each behavior to process an operation before delegating to the next behavior. |
+| **Strategy** | Allows different storage implementations to be used through common abstractions. |
+| **Factory** | Creates cache entry and operation-specific objects where required. |
+| **Provider Pattern** | Abstracts cache storage behind `ICacheStorage`. |
+| **Cache-Aside** | Provides the `GetOrAddAsync()` workflow for cache population. |
 
 ---
 
 # 🧩 Core Components
 
-The framework is composed of a small set of components, each with a clearly defined responsibility.
-
 | Component | Responsibility |
 |-----------|----------------|
-| **ICoreCache** | Public entry point for all cache operations. Creates the appropriate `CacheContext` and delegates execution to the pipeline. |
-| **CacheContext** | Represents a single cache operation. Encapsulates its state, execution logic, and selected storage provider. |
-| **CachePipeline** | Coordinates the execution of every cache operation through a chain of reusable behaviors before delegating to the selected storage provider. |
-| **ICacheBehavior** | Defines reusable cross-cutting behaviors such as logging, metrics, resilience, and fallback. |
-| **ICacheStorageResolver** | Resolves the primary and fallback storage providers for the current operation. |
-| **ICacheStorage** | Provider-agnostic abstraction implemented by every storage provider. |
+| **ICoreCache** | Public entry point for cache operations. |
+| **CacheContext** | Represents a cache operation and contains its execution state. |
+| **CachePipeline** | Executes the registered cache behaviors before the terminal operation. |
+| **ICacheBehavior** | Defines a reusable pipeline behavior. |
+| **ICacheStorageResolver** | Resolves the primary and optional fallback storage. |
+| **ICacheStorage** | Internal abstraction implemented by cache providers. |
 
-The interaction between these components keeps the public API small while allowing the infrastructure to evolve independently.
+The application interacts with `ICoreCache`, while the remaining components keep execution and storage concerns inside the framework.
 
 ---
 
 # 🔄 Execution Lifecycle
 
-Every cache operation follows the same execution lifecycle regardless of the operation type or selected storage provider.
+Every cache operation follows the same general lifecycle.
 
-The application communicates only with `ICoreCache`. A specialized `CacheContext` is created for the requested operation, then executed through the `CachePipeline`. Each registered behavior may observe, enrich, or modify the execution before the operation reaches the selected storage provider.
-
-```mermaid
-flowchart LR
-
-    Request["Application Request"]
-
-    Request
-        --> Service["ICoreCache"]
-
-    Service
-        --> Context["Create CacheContext"]
-
-    Context
-        --> Pipeline["CachePipeline"]
-
-    Pipeline
-        --> Execute["CacheContext.ExecuteAsync()"]
-
-    Execute
-        --> Resolver["ICacheStorageResolver"]
-
-    Resolver
-        --> Primary["Primary Storage"]
-
-    Resolver
-        --> Secondary["Fallback Storage"]
-
-    Primary
-        --> Redis["RedisStorage"]
-
-    Secondary
-        --> Memory["MemoryStorage"]
-
-    Redis --> Result["Operation Result"]
-    Memory --> Result
+```text
+Application
+    │
+    ▼
+ICoreCache
+    │
+    ▼
+CacheContext
+    │
+    ▼
+CachePipeline
+    │
+    ├── Logging
+    ├── Metrics
+    ├── Resilience
+    └── Fallback
+    │
+    ▼
+CacheContext.ExecuteAsync()
+    │
+    ▼
+ICacheStorage
 ```
 
-During execution, behaviors such as logging, metrics, resilience policies, and automatic fallback are applied transparently.
+`CoreCache` creates the appropriate context and initializes it with the primary storage.
 
-Because these concerns are implemented as reusable pipeline behaviors, additional capabilities such as compression, encryption, tracing, or auditing can be introduced without modifying either the cache service or the storage providers.
+The pipeline then executes the registered behaviors before calling the context's `ExecuteAsync()` method.
 
 ---
 
 # ⚙️ Pipeline Behaviors
 
-The `CachePipeline` executes each registered behavior sequentially before delegating the operation to the selected storage provider.
-
-Each behavior has a single responsibility.
+The current pipeline behaviors are:
 
 | Behavior | Responsibility |
 |----------|----------------|
 | **LoggingBehavior** | Logs cache operations and failures. |
-| **MetricsBehavior** | Records cache metrics using OpenTelemetry. |
-| **FallbackBehavior** | Switches to the fallback provider when the primary provider becomes unavailable. |
-| **ResilienceBehavior** | Executes cache operations through configured Polly resilience policies. |
+| **MetricsBehavior** | Records cache hits and misses. |
+| **ResilienceBehavior** | Executes cache operations through the configured resilience pipeline when available. |
+| **FallbackBehavior** | Switches to the fallback provider when the primary storage fails. |
 
-Because behaviors are independent, the pipeline can evolve without changing the public API.
+The current behavior order is:
 
-Potential future behaviors include:
+```text
+Logging    100
+Metrics    200
+Fallback   300
+Resilience 400
+```
 
-- Compression
-- Encryption
-- Tracing
-- Auditing
-- Validation
-- Rate limiting
+The pipeline sorts behaviors by their `Order` before execution.
 
 ---
 
 # 🗄️ Storage Layer
 
-The storage layer is completely independent from the execution pipeline.
-
-Every storage provider implements the same `ICacheStorage` abstraction, allowing providers to be exchanged transparently during execution.
+Storage is isolated behind the internal `ICacheStorage` abstraction.
 
 ```mermaid
 graph LR
@@ -169,91 +147,181 @@ graph LR
 
     Resolver --> Primary["Primary Storage"]
 
-    Resolver --> Secondary["Fallback Storage"]
+    Resolver --> Fallback["Fallback Storage"]
 
-    Primary --> Redis["RedisStorage"]
+    Primary --> External["External Provider"]
 
-    Secondary --> Memory["MemoryStorage"]
+    Fallback --> Memory["MemoryStorage"]
 ```
 
-### Redis Storage
+`CacheStorageResolver` selects the storage configuration at startup.
+
+When no external storage is registered:
 
 ```text
-RedisStorage
-│
-├── PayloadSerializer
-├── RedisTagIndex
-├── RedisLockProvider
-└── RedisKeyBuilder
+Primary  → MemoryStorage
+Fallback → None
 ```
 
-### Memory Storage
+When an external storage is registered:
 
 ```text
-MemoryStorage
-│
-├── MemoryTagIndex
-├── MemoryLockProvider
-├── MemoryKeyTracker
-└── CacheEntryFactory
+Primary  → External Provider
+Fallback → MemoryStorage
 ```
 
-Because both providers implement the same abstraction, the pipeline can switch providers transparently without affecting application code.
+This allows the core framework to operate without an external provider while supporting an external distributed provider when configured.
 
 ---
 
 # ⚡ Cache-Aside Execution
 
-The framework provides a built-in implementation of the Cache-Aside pattern through `GetOrAddAsync()`.
+`GetOrAddAsync()` is implemented through a `GetOrAddCacheContext`.
 
-```mermaid
-sequenceDiagram
+The operation is delegated to the selected storage provider, allowing provider-specific concurrency mechanisms to be used.
 
-    actor Client
+For the current Memory provider implementation:
 
-    participant Cache as ICoreCache
-    participant Pipeline as CachePipeline
-    participant Resolver as ICacheStorageResolver
-    participant Storage as ICacheStorage
-    participant Factory as Data Factory
-
-    Client->>Cache: GetOrAddAsync(key, factory)
-
-    Cache->>Pipeline: Execute(GetCacheContext)
-
-    Pipeline->>Resolver: Resolve Storage
-
-    Resolver->>Storage: GetAsync(key)
-
-    alt Cache Hit
-
-        Storage-->>Pipeline: Cached Value
-        Pipeline-->>Cache: Return Value
-        Cache-->>Client: Cached Value
-
-    else Cache Miss
-
-        Pipeline-->>Cache: Not Found
-
-        Cache->>Factory: Execute factory()
-
-        Factory-->>Cache: Data
-
-        Cache->>Pipeline: Execute(SetCacheContext)
-
-        Pipeline->>Resolver: Resolve Storage
-
-        Resolver->>Storage: SetAsync(key, value)
-
-        Storage-->>Pipeline: Stored
-
-        Pipeline-->>Cache: Completed
-
-        Cache-->>Client: Fresh Value
-
-    end
+```text
+Get
+ │
+ ├── Hit ───────────────► Return value
+ │
+ └── Miss
+      │
+      ▼
+ Acquire key lock
+      │
+      ▼
+ Check cache again
+      │
+      ├── Hit ──────────► Return value
+      │
+      └── Miss
+           │
+           ▼
+       Execute factory
+           │
+           ▼
+       Store value
+           │
+           ▼
+       Return value
 ```
 
-Because every cache operation shares the same execution pipeline, cross-cutting concerns such as logging, metrics, resilience, fallback, and future behaviors are applied consistently across the entire framework.
+The integration tests verify that concurrent calls for the same key execute the factory only once.
 
 ---
+
+# 🏷️ Cache Tags
+
+Tags are part of the storage abstraction and can be supplied when setting an entry or using `GetOrAddAsync()`.
+
+```csharp
+await cache.SetAsync(
+    $"product:{id}",
+    product,
+    TimeSpan.FromMinutes(10),
+    ["products"]);
+```
+
+Entries can then be invalidated by tag:
+
+```csharp
+await cache.InvalidateByTagAsync("products");
+```
+
+The Memory provider maintains indexes for both tag-to-key and key-to-tag relationships.
+
+---
+
+# 🌐 HTTP Cache Architecture
+
+HTTP response caching is implemented as a separate layer on top of `ICoreCache`.
+
+The middleware delegates requests to `IHttpCacheHandler`, which coordinates:
+
+- `CacheableAttribute`
+- Request cache policy
+- Cache key generation
+- Cache lookup
+- Response capture
+- Response cache policy
+- Cache storage
+- Response writing
+
+This keeps HTTP-specific behavior outside the core cache service.
+
+---
+
+# 🔁 Fallback Execution
+
+When an external primary provider fails and a fallback provider exists, `FallbackBehavior`:
+
+1. Captures the exception.
+2. Marks the primary storage as unavailable.
+3. Logs the failure.
+4. Changes the current context to the fallback storage.
+5. Marks the operation for rehydration.
+6. Executes the operation using the fallback storage.
+
+The fallback behavior is therefore implemented in the pipeline rather than duplicated inside each cache operation.
+
+---
+
+# 📊 Observability
+
+The cache pipeline integrates metrics through `MetricsBehavior`.
+
+The current implementation records:
+
+```text
+cache.distributed.hits
+cache.distributed.misses
+```
+
+The metric result is determined by cache contexts implementing `ICacheMetricContext`.
+
+This keeps metric collection outside individual storage implementations.
+
+---
+
+# 🧪 Architectural Validation
+
+The current tests validate important parts of the architecture:
+
+- Dependency injection registration.
+- Pipeline behavior execution.
+- HTTP cache handling.
+- Cache-Aside behavior.
+- Concurrent cache population.
+- Tag invalidation.
+- Cache removal.
+- OpenTelemetry registration.
+- Middleware registration.
+
+The integration tests also use reusable base test classes so cache behavior can be tested against different providers.
+
+---
+
+# 💭 Technical Assessment
+
+The strongest part of the current architecture is the separation between:
+
+```text
+ICoreCache
+    ↓
+CacheContext
+    ↓
+CachePipeline
+    ↓
+ICacheStorageResolver
+    ↓
+ICacheStorage
+```
+
+This prevents `CoreCache` from becoming responsible for provider-specific behavior and keeps cross-cutting concerns in independent pipeline behaviors.
+
+The architecture also allows the core package to operate with Memory alone while external providers can be introduced through the storage abstraction.
+
+The current implementation provides a solid foundation for extending the framework without expanding the public `ICoreCache` API unnecessarily.
