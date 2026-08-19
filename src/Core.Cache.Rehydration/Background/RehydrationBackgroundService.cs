@@ -2,14 +2,13 @@
 using Core.Cache.Rehydration.Options;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Core.Cache.Rehydration.Background;
 
 internal sealed class RehydrationBackgroundService(
     IRehydrationService rehydrationService,
     ILogger<RehydrationBackgroundService> logger,
-    IOptions<RehydrationOptions> options)
+    RehydrationOptions options)
     : BackgroundService
 {
     protected override async Task ExecuteAsync(
@@ -38,7 +37,7 @@ internal sealed class RehydrationBackgroundService(
             }
 
             await Task.Delay(
-                options.Value.Interval,
+                options.Interval,
                 stoppingToken);
         }
 

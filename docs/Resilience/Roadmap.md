@@ -10,53 +10,54 @@ The roadmap provides visibility into the planned evolution of the framework. Pri
 
 CoreSystem.Resilience will continue to evolve following these principles:
 
-- Production-first
-- Cloud-native
-- Extensible architecture
-- OpenTelemetry-first
-- Dependency Injection
-- Backward compatibility whenever possible
+* Production-first
+* Cloud-native
+* Extensible architecture
+* OpenTelemetry-first
+* Dependency Injection
+* Backward compatibility whenever possible
 
 ---
 
 # ✅ Completed
 
-The following capabilities are already available.
+The following capabilities are available in the current implementation.
 
 ## Core Infrastructure
 
-- [x] Named resilience pipelines
-- [x] Dependency Injection integration
-- [x] Pipeline provider abstraction
-- [x] Strongly typed configuration
-- [x] Pipeline registry
+* [x] Configured resilience pipelines
+* [x] Dependency Injection integration
+* [x] Pipeline provider abstraction
+* [x] Strongly typed configuration
+* [x] Pipeline registry
+* [x] No-op pipeline when resilience is disabled
 
 ---
 
 ## Resilience Strategies
 
-- [x] Retry
-- [x] Circuit Breaker
-- [x] Timeout
+* [x] Retry
+* [x] Circuit Breaker
+* [x] Timeout
 
 ---
 
 ## Configuration
 
-- [x] Fluent configuration API
-- [x] appsettings.json support
-- [x] Strongly typed options
+* [x] Fluent configuration API
+* [x] Strongly typed options
+* [x] Pipeline configuration by `PipelineType`
 
 ---
 
 ## Observability
 
-- [x] Built-in metrics
-- [x] OpenTelemetry integration
-- [x] Execution duration metrics
-- [x] Retry metrics
-- [x] Timeout metrics
-- [x] Circuit Breaker metrics
+* [x] Built-in metrics
+* [x] OpenTelemetry metrics integration
+* [x] Pipeline execution duration
+* [x] Retry attempt metrics
+* [x] Timeout metrics
+* [x] Circuit Breaker state transition metrics
 
 ---
 
@@ -66,27 +67,27 @@ The next releases will focus on improving flexibility and developer experience.
 
 ## Pipeline
 
-- [ ] Conditional strategy execution
-- [ ] Pipeline validation
-- [ ] Strategy ordering customization
-- [ ] Named pipeline conventions
+* [ ] Conditional strategy execution
+* [ ] Pipeline validation
+* [ ] Strategy ordering customization
+* [ ] Improved pipeline configuration conventions
 
 ---
 
 ## Metrics
 
-- [ ] Additional resilience metrics
-- [ ] Metric tags and dimensions
-- [ ] Pipeline-specific metrics
+* [ ] Additional resilience metrics
+* [ ] Metric tags and dimensions
+* [ ] Pipeline-specific metrics
 
 ---
 
 ## Developer Experience
 
-- [ ] More samples
-- [ ] Extended documentation
-- [ ] XML documentation improvements
-- [ ] Source Link support
+* [ ] More samples
+* [ ] Extended documentation
+* [ ] XML documentation improvements
+* [ ] Source Link support
 
 ---
 
@@ -96,71 +97,71 @@ The following features will improve extensibility and operational capabilities.
 
 ## Resilience Strategies
 
-- [ ] Rate Limiter
-- [ ] Hedging
-- [ ] Fallback
-- [ ] Bulkhead Isolation
+* [ ] Rate Limiter
+* [ ] Hedging
+* [ ] Fallback
+* [ ] Bulkhead Isolation
 
 ---
 
 ## Configuration
 
-- [ ] Dynamic configuration reload
-- [ ] Environment-specific configuration
-- [ ] Configuration validation
+* [ ] Dynamic configuration reload
+* [ ] Environment-specific configuration
+* [ ] Configuration validation
 
 ---
 
 ## Observability
 
-- [ ] Distributed tracing
-- [ ] Activity correlation
-- [ ] Diagnostic events
+* [ ] Distributed tracing
+* [ ] Activity correlation
+* [ ] Diagnostic events
 
 ---
 
 # 🔮 Long-Term Vision
 
-Future versions aim to transform CoreSystem.Resilience into a complete resilience platform for .NET applications.
+Future versions aim to expand CoreSystem.Resilience with additional pipeline and operational capabilities.
 
 ## Advanced Pipeline Features
 
-- [ ] Pipeline composition
-- [ ] Nested pipelines
-- [ ] Pipeline templates
-- [ ] Shared strategy profiles
+* [ ] Pipeline composition
+* [ ] Nested pipelines
+* [ ] Pipeline templates
+* [ ] Shared strategy profiles
 
 ---
 
 ## Runtime Features
 
-- [ ] Dynamic pipeline registration
-- [ ] Runtime pipeline discovery
-- [ ] Pipeline diagnostics dashboard
+* [ ] Dynamic pipeline registration
+* [ ] Runtime pipeline discovery
+* [ ] Pipeline diagnostics dashboard
 
 ---
 
 ## Ecosystem Integration
 
-- [ ] HTTP client integration
-- [ ] Messaging integration
-- [ ] Background services integration
-- [ ] Database provider integration
+* [ ] HTTP client integration
+* [ ] Messaging integration
+* [ ] Background services integration
+* [ ] Database provider integration
 
 ---
 
 # 💡 Future Strategies
 
-The pipeline architecture allows new resilience strategies to be introduced without breaking the public API.
+The pipeline architecture allows new resilience strategies to be introduced without changing the existing resilience pipeline abstraction.
 
 Potential future strategies include:
 
-- [ ] Fallback Strategy
-- [ ] Bulkhead Strategy
-- [ ] Hedging Strategy
-- [ ] Rate Limiter Strategy
-- [ ] Chaos Engineering Strategy
-- [ ] Adaptive Retry Strategy
+* [ ] Fallback Strategy
+* [ ] Bulkhead Strategy
+* [ ] Hedging Strategy
+* [ ] Rate Limiter Strategy
+* [ ] Chaos Engineering Strategy
+* [ ] Adaptive Retry Strategy
 
 ---
 
@@ -170,9 +171,9 @@ Ideas proposed by the community may be incorporated into future releases.
 
 Suggestions are welcome through:
 
-- GitHub Issues
-- GitHub Discussions
-- Pull Requests
+* GitHub Issues
+* GitHub Discussions
+* Pull Requests
 
 ---
 
@@ -180,12 +181,12 @@ Suggestions are welcome through:
 
 The project follows Semantic Versioning.
 
-| Version | Focus |
-|---------|-------|
+| Version | Focus                               |
+| ------- | ----------------------------------- |
 | **1.x** | Stability, bug fixes, documentation |
-| **2.x** | Additional resilience strategies |
-| **3.x** | Advanced pipeline composition |
-| **4.x** | Complete ecosystem integration |
+| **2.x** | Additional resilience strategies    |
+| **3.x** | Advanced pipeline composition       |
+| **4.x** | Extended ecosystem integration      |
 
 ---
 
@@ -197,8 +198,8 @@ Whether you're fixing bugs, improving documentation, proposing new resilience st
 
 If you'd like to contribute:
 
-- Open a GitHub Issue
-- Start a GitHub Discussion
-- Submit a Pull Request
+* Open a GitHub Issue
+* Start a GitHub Discussion
+* Submit a Pull Request
 
 Thank you for helping improve **CoreSystem.Resilience**.

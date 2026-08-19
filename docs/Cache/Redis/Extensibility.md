@@ -8,8 +8,8 @@
 The provider implements the core `IExternalCacheStorage` contract through
 `RedisCacheStorage`.
 
-This allows the core storage resolver to discover Redis as the external primary
-storage without changing the `ICoreCache` API.
+This allows the Redis provider to be registered as the external storage
+implementation without changing the cache API.
 
 ## Key Building
 

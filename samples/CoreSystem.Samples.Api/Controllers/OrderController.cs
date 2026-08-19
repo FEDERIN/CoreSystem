@@ -1,16 +1,16 @@
 ﻿using Core.Cache.Attributes;
-using CoreSystem.Samples.Core.Services;
+using CoreSystem.Samples.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreSystem.Samples.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class OrderController(IMyService myService) : ControllerBase
+public class OrderController(IProductService myService) : ControllerBase
 {
 
     [HttpGet("data/{id}")]
-    [Cacheable(tag: "Order", expirationSeconds: 500)]
+    //[Cacheable(tag: "Order", expirationSeconds: 500)]
     public async Task<IActionResult> GetData(string id)
     {
         var result = await myService.GetDataAsync(id);

@@ -2,25 +2,22 @@
 
 `CoreSystem.Resilience` includes built-in metrics based on **System.Diagnostics.Metrics**.
 
-Every resilience pipeline automatically records operational metrics that can be consumed by any **OpenTelemetry-compatible** backend, allowing applications to monitor resilience behavior without requiring additional instrumentation.
+The framework records resilience-related metrics through `ResilienceMetrics`, allowing the metrics to be consumed through the application's OpenTelemetry configuration.
 
 ---
 
 # Why Metrics Matter
 
-Resilience is only effective when it can be measured.
+Resilience behavior can be monitored through metrics that provide visibility into the execution of configured strategies.
 
-The framework publishes metrics that help answer questions such as:
+The current implementation records:
 
-- How many protected operations are executed?
-- How often are retries performed?
-- How many operations eventually succeed after retries?
-- How many operations fail despite all retry attempts?
-- How frequently does the circuit breaker open?
-- How many timeout events occur?
-- What is the average execution duration of protected operations?
+* Retry attempts.
+* Timeout events.
+* Circuit breaker state transitions.
+* Pipeline execution duration.
 
-These metrics provide operational visibility while keeping application code clean and focused on business logic.
+These metrics are recorded by the resilience strategies and the pipeline execution infrastructure.
 
 ---
 
@@ -29,47 +26,43 @@ These metrics provide operational visibility while keeping application code clea
 ```mermaid
 flowchart LR
 
-    App["Application"]
+    Pipeline["Resilience Pipeline"]
 
-    App --> Pipeline["Resilience Pipeline"]
+    Pipeline --> Metrics["ResilienceMetrics"]
 
-    Pipeline --> Metrics["Resilience Metrics"]
+    Metrics --> Meter["System.Diagnostics.Metrics"]
 
-    Metrics --> DotNet["System.Diagnostics.Metrics"]
-
-    DotNet --> Otel["OpenTelemetry"]
-
-    Otel --> Otlp["OTLP Exporter"]
-
-    Otlp --> Platform["Monitoring Platform"]
+    Meter --> OpenTelemetry["OpenTelemetry"]
 ```
+
+The framework creates a meter named `Core.Resilience` and registers it through the observability contributor.
 
 ---
 
 # Built-in Metrics
 
-The framework publishes the following metrics.
+The framework currently publishes the following metrics.
 
-| Metric | Description |
-|----------|-------------|
-| `core.resilience.executions` | Total number of protected operations executed. |
-| `core.resilience.execution.duration` | Duration of pipeline execution. |
-| `core.resilience.retry.attempts` | Total retry attempts performed. |
-| `core.resilience.retry.successes` | Operations that eventually succeeded after one or more retries. |
-| `core.resilience.retry.failures` | Operations that failed after exhausting all retry attempts. |
-| `core.resilience.circuitbreaker.opened` | Number of circuit breaker open events. |
-| `core.resilience.circuitbreaker.closed` | Number of circuit breaker closed events. |
-| `core.resilience.circuitbreaker.half_opened` | Number of transitions to the half-open state. |
-| `core.resilience.timeout.total` | Total timeout events. |
-| `core.resilience.failures` | Total failed pipeline executions. |
+| Metric                                | Description                                                                            |
+| ------------------------------------- | -------------------------------------------------------------------------------------- |
+| `core.resilience.pipeline.duration`   | Execution time of the resilience pipeline, including configured resilience strategies. |
+| `core.resilience.retry.attempts`      | Total number of retry attempts executed by the retry strategy.                         |
+| `core.resilience.timeout.triggered`   | Total number of operations that exceeded the configured timeout.                       |
+| `core.resilience.circuit.opened`      | Total number of times the circuit breaker transitioned to the Open state.              |
+| `core.resilience.circuit.half_opened` | Total number of times the circuit breaker transitioned to the Half-Open state.         |
+| `core.resilience.circuit.closed`      | Total number of times the circuit breaker transitioned to the Closed state.            |
+
+The execution duration metric is recorded as a histogram in milliseconds.
+
+Retry and timeout metrics are counters. Circuit breaker state transition metrics are also recorded as counters.
 
 ---
 
 # Registering the Meter
 
-The package automatically creates and publishes its own meter.
+The framework registers its meter through `ResilienceObservabilityContributor`.
 
-Applications only need to register it with OpenTelemetry.
+The contributor configures OpenTelemetry metrics with the meter:
 
 ```csharp
 builder.Services
@@ -77,42 +70,33 @@ builder.Services
     .WithMetrics(metrics =>
     {
         metrics.AddMeter("Core.Resilience");
-
-        metrics.AddPrometheusExporter();
     });
 ```
 
----
-
-# Compatible Platforms
-
-The metrics can be exported to any OpenTelemetry-compatible backend.
-
-| Platform | Supported |
-|-----------|:---------:|
-| Prometheus | ✅ |
-| Grafana | ✅ |
-| Azure Monitor | ✅ |
-| OTLP | ✅ |
-| Datadog | ✅ |
-| Elastic | ✅ |
+The framework does not configure a specific exporter. Exporter configuration remains part of the application's OpenTelemetry setup.
 
 ---
 
-# Example Dashboard
+# Metric Tags
 
-Typical dashboards include:
+Some metrics include tags when they are recorded.
 
-- Total pipeline executions
-- Average execution duration
-- Retry attempts
-- Retry success rate
-- Retry failure rate
-- Circuit breaker state transitions
-- Timeout events
-- Failed operations
+For example, retry attempts include:
 
-*(Grafana dashboard examples can be added here in future releases.)*
+```text
+strategy = retry
+attempt = <attempt number>
+```
+
+Timeout events include:
+
+```text
+strategy = timeout
+```
+
+Pipeline execution duration can also receive tags from the execution pipeline.
+
+The exact tags available depend on the metric being recorded.
 
 ---
 
@@ -127,104 +111,86 @@ sequenceDiagram
 
     participant Metrics
 
-    participant OpenTelemetry
+    participant Meter as System.Diagnostics.Metrics
 
-    participant Monitoring
+    participant OpenTelemetry
 
     Application->>Pipeline: ExecuteAsync()
 
-    Pipeline->>Metrics: Record execution
+    Pipeline->>Metrics: Record metric
 
-    Metrics->>OpenTelemetry: Publish metric
+    Metrics->>Meter: Record
 
-    OpenTelemetry->>Monitoring: Export
+    Meter->>OpenTelemetry: Collect
 ```
+
+Metrics are recorded while the configured resilience pipeline executes.
+
+Retry records an attempt whenever the retry callback is invoked.
+
+Timeout records an event when the configured timeout is triggered.
+
+Circuit Breaker records state transition events when the circuit opens, closes, or becomes half-open.
+
+Execution duration is recorded for the pipeline execution.
 
 ---
 
 # Observability Integration
 
-The framework emits metrics using the standard .NET metrics APIs.
+The framework uses the standard .NET metrics API through `System.Diagnostics.Metrics`.
 
-This makes `CoreSystem.Resilience` compatible with the existing OpenTelemetry ecosystem without requiring vendor-specific integrations.
+The meter name is:
 
-Applications can combine these metrics with logs and traces to obtain a complete view of service reliability.
+```text
+Core.Resilience
+```
 
----
+The diagnostic source name exposed by the observability contributor is also:
 
-# Best Practices
+```text
+Core.Resilience
+```
 
-✅ Monitor retry frequency.
+The current implementation registers the meter with OpenTelemetry metrics.
 
-✅ Alert when retry failures increase.
-
-✅ Track circuit breaker open events.
-
-✅ Investigate frequent timeout events.
-
-✅ Monitor execution duration trends.
-
-✅ Export metrics through OTLP.
+The provided code does not configure a specific monitoring backend or exporter.
 
 ---
 
 # Operational Recommendations
 
-### Healthy
+### Retry
 
-Typical indicators:
+Monitor retry attempts to identify dependencies that are experiencing transient failures.
 
-- Low retry rate
-- Few timeout events
-- Circuit breaker remains closed
-- Stable execution duration
+### Timeout
 
-No action is required.
+Monitor timeout events to identify operations exceeding their configured execution time.
 
----
+### Circuit Breaker
 
-### Warning
+Monitor circuit state transitions to identify dependencies that are repeatedly failing.
 
-Typical indicators:
+### Execution Duration
 
-- Increasing retry attempts
-- Frequent timeout events
-- Longer execution times
-
-Recommended actions:
-
-- Review dependency latency.
-- Verify network connectivity.
-- Inspect downstream service performance.
-
----
-
-### Critical
-
-Typical indicators:
-
-- High retry failure rate
-- Circuit breaker repeatedly opening
-- Persistent timeout events
-
-Recommended actions:
-
-- Investigate the affected dependency.
-- Review resilience configuration.
-- Validate timeout values.
-- Scale or restore the downstream service.
+Monitor pipeline execution duration to identify changes in the time required to complete protected operations.
 
 ---
 
 # Future Metrics
 
-Future releases may introduce additional metrics such as:
+Additional metrics may be introduced in future versions.
 
-- Retry delay duration
-- Pipeline throughput
-- Concurrent executions
-- Strategy-specific execution time
-- Custom metric enrichment
-- Pipeline success rate
+The current implementation does not provide metrics for:
 
-These additions will remain backward compatible with existing telemetry.
+* Total pipeline executions.
+* Pipeline failures.
+* Retry successes.
+* Retry failures.
+* Retry delay duration.
+* Pipeline throughput.
+* Concurrent executions.
+* Pipeline success rate.
+
+These should not be considered implemented capabilities of the current version.

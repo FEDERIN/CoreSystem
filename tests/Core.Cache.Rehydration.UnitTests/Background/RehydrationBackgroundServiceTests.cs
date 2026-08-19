@@ -170,12 +170,11 @@ public sealed class RehydrationBackgroundServiceTests
         TimeSpan interval)
     {
         var options =
-            Microsoft.Extensions.Options.Options.Create(
-                new RehydrationOptions
-                {
-                    Enabled = true,
-                    Interval = interval
-                });
+            new RehydrationOptions
+            {
+                Enabled = true,
+                Interval = interval
+            };
 
         return new RehydrationBackgroundService(
             rehydrationService.Object,

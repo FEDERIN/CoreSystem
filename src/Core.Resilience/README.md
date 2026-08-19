@@ -2,9 +2,7 @@
 
 > **Production-ready resilience framework for .NET 8**
 
-CoreSystem.Resilience is a lightweight and extensible resilience framework built for modern .NET applications. It provides a clean abstraction over resilience strategies while keeping application code independent from the underlying implementation.
-
-Designed around **named resilience pipelines**, the framework allows different infrastructure components—such as Redis, HTTP clients, databases, or messaging systems—to define their own resilience policies without coupling business logic to a specific resilience library.
+CoreSystem.Resilience provides a clean abstraction over resilience strategies for .NET applications. It enables applications to define named resilience pipelines while keeping application code independent from the underlying Polly implementation.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Resilience?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Resilience?style=for-the-badge)
@@ -13,41 +11,22 @@ Designed around **named resilience pipelines**, the framework allows different i
 
 ---
 
-## Why CoreSystem.Resilience?
+## ✨ Features
 
-Modern applications communicate with many external dependencies, each with different reliability characteristics.
-
-CoreSystem.Resilience helps you build robust applications by providing:
-
-* ✅ Named resilience pipelines
-* ✅ Retry, Timeout and Circuit Breaker strategies
-* ✅ Provider-independent API
-* ✅ Dependency Injection integration
-* ✅ Strongly typed configuration
-* ✅ OpenTelemetry metrics
-* ✅ Extensible architecture for custom strategies
-
----
-
-# Features
-
-* Named resilience pipelines
-* Retry strategy
-* Timeout strategy
-* Circuit Breaker strategy
-* Fluent configuration API
-* appsettings.json support
-* Strongly typed options
-* OpenTelemetry integration
-* Built-in metrics
-* Extensible pipeline architecture
-* Clean abstraction over Polly
+- ✅ Retry strategy
+- ✅ Circuit Breaker strategy
+- ✅ Timeout strategy
+- ✅ Named resilience pipelines
+- ✅ Dependency Injection integration
+- ✅ Polly abstraction
+- ✅ Built-in metrics
+- ✅ OpenTelemetry compatible
+- ✅ Configurable handled exceptions
+- ✅ Strongly typed configuration
 
 ---
 
-# Installation
-
-Install the NuGet package.
+## 📦 Installation
 
 ```bash
 dotnet add package CoreSystem.Resilience
@@ -55,34 +34,34 @@ dotnet add package CoreSystem.Resilience
 
 ---
 
-# Quick Start
+## 🚀 Quick Start
 
-Register the framework.
+Register the framework:
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
 
-        pipeline.AddTimeout(timeout =>
+        pipeline.Timeout = new TimeoutOptions
         {
-            timeout.Timeout = TimeSpan.FromSeconds(2);
-        });
+            Timeout = TimeSpan.FromSeconds(2)
+        };
 
-        pipeline.AddCircuitBreaker(circuit =>
+        pipeline.CircuitBreaker = new CircuitBreakerOptions
         {
-            circuit.FailureRatio = 0.5;
-        });
+            FailureRatio = 0.5
+        };
     });
 });
 ```
 
-Resolve a pipeline.
+Resolve a pipeline:
 
 ```csharp
 public sealed class RedisService(
@@ -93,167 +72,115 @@ public sealed class RedisService(
 }
 ```
 
-Execute a protected operation.
+Execute an operation:
 
 ```csharp
-await _pipeline.ExecuteAsync(async cancellationToken =>
+await _pipeline.ExecuteAsync(async ct =>
 {
-    await redisDatabase.StringGetAsync("products:1");
+    await redis.GetAsync(key, ct);
 });
 ```
 
 ---
 
-# Architecture Overview
+## 🛡 Supported Strategies
 
-CoreSystem.Resilience is built around **named resilience pipelines**.
+| Strategy | Description |
+|----------|-------------|
+| Retry | Retries handled exceptions according to the configured retry options. |
+| Circuit Breaker | Opens the circuit when the configured failure conditions are reached. |
+| Timeout | Limits the execution time of an operation. |
 
-Applications depend only on the framework abstractions while the framework composes one or more resilience strategies internally before executing the protected operation.
+The execution pipeline applies configured strategies in the following order:
 
-```mermaid
-graph TD
+```text
+Timeout → Retry → Circuit Breaker
+```
 
-    Application
+Only strategies configured for a pipeline are added to its execution pipeline.
 
-    Application --> Provider["IResiliencePipelineProvider"]
+---
 
-    Provider --> Pipeline["IResiliencePipeline"]
+## 📊 Built-in Metrics
 
-    Pipeline --> Retry
+CoreSystem.Resilience publishes metrics using **System.Diagnostics.Metrics**.
 
-    Retry --> Timeout
+The `Core.Resilience` meter is registered for OpenTelemetry integration.
 
-    Timeout --> CircuitBreaker
+| Metric | Description |
+|---------|-------------|
+| `core.resilience.retry.attempts` | Total retry attempts executed by the retry strategy. |
+| `core.resilience.timeout.triggered` | Total operations that exceeded the configured timeout. |
+| `core.resilience.circuit.opened` | Total circuit breaker transitions to Open. |
+| `core.resilience.circuit.half_opened` | Total circuit breaker transitions to Half-Open. |
+| `core.resilience.circuit.closed` | Total circuit breaker transitions to Closed. |
+| `core.resilience.pipeline.duration` | Execution time of the resilience pipeline. |
 
-    CircuitBreaker --> Operation["Protected Operation"]
+Register the meter with OpenTelemetry:
+
+```csharp
+builder.Services
+    .AddOpenTelemetry()
+    .WithMetrics(metrics =>
+    {
+        metrics.AddMeter("Core.Resilience");
+    });
 ```
 
 ---
 
-# Built-in Strategies
+## 🏗 Architecture
 
-CoreSystem.Resilience currently provides three production-ready resilience strategies.
+```text
+Application
+      │
+      ▼
+IResiliencePipelineProvider
+      │
+      ▼
+PipelineRegistry
+      │
+      ▼
+IResiliencePipeline
+      │
+      ├── Timeout
+      ├── Retry
+      ├── Circuit Breaker
+      │
+      ▼
+Polly ResiliencePipeline
+      │
+      ▼
+Protected Operation
+```
 
-| Strategy        | Purpose                                   |
-| --------------- | ----------------------------------------- |
-| Retry           | Automatically retries transient failures. |
-| Timeout         | Limits operation execution time.          |
-| Circuit Breaker | Protects unhealthy dependencies.          |
-
-Strategies can be combined inside a pipeline and execute in registration order.
-
----
-
-# Configuration
-
-Pipelines can be configured using the fluent API or the .NET Options pattern.
-
-Supported configuration methods include:
-
-* Fluent configuration
-* appsettings.json
-* Strongly typed options
-* Multiple named pipelines
-* Exception filtering
-
----
-
-# Observability
-
-CoreSystem.Resilience publishes operational metrics through **System.Diagnostics.Metrics** and integrates naturally with OpenTelemetry.
-
-Built-in metrics include:
-
-* Pipeline executions
-* Execution duration
-* Retry attempts
-* Retry successes
-* Retry failures
-* Timeout events
-* Circuit Breaker transitions
-
-Compatible monitoring platforms include:
-
-* Prometheus
-* Grafana
-* Azure Monitor
-* Datadog
-* Any OTLP-compatible backend
+Each configured `PipelineType` is registered in the pipeline registry and resolved through `IResiliencePipelineProvider`. The public abstraction exposes pipeline execution without requiring application code to depend directly on Polly.
 
 ---
 
-# Extensibility
+## 📖 Documentation
 
-The framework has been designed around composition rather than modification.
+The full documentation includes:
 
-Extension points include:
+- Getting Started
+- Configuration
+- Retry
+- Circuit Breaker
+- Timeout
+- Metrics
+- Architecture
+- Extensibility
 
-* Custom pipeline builders
-* Custom resilience strategies
-* Custom metrics
-* Additional pipeline types
-* Dependency Injection replacement
-
-Future strategies such as **Bulkhead**, **Fallback**, **Rate Limiter**, and **Hedging** can be introduced without breaking the public API.
-
----
-
-# Documentation
-
-Detailed documentation is available in the `docs/Resilience` folder.
-
-| Guide                 | Description                     |
-| --------------------- | ------------------------------- |
-| 01-getting-started.md | Installation and first pipeline |
-| 02-architecture.md    | Architecture and design         |
-| 03-core-components.md | Framework components            |
-| 04-pipelines.md       | Pipeline lifecycle              |
-| 05-configuration.md   | Configuration guide             |
-| 05-retry.md           | Retry strategy                  |
-| 06-timeout.md         | Timeout strategy                |
-| 07-circuit-breaker.md | Circuit Breaker strategy        |
-| 08-observability.md   | Metrics and OpenTelemetry       |
-| 09-extensibility.md   | Extension points                |
-| 10-roadmap.md         | Planned features                |
+Visit the GitHub repository for the complete documentation.
 
 ---
 
-# Roadmap
+## 🤝 Contributing
 
-## Available
-
-* Named pipelines
-* Retry
-* Timeout
-* Circuit Breaker
-* OpenTelemetry metrics
-* Dependency Injection integration
-
-## Planned
-
-* Bulkhead
-* Hedging
-* Rate Limiter
-* Fallback
-* Distributed tracing
-* Dynamic configuration
+Issues, discussions and pull requests are welcome.
 
 ---
 
-# Contributing
+## 📄 License
 
-Contributions are welcome.
-
-Whether you're fixing bugs, improving documentation, proposing new resilience strategies, or enhancing the developer experience, your feedback helps make CoreSystem.Resilience better for everyone.
-
-Feel free to:
-
-* Open an Issue
-* Start a Discussion
-* Submit a Pull Request
-
----
-
-# License
-
-Licensed under the MIT License.
+Released under the MIT License.

@@ -22,17 +22,15 @@ AddCoreCacheRedis()
           ▼
 Core.Cache
     │
-    ├── Primary: Redis
-    └── Fallback: Memory
+    └── IExternalCacheStorage
           │
           ▼
-Core.Cache.Rehydration
-    └── Memory fallback → Primary Redis
+    RedisCacheStorage
 ```
 
-`RedisCacheStorage` is registered as `IExternalCacheStorage`. The core
-`CacheStorageResolver` therefore uses Redis as the primary storage and the
-in-memory storage as fallback.
+`RedisCacheStorage` is registered as `IExternalCacheStorage`. The Redis provider
+therefore supplies the external storage implementation consumed by the core
+cache.
 
 ## Redis Storage
 
@@ -59,9 +57,11 @@ generated value.
 `RedisTagIndex` maintains Redis sets for the relationship between cache keys and
 tags. This supports tag invalidation and cleanup when entries are removed.
 
-## Recovery
+## Health and Resilience
 
-When the primary Redis storage fails, the core fallback behavior can execute
-the operation against memory and mark the entry for rehydration. The separate
-`CoreSystem.Cache.Rehydration` package later writes tracked fallback entries
-back to the primary storage.
+The provider registers a Redis health check that verifies connectivity through
+`PING` and maintains Redis health state.
+
+When a Redis resilience pipeline is configured through `Core.Resilience`,
+`Core.Cache.Redis` applies Redis connection and timeout exceptions to the
+configured retry and circuit-breaker strategies.

@@ -34,8 +34,8 @@ var product =
         TimeSpan.FromMinutes(10));
 ```
 
-For a missing key, the Redis provider uses a distributed lock before executing
-the factory.
+For a missing key, the Redis provider acquires a distributed lock, checks Redis
+again, and executes the factory only when the value is still missing.
 
 ## Tags
 

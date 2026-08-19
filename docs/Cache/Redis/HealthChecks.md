@@ -37,17 +37,17 @@ When Redis changes from healthy to unavailable, the provider records the
 transition. When the connection becomes available again, the state changes back
 to healthy.
 
-The core fallback behavior can also mark the primary Redis storage unavailable
-after a storage exception.
+The provider also exposes `IPrimaryHealthStateWriter`, allowing the core cache
+integration to mark Redis as unavailable when that integration detects a
+primary-storage failure.
 
 ## Rehydration
 
 Health recovery and cache rehydration are separate responsibilities.
 
-`CoreSystem.Cache.Redis` reports the Redis health state. When the core fallback
-stores an entry in memory with `CacheEntryOptions.Rehydrate`, the separate
-`CoreSystem.Cache.Rehydration` package can later restore that entry to the
-primary Redis provider.
+`CoreSystem.Cache.Redis` reports the Redis health state. The separate
+`CoreSystem.Cache.Rehydration` package can restore fallback entries to the
+primary storage when configured.
 
 Rehydration therefore depends on the external provider being registered and is
 not itself a Redis health-check feature.

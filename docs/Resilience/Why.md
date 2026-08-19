@@ -1,65 +1,65 @@
 # Why CoreSystem.Resilience?
 
-Modern distributed applications rarely fail because of business logic alone. They fail because of unreliable networks, overloaded services, temporary infrastructure issues, or downstream dependencies that become unavailable.
+Modern distributed applications rarely fail because of business logic alone. They can fail because of unreliable networks, overloaded services, temporary infrastructure issues, or downstream dependencies that become unavailable.
 
-These failures are often **transient**, meaning that retrying the operation after a short delay is enough to recover successfully. Others require protecting the application by limiting requests or failing fast until the dependency becomes healthy again.
+Some failures are **transient**, meaning that retrying the operation can allow it to recover successfully. Others require limiting execution time or preventing repeated calls to an unhealthy dependency.
 
-Without a consistent resilience strategy, every application ends up implementing its own retry loops, timeout handling, and circuit breaker logic. This leads to duplicated code, inconsistent behavior, and systems that become difficult to maintain and observe.
+Without a consistent resilience strategy, applications can end up implementing retry, timeout, and circuit breaker logic independently. This leads to duplicated code and inconsistent behavior.
 
-CoreSystem.Resilience provides a unified and extensible way to apply resilience policies across your application while keeping business logic clean and focused.
+CoreSystem.Resilience provides a unified way to configure resilience strategies through reusable pipelines while keeping business logic independent from the underlying resilience implementation.
 
 ## The Problem
 
 Applications communicating with external systems commonly experience situations such as:
 
-- Temporary network interruptions.
-- Slow or unresponsive services.
-- Rate limiting from third-party APIs.
-- Database connectivity issues.
-- Short-lived cloud infrastructure failures.
-- Cascading failures between dependent services.
+* Temporary network interruptions.
+* Slow or unresponsive services.
+* Database connectivity issues.
+* Short-lived infrastructure failures.
+* Cascading failures between dependent services.
 
-Handling these scenarios manually quickly becomes repetitive and error-prone.
+Handling these scenarios manually can quickly become repetitive and difficult to maintain.
 
 ## The Solution
 
-CoreSystem.Resilience centralizes resilience concerns into configurable pipelines that can be reused throughout your application.
+CoreSystem.Resilience centralizes resilience configuration into pipelines that can be reused throughout the application.
 
-Instead of scattering retry logic across the codebase, resilience policies are defined once and applied consistently.
+Instead of scattering resilience configuration across application code, strategies can be configured for a `PipelineType` and executed through `IResiliencePipeline`.
 
-Typical capabilities include:
+The framework currently provides:
 
-- Retry for transient failures.
-- Timeout policies.
-- Circuit breakers.
-- Extensible resilience pipelines.
-- Built-in diagnostics and metrics.
-- Seamless integration with Dependency Injection.
+* Retry for configured exceptions.
+* Timeout policies.
+* Circuit breakers.
+* Configurable resilience pipelines.
+* Dependency Injection integration.
+* Built-in metrics and OpenTelemetry metrics registration.
 
 ## Benefits
 
 Using CoreSystem.Resilience provides several advantages:
 
-- Consistent resilience behavior across applications.
-- Separation of business logic from infrastructure concerns.
-- Reduced duplicated code.
-- Improved system stability.
-- Better observability through metrics and diagnostics.
-- Easy extensibility for custom resilience strategies.
+* Consistent resilience configuration across applications.
+* Separation of resilience concerns from business logic.
+* Reduced duplicated code.
+* Reusable configured pipelines.
+* Built-in operational metrics.
+* A stable application-facing abstraction over the underlying Polly pipeline.
 
 ## When Should You Use It?
 
-CoreSystem.Resilience is recommended whenever your application communicates with external resources, including:
+CoreSystem.Resilience is useful whenever your application communicates with resources that may experience transient failures, delays, or temporary unavailability.
 
-- HTTP APIs
-- Databases
-- Message brokers
-- Distributed caches
-- Cloud services
-- Any potentially unreliable dependency
+Examples include:
 
-Even highly available services can experience transient failures. Applying resilience consistently helps applications remain responsive and recover automatically whenever possible.
+* HTTP APIs
+* Databases
+* Message brokers
+* Distributed caches
+* Other external dependencies
+
+Different workloads can use different `PipelineType` configurations while sharing the same programming model.
 
 ## Next Steps
 
-Continue with the **Architecture** section to understand how resilience pipelines are composed and how policies are executed internally.
+Continue with the **Architecture** section to understand how resilience pipelines are constructed, registered, resolved, and executed internally.

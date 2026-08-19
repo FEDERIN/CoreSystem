@@ -25,7 +25,7 @@ services.AddCoreCacheRedis(options =>
 ```
 
 The provider requires `Configuration` to be assigned. Registration fails when
-the configuration delegate does not configure it.
+the configuration delegate does not assign it.
 
 ## Core Cache Options
 
@@ -65,7 +65,7 @@ The resilience strategies and their options belong to
 `RehydrationOptions`.
 
 When enabled with an external provider, entries temporarily stored in the
-memory fallback can be restored to the primary provider after recovery.
+memory fallback can be restored to the primary provider.
 
-The rehydration package owns the interval and background recovery process; these
-settings are not part of `RedisOptions`.
+The rehydration package owns its recovery configuration; these settings are not
+part of `RedisOptions`.

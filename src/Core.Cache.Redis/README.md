@@ -2,10 +2,9 @@
 
 > **Production-ready distributed caching framework for .NET 8**
 
-CoreSystem.Cache extends the standard .NET caching abstractions with a
-production-ready execution pipeline, automatic Redis fallback, cache
-rehydration, HTTP response caching, OpenTelemetry metrics, health
-checks, and tag-based invalidation.
+CoreSystem.Cache provides a unified cache abstraction with an execution
+pipeline, Memory caching, optional external cache storage with fallback,
+HTTP response caching, OpenTelemetry metrics, and tag-based invalidation.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Cache?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Cache?style=for-the-badge)
@@ -16,16 +15,19 @@ checks, and tag-based invalidation.
 
 ## ✨ Features
 
--   ✅ Memory and Redis providers
+-   ✅ Memory cache provider
 -   ✅ Cache-Aside (`GetOrAddAsync`)
 -   ✅ Tag-based invalidation
--   ✅ Automatic Redis → Memory fallback
--   ✅ Automatic cache rehydration
+-   ✅ Optional external cache with Memory fallback
 -   ✅ HTTP response caching
--   ✅ OpenTelemetry metrics
--   ✅ ASP.NET Core Health Checks
--   ✅ Polly resilience integration
--   ✅ JSON, MessagePack and Protocol Buffers serialization
+-   ✅ OpenTelemetry metrics for cache hits and misses
+-   ✅ Configurable execution pipeline
+-   ✅ Optional resilience integration through `Core.Resilience`
+-   ✅ Configurable serialization through `Core.Serialization`
+
+Redis support is provided by the `CoreSystem.Cache.Redis` package, which
+registers Redis as the external primary storage and uses Memory as the
+fallback storage.
 
 ------------------------------------------------------------------------
 
@@ -33,6 +35,12 @@ checks, and tag-based invalidation.
 
 ``` bash
 dotnet add package CoreSystem.Cache
+```
+
+For Redis support, add the Redis provider package separately:
+
+``` bash
+dotnet add package CoreSystem.Cache.Redis
 ```
 
 ------------------------------------------------------------------------
@@ -44,10 +52,7 @@ Register the framework:
 ``` csharp
 builder.Services.AddCoreCache(options =>
 {
-    options.Redis.Configuration = redis =>
-    {
-        redis.EndPoints.Add("localhost:6379");
-    };
+    options.DefaultExpiration = TimeSpan.FromMinutes(30);
 });
 ```
 
@@ -97,28 +102,34 @@ app.UseCoreCache();
 Decorate your endpoint:
 
 ``` csharp
-[Cacheable(expirationSeconds:300)]
+[Cacheable(expirationSeconds: 300)]
 public async Task<IActionResult> Get(Guid id)
 {
     return Ok(await service.GetAsync(id));
 }
 ```
 
+HTTP response caching is applied only to endpoints decorated with
+`CacheableAttribute`. The default request policy allows `GET` and `HEAD`
+requests and excludes requests containing an `Authorization` header.
+
 ------------------------------------------------------------------------
 
 ## 📊 Why CoreSystem.Cache?
 
-  Capability               IDistributedCache   CoreSystem.Cache
-  ----------------------- ------------------- ------------------
-  Redis                           ✅                  ✅
-  Memory Provider                 ❌                  ✅
-  Cache-Aside                     ❌                  ✅
-  Tag Invalidation                ❌                  ✅
-  Automatic Fallback              ❌                  ✅
-  Cache Rehydration               ❌                  ✅
-  HTTP Response Caching           ❌                  ✅
-  OpenTelemetry Metrics           ❌                  ✅
-  Health Checks                   ❌                  ✅
+| Capability | `IDistributedCache` | CoreSystem.Cache |
+|---|---:|---:|
+| Memory Provider | ❌ | ✅ |
+| Cache-Aside | ❌ | ✅ |
+| Tag Invalidation | ❌ | ✅ |
+| Primary + Fallback Storage | ❌ | ✅ |
+| HTTP Response Caching | ❌ | ✅ |
+| OpenTelemetry Metrics | ❌ | ✅ |
+| Configurable Cache Pipeline | ❌ | ✅ |
+
+Redis and resilience capabilities are provided through their corresponding
+CoreSystem packages and are integrated with the cache pipeline when
+registered and configured.
 
 ------------------------------------------------------------------------
 
@@ -135,14 +146,21 @@ Application
       │
       ├── Logging
       ├── Metrics
-      ├── Fallback
-      └── Resilience
+      ├── Fallback (when available)
+      └── Resilience (when registered)
       │
       ▼
- Cache Storage
-      ├── Redis
-      └── Memory
+ Cache Storage Resolver
+      │
+      ├── External Storage (Primary)
+      │
+      └── Memory Storage (Fallback)
 ```
+
+When no external cache storage is registered, Memory is used as the primary
+storage. When one external storage is registered, it becomes the primary
+storage and Memory becomes the fallback. The core resolver allows only one
+external cache storage to be registered.
 
 ------------------------------------------------------------------------
 

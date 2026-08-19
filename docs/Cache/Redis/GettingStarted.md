@@ -10,7 +10,7 @@ Register `CoreSystem.Cache` before registering the Redis provider.
 ```csharp
 services.AddCoreCache(options =>
 {
-    options.InstanceName = "my-app:";
+    options.InstanceName = "my-app";
 });
 ```
 
@@ -44,13 +44,16 @@ public sealed class ProductService(ICoreCache cache)
 }
 ```
 
-The Redis provider is selected internally by the core storage resolver.
+The Redis provider registers its implementation through the
+`IExternalCacheStorage` contract.
 
 ## Resilience and Rehydration
 
 Redis can be used together with the optional `CoreSystem.Resilience` and
 `CoreSystem.Cache.Rehydration` packages.
 
-The sample infrastructure configures resilience from `Core:Resilience` and
-registers rehydration after the Redis provider. Rehydration requires an external
-cache provider and uses the primary storage as its recovery target.
+When a Redis resilience pipeline is configured, the Redis provider integrates
+with the corresponding resilience pipeline.
+
+Rehydration is provided by the separate `CoreSystem.Cache.Rehydration` package
+and is not configured through `AddCoreCacheRedis()`.

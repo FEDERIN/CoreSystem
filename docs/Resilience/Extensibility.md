@@ -1,33 +1,34 @@
 # 🧩 Extensibility
 
-One of the primary goals of **CoreSystem.Resilience** is to provide a resilience framework that can evolve without requiring changes to application code.
+One of the goals of **CoreSystem.Resilience** is to keep resilience concerns separated from application code.
 
-Rather than coupling resilience policies directly to business logic, the framework exposes a set of extension points that allow new resilience strategies, pipeline builders, metrics, and pipeline types to be introduced independently.
+The framework provides abstractions for executing resilience pipelines and building their internal strategy configuration while keeping the underlying Polly implementation behind the core pipeline abstraction.
 
-This document describes the available extension points and the recommended approach for extending the framework.
+This document describes the extension points that are currently available in the provided implementation.
 
 ---
 
 # Extension Points
 
-The framework can be extended in several ways.
+The current implementation provides several extension points and abstractions.
 
-| Extension Point      | Purpose                             |
-| -------------------- | ----------------------------------- |
-| Pipeline Builder     | Build custom resilience pipelines   |
-| Strategy Builders    | Add new resilience strategies       |
-| Pipeline Types       | Register additional named pipelines |
-| Metrics              | Publish custom telemetry            |
-| Dependency Injection | Replace framework services          |
+| Extension Point      | Purpose                                                            |
+| -------------------- | ------------------------------------------------------------------ |
+| Pipeline Builder     | Defines how resilience pipelines are built.                        |
+| Pipeline Types       | Select the logical pipeline configuration to resolve.              |
+| Dependency Injection | Register and replace framework services.                           |
+| Metrics              | Integrate the framework metrics with observability infrastructure. |
+
+The internal strategy builder mechanism is used by the framework to configure the implemented strategies, but it is not currently exposed as a public extension API.
 
 ---
 
-# Extending the Pipeline Builder
+# Pipeline Builder
 
-Every resilience pipeline is created through the `IPipelineBuilder` abstraction.
+The framework exposes the `IPipelineBuilder` abstraction for creating resilience pipelines.
 
 ```text
-Application
+PipelineOptions
 
 ↓
 
@@ -35,142 +36,158 @@ IPipelineBuilder
 
 ↓
 
-Resilience Pipeline
+IResiliencePipeline
 
 ↓
 
 Protected Operation
 ```
 
-Because the builder is responsible for constructing pipelines, new strategies can be introduced without modifying existing application code.
+The default implementation is `PipelineBuilder`.
 
-Examples include:
+It receives the registered strategy builders, orders them, configures the Polly pipeline, and returns an `IResiliencePipeline`.
 
-* Bulkhead Isolation
-* Hedging
-* Rate Limiting
-* Fallback
-* Custom Strategies
+Applications can replace the registered `IPipelineBuilder` implementation through the standard Dependency Injection container when a different pipeline-building behavior is required.
 
 ---
 
-# Creating a Custom Strategy
+# Strategy Builders
 
-Custom strategies should encapsulate a single resilience concern.
+The framework internally uses `IStrategyBuilder` to configure resilience strategies.
 
-For example, a custom builder could configure a Bulkhead strategy.
+The current implementation registers:
 
-```csharp
-public sealed class BulkheadStrategyBuilder
-{
-    public void Configure(
-        ResiliencePipelineBuilder builder)
-    {
-        // Configure the strategy
-    }
-}
-```
+* Retry
+* Timeout
+* Circuit Breaker
 
-The strategy can then be integrated into the pipeline construction process.
-
-Keeping strategies isolated makes them easier to test, maintain, and evolve independently.
-
----
-
-# Registering Additional Pipeline Types
-
-Applications may define multiple independent resilience pipelines.
-
-For example:
+Each strategy builder defines an execution order and configures the Polly pipeline when its corresponding options are enabled.
 
 ```text
+Timeout
+
+↓
+
+Retry
+
+↓
+
+Circuit Breaker
+
+↓
+
+Protected Operation
+```
+
+`IStrategyBuilder` and the built-in strategy builders are internal implementation details. The provided code does not currently expose a public SDK mechanism for applications to register custom strategy builders.
+
+---
+
+# Pipeline Types
+
+Applications select pipelines using the `PipelineType` abstraction.
+
+The current predefined types are:
+
+```text
+Default
 Redis
-
+Sql
 Http
-
-Database
-
 Messaging
 ```
 
-Each pipeline can be configured with its own resilience policies while sharing the same programming model.
+Each type can have its own `PipelineOptions` configuration.
 
-This allows different workloads to apply resilience strategies appropriate to their operational characteristics.
+For example:
+
+```csharp
+builder.Services.AddCoreResilience(options =>
+{
+    options.AddPipeline(PipelineType.Redis, pipeline =>
+    {
+        pipeline.AddRetry(retry =>
+        {
+            retry.MaxRetryAttempts = 3;
+        });
+    });
+});
+```
+
+The `IResiliencePipelineProvider` resolves the configured pipeline by its `PipelineType`.
+
+The provided implementation does not include a mechanism for dynamically adding new values to the `PipelineType` enum.
 
 ---
 
 # Replacing Default Services
 
-All framework services are registered through the standard .NET dependency injection container.
+Framework services are registered through the standard .NET Dependency Injection container.
 
-Applications can replace framework implementations whenever customization is required.
+The current implementation registers `IPipelineBuilder` as a singleton.
 
-Example:
+Applications can replace framework registrations when customization of the pipeline-building process is required.
+
+For example:
 
 ```csharp
-services.Replace(
-    ServiceDescriptor.Singleton<
-        IPipelineBuilder,
-        CustomPipelineBuilder>());
+services.AddSingleton<IPipelineBuilder, CustomPipelineBuilder>();
 ```
 
-Replacing services should be reserved for advanced scenarios where the default implementation does not meet application requirements.
+Replacing framework services should be reserved for scenarios where the default implementation does not provide the required behavior.
 
 ---
 
-# Adding Custom Metrics
+# Metrics
 
-CoreSystem.Resilience publishes metrics through `System.Diagnostics.Metrics`.
+CoreSystem.Resilience publishes its built-in metrics through `System.Diagnostics.Metrics`.
 
-Applications can extend observability by recording additional metrics around pipeline execution.
+The current implementation records:
 
-Examples include:
+* Retry attempts.
+* Timeout events.
+* Circuit breaker state transitions.
+* Pipeline execution duration.
 
-* Business-specific counters
-* Tenant metrics
-* SLA measurements
-* Dependency-specific telemetry
-* Performance indicators
+The framework also provides an observability contributor that registers the `Core.Resilience` meter with OpenTelemetry.
 
-Custom metrics should complement the built-in metrics while preserving consistent naming conventions.
+Applications can combine these metrics with their own application-level telemetry.
 
 ---
 
-# Future Extension Points
+# Current Extensibility Boundaries
 
-The architecture has been designed to accommodate additional resilience strategies without breaking the public API.
+The current implementation provides extensibility primarily through abstractions and Dependency Injection.
 
-Potential future extensions include:
+The following capabilities are **not currently exposed as public extension mechanisms by the provided code**:
 
-* Bulkhead Strategy
-* Hedging Strategy
-* Fallback Strategy
-* Rate Limiter Strategy
-* Chaos Engineering Strategy
-* Adaptive Retry Strategy
+* Registering custom `IStrategyBuilder` implementations through a public API.
+* Adding new `PipelineType` values dynamically.
+* Registering custom resilience strategies through a dedicated strategy SDK.
+* Dynamically discovering external strategy implementations.
 
-Because pipelines are built compositionally, new strategies can be introduced independently of existing ones.
+New resilience strategies would currently require changes to the framework implementation itself.
 
 ---
 
 # Best Practices
 
-✅ Create one strategy per resilience concern.
+✅ Use `IResiliencePipeline` and `IResiliencePipelineProvider` instead of depending directly on Polly.
 
-✅ Prefer extending the pipeline over replacing framework services.
+✅ Configure separate pipelines for different infrastructure workloads.
 
-✅ Keep custom strategies stateless whenever possible.
+✅ Prefer the existing `IPipelineBuilder` abstraction before replacing framework services.
 
-✅ Avoid coupling resilience logic to business code.
+✅ Keep custom pipeline-building logic isolated from business code.
 
-✅ Reuse existing abstractions before introducing new extension points.
-
-✅ Use meaningful names for custom pipeline types.
+✅ Use the built-in metrics together with application-specific telemetry.
 
 ---
 
 # Summary
 
-CoreSystem.Resilience is designed to evolve through composition rather than modification.
+CoreSystem.Resilience provides a modular architecture based on public pipeline abstractions and Dependency Injection.
 
-By exposing well-defined extension points, the framework allows applications to introduce new resilience capabilities while preserving a stable public API and maintaining a clean separation between infrastructure and business logic.
+The framework internally composes Retry, Timeout, and Circuit Breaker through strategy builders, while `IResiliencePipeline` keeps consumers independent from the underlying Polly pipeline.
+
+The current implementation supports customization through the pipeline builder and Dependency Injection, but it does not yet expose a public mechanism for registering custom resilience strategies or dynamically extending `PipelineType`.

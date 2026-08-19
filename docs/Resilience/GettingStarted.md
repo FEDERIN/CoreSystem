@@ -1,8 +1,8 @@
 # 🚀 Getting Started
 
-Welcome to **CoreSystem.Resilience**, a production-ready resilience framework for **.NET 8**.
+Welcome to **CoreSystem.Resilience**, a resilience framework for **.NET 8**.
 
-This guide will help you configure your first resilience pipeline and execute protected operations in just a few minutes.
+This guide will help you configure your first resilience pipeline and execute protected operations in a few minutes.
 
 By the end of this guide you will know how to:
 
@@ -40,33 +40,39 @@ dotnet add package CoreSystem.Resilience
 Register **CoreSystem.Resilience** in the dependency injection container.
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
 
-        pipeline.AddTimeout(timeout =>
+        pipeline.Timeout = new TimeoutOptions
         {
-            timeout.Timeout = TimeSpan.FromSeconds(2);
-        });
+            Timeout = TimeSpan.FromSeconds(2)
+        };
 
-        pipeline.AddCircuitBreaker(circuit =>
+        pipeline.CircuitBreaker = new CircuitBreakerOptions
         {
-            circuit.FailureRatio = 0.5;
-        });
+            FailureRatio = 0.5
+        };
     });
 });
 ```
 
-This registers a named resilience pipeline containing:
+This registers a resilience pipeline containing:
 
 - Retry
 - Timeout
 - Circuit Breaker
+
+The strategies are applied in the framework-defined order:
+
+1. Timeout
+2. Retry
+3. Circuit Breaker
 
 ---
 
@@ -83,22 +89,26 @@ public sealed class RedisService(
 }
 ```
 
-The provider resolves the configured pipeline by its type.
+The provider resolves the configured pipeline by its `PipelineType`.
+
+If the requested pipeline has not been registered, the provider throws `ResiliencePipelineNotFoundException`.
 
 ---
 
 # ▶️ Step 4 — Execute an Operation
 
-Protect any asynchronous operation by executing it through the pipeline.
+Protect an asynchronous operation by executing it through the pipeline.
 
 ```csharp
 await _pipeline.ExecuteAsync(async cancellationToken =>
 {
-    await redisDatabase.StringGetAsync("products:1");
+    await redisDatabase.StringGetAsync(
+        "products:1",
+        cancellationToken);
 });
 ```
 
-The framework automatically applies every configured resilience strategy before executing the operation.
+The operation receives the `CancellationToken` provided by the resilience pipeline and should observe it.
 
 ---
 
@@ -109,27 +119,33 @@ Pipelines may contain one or more resilience strategies.
 Example:
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
 
-        pipeline.AddTimeout(timeout =>
+        pipeline.Timeout = new TimeoutOptions
         {
-            timeout.Timeout = TimeSpan.FromSeconds(5);
-        });
+            Timeout = TimeSpan.FromSeconds(5)
+        };
 
-        pipeline.AddCircuitBreaker(circuit =>
+        pipeline.CircuitBreaker = new CircuitBreakerOptions
         {
-            circuit.FailureRatio = 0.5;
-            circuit.MinimumThroughput = 10;
-        });
+            FailureRatio = 0.5,
+            MinimumThroughput = 10
+        };
     });
 });
 ```
 
-Strategies execute in the order they are registered.
+Only configured and enabled strategies are added to the pipeline.
+
+The core currently provides:
+
+- Retry
+- Timeout
+- Circuit Breaker

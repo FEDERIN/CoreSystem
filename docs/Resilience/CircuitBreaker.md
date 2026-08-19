@@ -1,31 +1,31 @@
 # ⚡ Circuit Breaker
 
-The **Circuit Breaker** strategy protects your application from repeatedly calling unhealthy dependencies.
+The **Circuit Breaker** strategy protects your application from repeatedly executing operations against an unhealthy dependency.
 
-Instead of continuously attempting operations that are likely to fail, the circuit breaker temporarily blocks new requests, giving the dependency time to recover.
+When the configured failure conditions are reached, the circuit opens and prevents new executions until the configured break duration has elapsed.
 
-CoreSystem.Resilience provides a simple configuration model while abstracting the underlying resilience implementation.
+CoreSystem.Resilience provides configuration for the circuit breaker while using Polly internally to execute the strategy.
 
 ---
 
 # Why Use a Circuit Breaker?
 
-Transient failures can usually be handled by retries.
+When a dependency repeatedly fails, continuing to execute operations can increase failures and resource consumption.
 
-However, when a dependency becomes unavailable for an extended period, continuously retrying requests can:
+The Circuit Breaker can temporarily stop executions after the configured failure threshold is reached.
 
-- Increase latency.
-- Waste system resources.
-- Overload the failing service.
-- Delay recovery.
+This helps:
 
-The Circuit Breaker prevents these scenarios by temporarily stopping requests after a configurable failure threshold has been reached.
+* Reduce repeated calls to an unhealthy dependency.
+* Fail fast while the circuit is open.
+* Allow the dependency time to recover.
+* Prevent unnecessary resource consumption.
 
 ---
 
 # How It Works
 
-The circuit breaker operates through three states.
+The circuit breaker uses three states.
 
 ```mermaid
 stateDiagram-v2
@@ -36,7 +36,7 @@ stateDiagram-v2
 
     Open --> HalfOpen : Break duration elapsed
 
-    HalfOpen --> Closed : Success
+    HalfOpen --> Closed : Successful execution
 
     HalfOpen --> Open : Failure
 ```
@@ -47,75 +47,65 @@ stateDiagram-v2
 
 ## Closed
 
-The circuit is operating normally.
+The circuit operates normally and allows executions.
 
-All requests are allowed to execute.
+Failures are evaluated according to the configured `FailureRatio`, `MinimumThroughput`, and `SamplingDuration`.
 
-If failures exceed the configured threshold, the circuit transitions to **Open**.
+When the configured failure conditions are reached, the circuit transitions to **Open**.
 
 ---
 
 ## Open
 
-The protected operation is temporarily blocked.
+The circuit prevents executions from reaching the protected operation.
 
-Incoming requests fail immediately without invoking the protected dependency.
-
-This prevents unnecessary load on an already unhealthy service.
+After the configured `BreakDuration` has elapsed, the circuit can transition to **Half-Open**.
 
 ---
 
 ## Half-Open
 
-After the configured break duration expires, the circuit enters the half-open state.
+The circuit allows an execution to determine whether the dependency has recovered.
 
-A limited number of requests are allowed through.
+If the execution succeeds, the circuit transitions to **Closed**.
 
-If they succeed, the circuit closes again.
-
-If they fail, the circuit returns to the open state.
+If it fails according to the configured exception handling rules, the circuit can return to **Open**.
 
 ---
 
 # Configuring a Circuit Breaker
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddCircuitBreaker(cb =>
+        pipeline.CircuitBreaker = new CircuitBreakerOptions
         {
-            cb.Enabled = true;
-
-            cb.FailureRatio = 0.5;
-
-            cb.MinimumThroughput = 10;
-
-            cb.SamplingDuration =
-                TimeSpan.FromSeconds(30);
-
-            cb.BreakDuration =
-                TimeSpan.FromSeconds(60);
-
-            cb.IncludeInnerExceptions = false;
-        });
+            Enabled = true,
+            FailureRatio = 0.5,
+            MinimumThroughput = 10,
+            SamplingDuration = TimeSpan.FromSeconds(30),
+            BreakDuration = TimeSpan.FromSeconds(15)
+        };
     });
 });
 ```
+
+The circuit breaker is only added when `CircuitBreakerOptions.Enabled` is `true`.
 
 ---
 
 # Configuration Options
 
-| Option | Description | Default |
-|----------|-------------|---------|
-| Enabled | Enables the strategy | true |
-| FailureRatio | Failure percentage required to open the circuit | 0.5 |
-| MinimumThroughput | Minimum number of executions before evaluation | 10 |
-| SamplingDuration | Evaluation time window | 30 seconds |
-| BreakDuration | Time the circuit remains open | 60 seconds |
-| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
+| Option                 | Description                                                              | Default      |
+| ---------------------- | ------------------------------------------------------------------------ | ------------ |
+| Enabled                | Enables or disables the circuit breaker strategy.                        | `true`       |
+| FailureRatio           | Failure ratio required to open the circuit.                              | `0.5`        |
+| MinimumThroughput      | Minimum number of executions before the failure ratio is evaluated.      | `10`         |
+| SamplingDuration       | Duration of the evaluation window.                                       | `30 seconds` |
+| BreakDuration          | Duration the circuit remains open before transitioning toward half-open. | `15 seconds` |
+| IncludeInnerExceptions | Inspects inner exceptions when matching handled exception types.         | `false`      |
 
 ---
 
@@ -130,17 +120,17 @@ flowchart TD
 
     Circuit --> Decision{"Circuit Open?"}
 
-    Decision -->|Yes| Reject["Reject Immediately"]
+    Decision -->|Yes| Reject["Reject Execution"]
 
     Decision -->|No| Execute["Execute Operation"]
 
-    Execute --> Success{"Succeeded?"}
+    Execute --> Result{"Failure?"}
 
-    Success -->|Yes| Complete["Return Result"]
+    Result -->|No| Complete["Return Result"]
 
-    Success -->|No| Failure["Record Failure"]
+    Result -->|Yes| Record["Record Failure"]
 
-    Failure --> Threshold{"Failure Threshold Reached?"}
+    Record --> Threshold{"Failure Conditions Reached?"}
 
     Threshold -->|No| Complete
 
@@ -149,28 +139,69 @@ flowchart TD
 
 ---
 
-# Typical Use Cases
+# Handling Exceptions
 
-The Circuit Breaker is recommended for operations involving external dependencies.
+The Circuit Breaker can be configured with specific exception types.
 
-Examples include:
+```csharp
+pipeline.CircuitBreaker = new CircuitBreakerOptions()
+    .Handle<HttpRequestException>();
+```
 
-- Redis
-- SQL Server
-- PostgreSQL
-- HTTP APIs
-- gRPC services
-- Message brokers
+Multiple exception types can also be configured.
+
+```csharp
+pipeline.CircuitBreaker = new CircuitBreakerOptions()
+    .Handle(
+        typeof<HttpRequestException>(),
+        typeof(TimeoutException));
+```
+
+Only the configured exception types are considered by the Circuit Breaker.
 
 ---
 
-# Combining with Retry
+## Matching Inner Exceptions
 
-Retry and Circuit Breaker complement each other.
+By default, exception matching only considers the exception being evaluated.
 
-A typical execution pipeline is:
+Set `IncludeInnerExceptions` to `true` when the handled exception may be wrapped by another exception.
+
+```csharp
+pipeline.CircuitBreaker = new CircuitBreakerOptions
+{
+    IncludeInnerExceptions = true
+}
+.Handle<TimeoutException>();
+```
+
+With this option enabled, the framework searches the exception chain and also handles matching exceptions contained in an `AggregateException`.
+
+---
+
+# Built-in Metrics
+
+CoreSystem.Resilience records Circuit Breaker state transitions through `System.Diagnostics.Metrics`.
+
+| Metric                                | Description                                   |
+| ------------------------------------- | --------------------------------------------- |
+| `core.resilience.circuit.opened`      | Number of transitions to the Open state.      |
+| `core.resilience.circuit.closed`      | Number of transitions to the Closed state.    |
+| `core.resilience.circuit.half_opened` | Number of transitions to the Half-Open state. |
+
+These metrics are recorded by the internal `ResilienceMetrics` component.
+
+---
+
+# Combining with Other Strategies
+
+The framework builds configured strategies in the following order:
 
 ```text
+Timeout
+
+↓
+
 Retry
 
 ↓
@@ -179,91 +210,33 @@ Circuit Breaker
 
 ↓
 
-Timeout
-
-↓
-
 Protected Operation
 ```
 
-In this configuration:
+This order is defined by the internal strategy ordering used by `PipelineBuilder`.
 
-- Retry handles transient failures.
-- Circuit Breaker protects against prolonged outages.
-- Timeout prevents indefinitely waiting operations.
-
----
-
-# Handling Exceptions
-
-Circuit Breaker only considers exception types explicitly registered using Handle<TException>()
-
-```csharp
-cb.Handle<HttpRequestException>();
-
-cb.IncludeInnerExceptions = true;
-```
-
----
-
-## Matching Inner Exceptions
-
-Some frameworks wrap transient exceptions before propagating them.
-
-Enable `IncludeInnerExceptions` to inspect the complete exception chain when matching handled exceptions.
-
-```csharp
-cb.Handle<HttpRequestException>();
-
-cb.IncludeInnerExceptions = true;
-```
-
----
-
-# Built-in Metrics
-
-CoreSystem.Resilience automatically records Circuit Breaker metrics.
-
-| Metric | Description |
-|---------|-------------|
-| `core.resilience.circuitbreaker.opened` | Total number of circuit openings. |
-| `core.resilience.circuitbreaker.closed` | Total number of successful recoveries. |
-| `core.resilience.circuitbreaker.half_opened` | Total half-open transitions. |
-
-These metrics are published using `System.Diagnostics.Metrics` and are compatible with OpenTelemetry.
+The Circuit Breaker can therefore be combined with Retry and Timeout when all three strategies are configured for the same pipeline.
 
 ---
 
 # Best Practices
 
-✅ Use Circuit Breaker for external dependencies.
+✅ Configure the failure ratio according to the expected behavior of the dependency.
 
-✅ Combine with Retry for transient failures.
+✅ Use an appropriate `MinimumThroughput` before evaluating failures.
 
-✅ Configure an appropriate failure ratio.
+✅ Choose a `BreakDuration` that gives the dependency an opportunity to recover.
 
-✅ Avoid very short break durations.
+✅ Configure handled exceptions explicitly when the default behavior is not sufficient.
 
-✅ Monitor circuit transitions using OpenTelemetry.
-
-✅ Enable IncludeInnerExceptions when dependencies wrap transient exceptions.
-
----
-
-# Common Mistakes
-
-❌ Using Circuit Breaker without Retry.
-
-❌ Opening the circuit after too few requests.
-
-❌ Setting an excessively long break duration.
-
-❌ Applying Circuit Breaker to CPU-bound or in-memory operations.
+✅ Use `IncludeInnerExceptions` when exceptions are wrapped by other components.
 
 ---
 
 # Summary
 
-The Circuit Breaker strategy improves application resilience by preventing repeated calls to unhealthy dependencies.
+The Circuit Breaker strategy prevents repeated executions when a configured failure threshold is reached.
 
-Combined with Retry and Timeout, it forms a robust execution pipeline capable of handling transient failures while protecting downstream services from overload.
+CoreSystem.Resilience configures the strategy through `CircuitBreakerOptions` and records Open, Closed, and Half-Open state transitions through its built-in metrics.
+
+When combined with **Timeout** and **Retry**, the strategies are applied in the framework's configured order: **Timeout → Retry → Circuit Breaker**.

@@ -25,11 +25,6 @@ internal static class IdempotencyExtension
 
         section.Bind(options);
 
-        if (!options.Enabled)
-        {
-            return services;
-        }
-
         section.ReplaceIfConfigured(
             "AllowedMethods",
             options.AllowedMethods,
@@ -48,6 +43,11 @@ internal static class IdempotencyExtension
 
         services.AddCoreIdempotency(
             _ => _.CopyFrom(options));
+
+        if (options.Enabled == false)
+        {
+            return services;
+        }
 
         ConfigureProvider(
             services,

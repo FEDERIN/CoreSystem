@@ -11,4 +11,9 @@
     <PackageReference Include="CoreSystem.Idempotency.Redis" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Core.Cache.Redis\Core.Cache.Redis.csproj" />
+    <ProjectReference Include="..\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj" />
+  </ItemGroup>
+
 </Project>
