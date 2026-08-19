@@ -1,33 +1,40 @@
-﻿using Core.Resilience.Options;
+﻿using Core.Resilience.Abstractions;
+using Core.Resilience.Internal;
+using Core.Resilience.Options;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Resilience.DependencyInjection;
 
-/// <summary>
-/// Provides extension methods for registering Core.Resilience.
-/// </summary>
 public static class ResilienceRegistration
 {
-    /// <summary>
-    /// Registers Core.Resilience services.
-    /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <param name="configure">Configures resilience pipelines.</param>
-    /// <returns>The service collection.</returns>
     public static IServiceCollection AddCoreResilience(
         this IServiceCollection services,
-        Action<ResilienceOptions>? configure = null)
+        Action<ResilienceOptions> configure)
     {
-        services.AddOptions<ResilienceOptions>();
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
 
-        if (configure is not null)
+        var options = new ResilienceOptions();
+
+        configure(options);
+
+        services.AddSingleton(options);
+
+        if (!options.Enabled)
         {
-            services.Configure(configure);
+            services.AddSingleton<
+                IResiliencePipelineProvider,
+                NoOpResiliencePipelineProvider>();
+
+            return services;
         }
+
+
 
         services.AddDiagnostics();
         services.AddPipelineServices();
         services.AddStrategies();
+
         return services;
     }
 }

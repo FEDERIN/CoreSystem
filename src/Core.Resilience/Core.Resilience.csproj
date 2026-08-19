@@ -9,17 +9,17 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Resilience</PackageId>
-		<Version>1.0.4</Version>
-		<AssemblyVersion>1.0.4</AssemblyVersion>
-		<FileVersion>1.0.4.0</FileVersion>
-		<InformationalVersion>1.0.4</InformationalVersion>
+		<Version>2.0.0</Version>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+		<InformationalVersion>2.0.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>
-			Production-ready resilience framework for .NET 8 with named pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry integration.
+			Production-ready resilience framework for .NET 8 with configurable resilience pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry metrics.
 		</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<PackageProjectUrl>https://federin.github.io/CoreSystem/Resilience</PackageProjectUrl>
-		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>
@@ -29,13 +29,13 @@
 			CircuitBreaker;
 			Polly;
 			OpenTelemetry;
-			CloudNative;
+			Metrics;
 			DependencyInjection;
-			Observability;
+			CloudNative;
 			.NET8
 		</PackageTags>
 		<PackageReleaseNotes>
-			Initial release with Retry, Timeout, Circuit Breaker, OpenTelemetry metrics, and named resilience pipelines.
+			Resilience pipelines with Retry, Timeout, Circuit Breaker, Dependency Injection, and OpenTelemetry metrics.
 		</PackageReleaseNotes>
 	</PropertyGroup>
 
@@ -50,8 +50,9 @@
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
-	<None Include="LICENSE" Pack="true" PackagePath="\" />
+
+	  <None Include="README.md" Pack="true" PackagePath="\" />
+	  <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>

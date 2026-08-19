@@ -1,68 +1,57 @@
 # 🔁 Retry Strategy
 
-The **Retry** strategy automatically retries failed operations when transient failures occur.
+The **Retry** strategy automatically retries failed operations when the configured exceptions occur.
 
-Transient failures are temporary issues that are expected to recover after a short period of time, such as network interruptions, temporary service unavailability, or brief infrastructure hiccups.
-
-Rather than immediately propagating these failures to the application, Retry gives the operation additional opportunities to succeed.
+Transient failures are temporary issues that may recover after a short delay. Retry gives the operation additional opportunities to succeed before the failure is propagated to the caller.
 
 ---
 
 # Why Retry?
 
-Modern distributed systems communicate with external dependencies such as:
+Operations that communicate with external dependencies can occasionally fail because of temporary conditions.
 
-- Redis
-- HTTP APIs
-- Databases
-- Message brokers
-- Cloud services
+Examples include:
 
-These dependencies can occasionally fail due to temporary conditions.
+* Network interruptions
+* Connection resets
+* Temporary service unavailability
+* Short-lived infrastructure failures
 
-Common examples include:
-
-- Network latency
-- Connection resets
-- Temporary overload
-- DNS resolution delays
-- Service restarts
-
-Retry helps applications recover automatically from these situations without requiring additional business logic.
+Retry can help applications recover from these failures without requiring retry logic to be implemented directly in business code.
 
 ---
 
 # Basic Configuration
 
-Enable Retry when configuring a pipeline.
+Configure Retry when building a resilience pipeline.
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
     });
 });
 ```
 
-In this example, the operation is executed up to **three additional times** before the failure is propagated to the caller.
+In this example, the operation can be executed up to **three additional times** when a configured exception is handled by the Retry strategy.
 
 ---
 
 # Configuration Options
 
-| Option | Description | Default |
-|----------|-------------|---------|
-| Enabled | Enables or disables the strategy. | `true` |
-| MaxRetryAttempts | Maximum retry attempts. | `3` |
-| Delay | Initial delay between retries. | `00:00:00.200` |
-| BackoffType | Delay calculation strategy. | Exponential |
-| UseJitter | Adds random delay to reduce retry storms. | `true` |
-| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
+| Option                 | Description                                                 | Default        |
+| ---------------------- | ----------------------------------------------------------- | -------------- |
+| Enabled                | Enables or disables the strategy.                           | `true`         |
+| MaxRetryAttempts       | Maximum number of retry attempts.                           | `3`            |
+| Delay                  | Initial delay between retries.                              | `00:00:00.200` |
+| BackoffType            | Delay calculation strategy.                                 | Exponential    |
+| UseJitter              | Adds randomization to retry delays.                         | `false`        |
+| IncludeInnerExceptions | Inspects inner exceptions when matching handled exceptions. | `false`        |
 
 ---
 
@@ -72,14 +61,14 @@ Retry supports multiple backoff algorithms.
 
 ## Constant
 
-Uses the same delay between every retry.
+Uses the same delay between retry attempts.
 
 ```text
-Attempt 1 → 2s
+Attempt 1 → 200ms
 
-Attempt 2 → 2s
+Attempt 2 → 200ms
 
-Attempt 3 → 2s
+Attempt 3 → 200ms
 ```
 
 Configure:
@@ -92,14 +81,14 @@ retry.BackoffType = BackoffType.Constant;
 
 ## Linear
 
-The delay increases linearly.
+The delay increases linearly between retry attempts.
 
 ```text
-Attempt 1 → 2s
+Attempt 1 → delay
 
-Attempt 2 → 4s
+Attempt 2 → increased delay
 
-Attempt 3 → 6s
+Attempt 3 → further increased delay
 ```
 
 Configure:
@@ -112,16 +101,14 @@ retry.BackoffType = BackoffType.Linear;
 
 ## Exponential
 
-The delay grows exponentially.
+The delay increases exponentially between retry attempts.
 
 ```text
-Attempt 1 → 2s
+Attempt 1 → delay
 
-Attempt 2 → 4s
+Attempt 2 → increased delay
 
-Attempt 3 → 8s
-
-Attempt 4 → 16s
+Attempt 3 → further increased delay
 ```
 
 Configure:
@@ -130,71 +117,86 @@ Configure:
 retry.BackoffType = BackoffType.Exponential;
 ```
 
-This is the recommended strategy for most production workloads.
+This is the default backoff type.
 
 ---
 
 # Jitter
 
-When many clients retry simultaneously, they can generate additional pressure on an already unhealthy dependency.
-
-Jitter introduces a small random delay to distribute retry attempts over time.
+Retry supports jitter through the `UseJitter` option.
 
 ```csharp
 retry.UseJitter = true;
 ```
 
-This significantly reduces retry storms in distributed systems.
+When enabled, Polly applies jitter to the configured retry delays.
+
+The default value in CoreSystem.Resilience is `false`.
 
 ---
 
 # Handling Exceptions
 
-By default, Retry handles the exceptions configured for the pipeline.
+By default, Retry does not add custom handled exceptions to the strategy.
 
-Additional exception types can be registered.
+Applications can configure the exception types that should trigger retries.
 
 ```csharp
-retry.Handle<TimeoutException>();
-
-retry.Handle<HttpRequestException>();
+pipeline.Retry = new RetryOptions
+{
+    MaxRetryAttempts = 3
+}
+.Handle<TimeoutException>()
+.Handle<HttpRequestException>();
 ```
 
 Multiple exception types can also be configured.
 
 ```csharp
-retry.Handle(
+pipeline.Retry = new RetryOptions
+{
+    MaxRetryAttempts = 3
+}
+.Handle(
     typeof(SocketException),
     typeof(IOException));
 ```
 
-Only configured exception types are considered retryable.
+Only configured exception types are considered by the custom Retry predicate.
 
 ---
 
 # Matching Inner Exceptions
 
-Some frameworks wrap transient exceptions before propagating them.
+Some operations may throw an exception that contains the actual transient exception as an inner exception.
 
-Examples include:
-
-- Entity Framework Core
-- HttpClient
-- Azure SDK
-- AWS SDK
-- gRPC
-
-Enable `IncludeInnerExceptions` to inspect the complete exception chain when matching handled exceptions.
+Enable `IncludeInnerExceptions` to inspect the exception chain.
 
 ```csharp
-pipeline.AddRetry(retry =>
+pipeline.Retry = new RetryOptions
 {
-    retry.Handle<NpgsqlException>();
+    MaxRetryAttempts = 3,
+    IncludeInnerExceptions = true
+}
+.Handle<TimeoutException>();
+```
 
-    retry.IncludeInnerExceptions = true;
-});
+The matcher checks nested inner exceptions and also handles exceptions contained inside an `AggregateException`.
+
+For example:
+
+```text
+InvalidOperationException
+└── HttpRequestException
+    └── TimeoutException
+```
+
+If `IncludeInnerExceptions` is enabled and `TimeoutException` is configured, the Retry strategy can handle the exception.
+
+When it is disabled, only the exception directly evaluated by the Retry predicate is considered.
 
 ---
+
 # Execution Flow
 
 ```mermaid
@@ -206,80 +208,94 @@ flowchart TD
 
     Success -->|Yes| Complete["Return Result"]
 
-    Success -->|No| Retry{"Retry Remaining?"}
+    Success -->|No| Handled{"Exception Handled?"}
+
+    Handled -->|No| Failure["Propagate Exception"]
+
+    Handled -->|Yes| Retry{"Retry Remaining?"}
 
     Retry -->|Yes| Delay["Wait"]
 
     Delay --> Operation
 
-    Retry -->|No| Failure["Throw Exception"]
+    Retry -->|No| Failure
+```
+
+The Retry strategy is configured as the second strategy in the CoreSystem.Resilience pipeline.
+
+The current strategy order is:
+
+```text
+Timeout
+
+↓
+
+Retry
+
+↓
+
+Circuit Breaker
+
+↓
+
+Protected Operation
 ```
 
 ---
 
 # Metrics
 
-Retry publishes metrics through `System.Diagnostics.Metrics`.
+Retry records the number of retry attempts using `System.Diagnostics.Metrics`.
 
-| Metric | Description |
-|----------|-------------|
-| `core.resilience.retry.attempts` | Total retry attempts. |
-| `core.resilience.retry.successes` | Successful executions after one or more retries. |
-| `core.resilience.retry.failures` | Operations that failed after all retry attempts. |
+| Metric                           | Description                                                    |
+| -------------------------------- | -------------------------------------------------------------- |
+| `core.resilience.retry.attempts` | Total number of retry attempts executed by the Retry strategy. |
 
-These metrics are compatible with OpenTelemetry exporters such as:
-
-- Prometheus
-- Grafana
-- Azure Monitor
-- OTLP
+The metric is recorded each time the Retry strategy performs a retry.
 
 ---
 
 # Best Practices
 
-✅ Retry only transient failures.
+✅ Retry only exceptions that are appropriate for retry.
 
-✅ Use exponential backoff for production systems.
+✅ Keep the number of retry attempts reasonable.
 
-✅ Enable jitter to prevent retry storms.
+✅ Use exponential backoff when appropriate.
 
-✅ Keep the number of retries reasonable.
+✅ Consider enabling jitter when multiple clients may retry simultaneously.
 
-✅ Combine Retry with Circuit Breaker for unstable dependencies.
+✅ Use `IncludeInnerExceptions` when wrapped exceptions need to be matched.
 
-✅ Enable IncludeInnerExceptions when using frameworks that wrap transient exceptions.
+✅ Combine Retry with Timeout and Circuit Breaker when the workload requires multiple resilience controls.
 
 ---
 
 # Common Scenarios
 
-Retry is recommended for:
+Retry can be useful for operations involving potentially transient failures, such as:
 
-- Redis operations
-- HTTP client requests
-- Database connections
-- Cloud APIs
-- Message brokers
+* Redis operations
+* HTTP requests
+* Database operations
+* Cloud services
+* Message brokers
 
-Retry is generally **not** recommended for:
+Retry should not automatically be applied to every exception. Validation errors, authentication failures, authorization failures, and business rule violations should only be retried when the application's specific behavior requires it.
 
-- Validation errors
-- Authentication failures
-- Authorization failures
-- Business rule violations
-- Non-idempotent operations unless carefully designed
-
-Retry is especially useful for:
-
-- EF Core transient database failures
-- Redis
-- HttpClient
-- Cloud SDKs
 ---
 
 # Summary
 
-Retry improves application resilience by automatically recovering from temporary failures.
+The Retry strategy provides configurable retries for selected exception types.
 
-When combined with **Timeout** and **Circuit Breaker**, it helps build robust, cloud-native applications while keeping resilience concerns separate from business logic.
+CoreSystem.Resilience supports:
+
+* Configurable retry attempts.
+* Constant, linear, and exponential backoff.
+* Optional jitter.
+* Custom handled exception types.
+* Optional matching of nested and aggregate exceptions.
+* Retry attempt metrics.
+
+Retry is executed after Timeout and before Circuit Breaker in the current resilience pipeline.

@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Core.Cache\Core.Cache.csproj" />
-  </ItemGroup>
-
 </Project>

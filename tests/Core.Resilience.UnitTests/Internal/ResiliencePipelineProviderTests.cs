@@ -27,7 +27,7 @@ public sealed class ResiliencePipelineProviderTests
             .Returns(pipeline.Object);
 
         var registry = new PipelineRegistry(
-            Microsoft.Extensions.Options.Options.Create(options),
+            options,
             builder.Object);
 
         var provider = new ResiliencePipelineProvider(registry);
@@ -48,7 +48,7 @@ public sealed class ResiliencePipelineProviderTests
         var builder = new Mock<IPipelineBuilder>();
 
         var registry = new PipelineRegistry(
-            Microsoft.Extensions.Options.Options.Create(options),
+            options,
             builder.Object);
 
         var provider = new ResiliencePipelineProvider(registry);

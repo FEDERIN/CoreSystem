@@ -1,47 +1,43 @@
 ﻿using Core.Cache.Abstractions;
-using Core.Cache.Options;
+using Core.Cache.Storage.Abstractions;
 using Core.Cache.Storage.Memory;
-using Core.Cache.Storage.Redis;
 
 namespace Core.Cache.Storage;
 
 internal sealed class CacheStorageResolver : ICacheStorageResolver
 {
     public CacheStorageResolver(
-        CacheOptions options,
         MemoryStorage memoryStorage,
-        RedisStorage? redisStorage = null)
+        IEnumerable<IExternalCacheStorage> externalStorages)
     {
-        switch (options.DefaultProvider)
+        ArgumentNullException.ThrowIfNull(memoryStorage);
+        ArgumentNullException.ThrowIfNull(externalStorages);
+
+        var externalStorage = externalStorages.ToList();
+
+        if (externalStorage.Count > 1)
         {
-            case CacheProviderType.Redis:
-
-                if (redisStorage is null)
-                {
-                    throw new InvalidOperationException(
-                        "Redis is configured as the default provider, but Redis is not registered.");
-                }
-
-                Primary = redisStorage;
-                Fallback = memoryStorage;
-                HasFallback = true;
-
-                break;
-
-            case CacheProviderType.Memory:
-            default:
-
-                Primary = memoryStorage;
-                Fallback = memoryStorage;
-                HasFallback = false;
-
-                break;
+            throw new InvalidOperationException(
+                "Only one external cache storage can be registered as the primary cache storage.");
         }
+
+        if (externalStorage.Count == 0)
+        {
+            Primary = memoryStorage;
+            Fallback = null;
+            HasFallback = false;
+
+            return;
+        }
+
+        Primary = externalStorage[0];
+        Fallback = memoryStorage;
+        HasFallback = true;
     }
 
     public ICacheStorage Primary { get; }
 
-    public ICacheStorage Fallback { get; }
+    public ICacheStorage? Fallback { get; }
 
     public bool HasFallback { get; }
 }

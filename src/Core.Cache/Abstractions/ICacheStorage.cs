@@ -31,6 +31,7 @@ internal interface ICacheStorage
     Task<T?> GetOrAddAsync<T>(
         string key,
         Func<CancellationToken, Task<T>> factory,
+        CacheEntryOptions? options = null,
         TimeSpan? expiration = null,
         string[]? tags = null,
         CancellationToken ct = default);

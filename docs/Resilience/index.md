@@ -2,7 +2,7 @@
 
 > **Production-ready resilience framework for .NET 8**
 
-CoreSystem.Resilience provides a clean abstraction over resilience strategies for .NET applications. It enables applications to define named resilience pipelines while keeping business code independent from the underlying resilience implementation.
+CoreSystem.Resilience provides a clean abstraction over resilience strategies for .NET applications. It enables applications to configure resilience pipelines while keeping business code independent from the underlying resilience implementation.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Resilience?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Resilience?style=for-the-badge)
@@ -13,13 +13,13 @@ CoreSystem.Resilience provides a clean abstraction over resilience strategies fo
 
 ## 📚 Table of Contents
 
-- 🚀 Getting Started
-- 🏗️ Architecture
-- 🧩 Core Components
-- ⚙️ Pipeline Configuration
-- 🔁 Retry Strategy
-- ⏱️ Timeout Strategy
-- 🔌 Circuit Breaker Strategy
-- 📊 Observability
-- 🧩 Extensibility
-- 🗺️ Roadmap
+* 🚀 Getting Started
+* 🏗️ Architecture
+* 🧩 Core Components
+* ⚙️ Pipeline Configuration
+* 🔁 Retry Strategy
+* ⏱️ Timeout Strategy
+* 🔌 Circuit Breaker Strategy
+* 📊 Observability
+* 🧩 Extensibility
+* 🗺️ Roadmap

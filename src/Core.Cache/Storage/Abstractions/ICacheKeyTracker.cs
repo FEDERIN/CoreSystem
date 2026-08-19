@@ -1,6 +1,6 @@
 ﻿namespace Core.Cache.Storage.Abstractions;
 
-public interface ICacheKeyTracker
+internal interface ICacheKeyTracker
 {
     void Track(string key);
     void Untrack(string key);

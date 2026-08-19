@@ -9,6 +9,9 @@ internal sealed class LoggingBehavior(
     ILogger<LoggingBehavior> logger)
     : ICacheBehavior
 {
+    public int Order =>
+        (int)CacheBehaviorOrder.Logging;
+
     public async Task InvokeAsync(CacheContext context, CacheDelegate next)
     {
         logger.LogDebug(

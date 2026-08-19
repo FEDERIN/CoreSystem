@@ -8,23 +8,31 @@ You'll learn how to:
 * Configure resilience pipelines
 * Configure Retry, Timeout, and Circuit Breaker strategies
 * Register multiple pipelines
-* Configure the framework using `appsettings.json`
+* Configure handled exceptions
 * Follow recommended production settings
 
 ---
 
 # Configuration Overview
 
-The framework is configured through the `AddResilience()` extension.
+The framework is configured through the `AddCoreResilience()` extension.
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     // Configure your resilience pipelines here.
 });
 ```
 
 A resilience pipeline is identified by a `PipelineType` and can contain one or more resilience strategies.
+
+The available pipeline types provided by the core are:
+
+* `Default`
+* `Redis`
+* `Sql`
+* `Http`
+* `Messaging`
 
 ---
 
@@ -33,7 +41,7 @@ A resilience pipeline is identified by a `PipelineType` and can contain one or m
 Register a new pipeline by specifying its type and configuring the desired strategies.
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
@@ -42,20 +50,22 @@ builder.Services.AddResilience(options =>
             retry.MaxRetryAttempts = 3;
         });
 
-        pipeline.AddTimeout(timeout =>
+        pipeline.Timeout = new TimeoutOptions
         {
-            timeout.Timeout = TimeSpan.FromSeconds(2);
-        });
+            Timeout = TimeSpan.FromSeconds(2)
+        };
 
-        pipeline.AddCircuitBreaker(circuitBreaker =>
+        pipeline.CircuitBreaker = new CircuitBreakerOptions
         {
-            circuitBreaker.FailureRatio = 0.5;
-        });
+            FailureRatio = 0.5
+        };
     });
 });
 ```
 
-The framework builds the pipeline during application startup and registers it for dependency injection.
+Only strategies that are configured in `PipelineOptions` are added to the pipeline.
+
+The framework builds the configured pipelines when the pipeline registry is initialized.
 
 ---
 
@@ -64,22 +74,22 @@ The framework builds the pipeline during application startup and registers it fo
 Applications can register multiple independent resilience pipelines.
 
 ```csharp
-builder.Services.AddResilience(options =>
+builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
     });
 
     options.AddPipeline(PipelineType.Http, pipeline =>
     {
-        pipeline.AddTimeout(timeout =>
+        pipeline.Timeout = new TimeoutOptions
         {
-            timeout.Timeout = TimeSpan.FromSeconds(10);
-        });
+            Timeout = TimeSpan.FromSeconds(10)
+        };
     });
 });
 ```
@@ -90,35 +100,52 @@ Each pipeline can be resolved independently through `IResiliencePipelineProvider
 
 # Retry Configuration
 
-Configure retry behavior for transient failures.
+Configure retry behavior for selected exceptions.
 
 ```csharp
-pipeline.AddRetry(retry =>
+pipeline.Retry = new RetryOptions
 {
-    retry.Enabled = true;
+    Enabled = true,
 
-    retry.MaxRetryAttempts = 3;
+    MaxRetryAttempts = 3,
 
-    retry.Delay = TimeSpan.FromMilliseconds(500);
+    Delay = TimeSpan.FromMilliseconds(200),
 
-    retry.BackoffType = BackoffType.Exponential;
+    BackoffType = BackoffType.Exponential,
 
-    retry.UseJitter = true;
+    UseJitter = false,
 
-    retry.IncludeInnerExceptions = false;
-});
+    IncludeInnerExceptions = false
+};
+```
+
+Handled exceptions can be added using `Handle<TException>()` or `Handle(params Type[])`.
+
+```csharp
+pipeline.Retry = new RetryOptions
+{
+    MaxRetryAttempts = 3
+}
+.Handle<TimeoutException>()
+.Handle<HttpRequestException>();
 ```
 
 ## Configuration Options
 
-| Option           | Description                      | Default     |
-| ---------------- | -------------------------------- | ----------- |
-| Enabled          | Enables or disables the strategy | `true`      |
-| MaxRetryAttempts | Maximum retry attempts           | `3`         |
-| Delay            | Initial retry delay              | `500 ms`    |
-| BackoffType      | Delay calculation strategy       | Exponential |
-| UseJitter        | Randomizes retry delays          | `true`      |
-| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
+| Option                 | Description                                        | Default     |
+| ---------------------- | -------------------------------------------------- | ----------- |
+| Enabled                | Enables or disables the strategy                   | `true`      |
+| MaxRetryAttempts       | Maximum retry attempts                             | `3`         |
+| Delay                  | Initial retry delay                                | `200 ms`    |
+| BackoffType            | Delay calculation strategy                         | Exponential |
+| UseJitter              | Enables retry jitter                               | `false`     |
+| IncludeInnerExceptions | Includes inner and nested exceptions when matching | `false`     |
+
+Supported backoff types are:
+
+* `Constant`
+* `Linear`
+* `Exponential`
 
 ---
 
@@ -127,178 +154,137 @@ pipeline.AddRetry(retry =>
 Configure the maximum execution time allowed for protected operations.
 
 ```csharp
-pipeline.AddTimeout(timeout =>
+pipeline.Timeout = new TimeoutOptions
 {
-    timeout.Enabled = true;
-
-    timeout.Timeout = TimeSpan.FromSeconds(5);
-});
+    Timeout = TimeSpan.FromSeconds(5)
+};
 ```
 
 ## Configuration Options
 
-| Option  | Description                      | Default      |
-| ------- | -------------------------------- | ------------ |
-| Enabled | Enables or disables the strategy | `true`       |
-| Timeout | Maximum execution time           | `30 seconds` |
+| Option  | Description            | Default      |
+| ------- | ---------------------- | ------------ |
+| Timeout | Maximum execution time | `30 seconds` |
+
+`TimeoutOptions` validates that the configured timeout is greater than zero.
+
+Unlike Retry and Circuit Breaker, Timeout does not have an `Enabled` property. The timeout strategy is configured when `PipelineOptions.Timeout` contains a `TimeoutOptions` instance.
 
 ---
 
 # Circuit Breaker Configuration
 
-Protect downstream services by temporarily blocking requests after repeated failures.
+Protect downstream operations by temporarily blocking requests after repeated failures.
 
 ```csharp
-pipeline.AddCircuitBreaker(circuitBreaker =>
+pipeline.CircuitBreaker = new CircuitBreakerOptions
 {
-    circuitBreaker.Enabled = true;
+    Enabled = true,
 
-    circuitBreaker.FailureRatio = 0.5;
+    FailureRatio = 0.5,
 
-    circuitBreaker.MinimumThroughput = 10;
+    MinimumThroughput = 10,
 
-    circuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
+    SamplingDuration = TimeSpan.FromSeconds(30),
 
-    circuitBreaker.SamplingDuration = TimeSpan.FromMinutes(1);
+    BreakDuration = TimeSpan.FromSeconds(15),
 
-    circuitBreaker.IncludeInnerExceptions = false;
-});
+    IncludeInnerExceptions = false
+};
+```
+
+Handled exceptions can be configured in the same way as Retry.
+
+```csharp
+pipeline.CircuitBreaker = new CircuitBreakerOptions
+{
+    FailureRatio = 0.5
+}
+.Handle<HttpRequestException>()
+.Handle<TimeoutException>();
 ```
 
 ## Configuration Options
 
-| Option            | Description                                  | Default      |
-| ----------------- | -------------------------------------------- | ------------ |
-| Enabled           | Enables or disables the strategy             | `true`       |
-| FailureRatio      | Failure threshold before opening the circuit | `0.5`        |
-| MinimumThroughput | Minimum requests before evaluation           | `10`         |
-| SamplingDuration  | Evaluation window                            | `1 minute`   |
-| BreakDuration     | Time the circuit remains open                | `30 seconds` |
-| IncludeInnerExceptions| Inspects the complete exception chain when matching handled exceptions | `false` |
+| Option                 | Description                                        | Default      |
+| ---------------------- | -------------------------------------------------- | ------------ |
+| Enabled                | Enables or disables the strategy                   | `true`       |
+| FailureRatio           | Failure threshold before opening the circuit       | `0.5`        |
+| MinimumThroughput      | Minimum executions before evaluation               | `10`         |
+| SamplingDuration       | Evaluation window                                  | `30 seconds` |
+| BreakDuration          | Time the circuit remains open                      | `15 seconds` |
+| IncludeInnerExceptions | Includes inner and nested exceptions when matching | `false`      |
 
 ---
 
 # Handling Exceptions
 
-Each strategy can be configured to handle only specific exception types.
+Retry and Circuit Breaker can be configured to handle specific exception types.
 
 ```csharp
-pipeline.AddRetry(retry =>
+pipeline.Retry = new RetryOptions
 {
-    retry.Handle<TimeoutException>();
-
-    retry.Handle<HttpRequestException>();
-});
+    MaxRetryAttempts = 3
+}
+.Handle<TimeoutException>();
 ```
 
-Or register multiple exception types at once.
+Multiple exception types can also be configured.
 
 ```csharp
-retry.Handle(
-    typeof(HttpRequestException),
+pipeline.Retry = new RetryOptions
+{
+    MaxRetryAttempts = 3
+}
+.Handle(
+    typeof<HttpRequestException>(),
     typeof(TimeoutException));
 ```
 
-Only matching exceptions will trigger the configured strategy.
+Only the configured exception types are considered by the strategy.
 
 ---
 
 ## Matching Inner Exceptions
 
-Some frameworks wrap the original exception before propagating it.
+By default, exception matching checks the exception itself.
 
-Examples include:
-
-- Entity Framework Core
-- HttpClient
-- Azure SDK
-- AWS SDK
-- gRPC
-
-Enable `IncludeInnerExceptions` to inspect the complete exception chain when matching handled exceptions.
+When `IncludeInnerExceptions` is enabled, the framework also checks inner and nested exceptions, including exceptions contained in an `AggregateException`.
 
 ```csharp
-pipeline.AddRetry(retry =>
+pipeline.Retry = new RetryOptions
 {
-    retry.Handle<NpgsqlException>();
-
-    retry.IncludeInnerExceptions = true;
-});
-```
-
-With this configuration, the retry strategy will also match exceptions wrapped by other frameworks, for example:
-
-```text
-InvalidOperationException
-└── NpgsqlException
-    └── SocketException
-```
-
-The same option is available for the Circuit Breaker strategy.
-
-```csharp
-pipeline.AddCircuitBreaker(circuitBreaker =>
-{
-    circuitBreaker.Handle<HttpRequestException>();
-
-    circuitBreaker.IncludeInnerExceptions = true;
-});
-```
-
-> By default, `IncludeInnerExceptions` is `false`, preserving Polly's standard exception matching behavior.
-----
-# Using appsettings.json
-
-The framework supports configuration binding using the .NET Options pattern.
-
-Example:
-
-```json
-{
-  "Core": {
-    "Resilience": {
-      "Pipelines": {
-        "Redis": {
-          "Retry": {
-            "Enabled": true,
-            "MaxRetryAttempts": 3,
-            "Delay": "00:00:00.500",
-            "BackoffType": "Exponential",
-            "UseJitter": true,
-            "IncludeInnerExceptions": true
-          },
-          "Timeout": {
-            "Enabled": true,
-            "Timeout": "00:00:05"
-          },
-          "CircuitBreaker": {
-            "Enabled": true,
-            "FailureRatio": 0.5,
-            "MinimumThroughput": 10,
-            "SamplingDuration": "00:01:00",
-            "BreakDuration": "00:00:30",
-            "IncludeInnerExceptions": true
-          }
-        }
-      }
-    }
-  }
+    IncludeInnerExceptions = true
 }
+.Handle<TimeoutException>();
 ```
 
-Bind the configuration.
+The same option is available for Circuit Breaker.
 
 ```csharp
-builder.Services
-    .AddOptions<ResilienceOptions>()
-    .Bind(builder.Configuration.GetSection("Core:Resilience"))
-    .PostConfigure(options =>
-    {
-        options.ResolveHandledExceptions();
-    });
-
-builder.Services.AddResilience();
+pipeline.CircuitBreaker = new CircuitBreakerOptions
+{
+    IncludeInnerExceptions = true
+}
+.Handle<HttpRequestException>();
 ```
+
+---
+
+# Disabling Resilience
+
+Resilience can be disabled globally through `ResilienceOptions.Enabled`.
+
+```csharp
+builder.Services.AddCoreResilience(options =>
+{
+    options.Enabled = false;
+});
+```
+
+When resilience is disabled, the framework registers a `NoOpResiliencePipelineProvider`.
+
+The returned pipeline executes the supplied operation directly without applying Retry, Timeout, or Circuit Breaker strategies.
 
 ---
 
@@ -324,43 +310,44 @@ await _pipeline.ExecuteAsync(async cancellationToken =>
 });
 ```
 
----
+If the requested pipeline has not been registered, `IResiliencePipelineProvider` throws `ResiliencePipelineNotFoundException`.
 
+---
 
 ## Staging
 
-| Strategy        | Recommendation |
-| --------------- | -------------- |
-| Retry           | 3 attempts     |
-| Timeout         | 10 seconds     |
-| Circuit Breaker | Enabled        |
+| Strategy        | Recommendation                                                      |
+| --------------- | ------------------------------------------------------------------- |
+| Retry           | Configure according to the dependency                               |
+| Timeout         | Based on expected execution time                                    |
+| Circuit Breaker | Configure when repeated failures should temporarily block execution |
 
 ---
 
 ## Production
 
-| Strategy        | Recommendation                  |
-| --------------- | ------------------------------- |
-| Retry           | Exponential backoff with jitter |
-| Timeout         | Based on SLA                    |
-| Circuit Breaker | Enabled                         |
-| Metrics         | Enabled                         |
-| OpenTelemetry   | Enabled                         |
+| Strategy        | Recommendation                                                  |
+| --------------- | --------------------------------------------------------------- |
+| Retry           | Exponential backoff with appropriate delay                      |
+| Timeout         | Based on the expected execution time                            |
+| Circuit Breaker | Configure for dependencies where failure protection is required |
+| Metrics         | Use the built-in resilience metrics                             |
+| OpenTelemetry   | Integrate through the framework's observability registration    |
 
 ---
 
 # Best Practices
 
-✅ Create one pipeline per infrastructure dependency.
+✅ Configure one pipeline for each infrastructure workload.
 
-✅ Configure retries only for transient failures.
+✅ Configure retries only for exceptions that should be retried.
 
-✅ Always combine Retry with Timeout.
+✅ Configure a timeout when an operation should have a maximum execution time.
 
-✅ Enable Circuit Breaker for external services.
+✅ Use Circuit Breaker when repeated failures should temporarily stop execution.
 
-✅ Use exponential backoff with jitter.
+✅ Use exponential backoff when appropriate for retry workloads.
 
-✅ Monitor resilience metrics using OpenTelemetry.
+✅ Enable `IncludeInnerExceptions` when wrapped exceptions need to be considered.
 
-✅ Keep pipeline configurations consistent across environments.
+✅ Pass the cancellation token supplied to `ExecuteAsync` to the protected operation.

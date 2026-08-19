@@ -1,6 +1,4 @@
-﻿using Core.Cache.Storage;
-
-namespace Core.Cache.Pipeline.Contexts;
+﻿namespace Core.Cache.Pipeline.Contexts;
 
 public sealed class SetCacheContext<T> : CacheContext
 {

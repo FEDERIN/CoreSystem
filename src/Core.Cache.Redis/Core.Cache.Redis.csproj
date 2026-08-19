@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+		<PackageId>CoreSystem.Cache.Redis</PackageId>
+		<Version>2.0.0</Version>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+		<InformationalVersion>2.0.0</InformationalVersion>
+
+		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
+
+		<Description>
+			Redis external cache provider for CoreSystem.Cache on .NET 8, with tag-based invalidation, distributed locking, health checks, and optional resilience integration.
+		</Description>
+
+		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+		<PackageProjectUrl>https://federin.github.io/CoreSystem/Cache/Redis</PackageProjectUrl>
+
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+		<PackageTags>
+			Distributed;Cache;Redis;Caching;CacheAside;DistributedLock;HealthChecks;Resilience;.NET8;CloudNative
+		</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+    	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+	
+	<ItemGroup>	
+		<InternalsVisibleTo Include="Core.Cache.Redis.UnitTests" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="CoreSystem.Cache.Rehydration" />
+	  <PackageReference Include="CoreSystem.Redis" />
+	</ItemGroup>
+</Project>

@@ -1,18 +1,16 @@
 # ⚙️ Configuration
 
-This guide describes every configuration option available in
+This guide describes the configuration options available in
 **CoreSystem.Cache**.
 
 You'll learn how to configure:
 
-- Cache providers
+- Cache provider behavior
 - Serialization
 - Default expiration
-- Redis connectivity
-- Memory-only mode
+- Cache key instance name
 - HTTP cache settings
-- Cache rehydration
-- appsettings.json integration
+- Cache entry rehydration options
 
 ---
 
@@ -33,92 +31,40 @@ builder.Services.AddCoreCache(options =>
 
 | Option | Description | Default |
 |----------|-------------|---------|
-| DefaultProvider | Default cache provider | Redis |
-| InstanceName | Cache key prefix | null |
+| Enabled | Enables or disables the cache implementation | `true` |
+| InstanceName | Optional prefix for cache keys | `null` |
 | DefaultExpiration | Default cache lifetime | 30 minutes |
-| SerializerType | Serialization format | Json |
-| MaxCacheableSize | Maximum cached HTTP response | 1 MB |
-| RehydrationInterval | Redis recovery interval | 30 seconds |
+| SerializerType | Serialization format | JSON |
+| MaxCacheableSize | Maximum cache entry size | 1 MB |
 
 ---
 
-# Choosing a Cache Provider
+# Enable or Disable the Cache
 
-The framework supports multiple cache providers.
-
-## Redis
-
-Recommended for production workloads.
+The cache can be disabled while keeping the same `ICoreCache` abstraction available.
 
 ```csharp
 builder.Services.AddCoreCache(options =>
 {
-    options.Redis.Configuration = redis =>
-    {
-        redis.EndPoints.Add("localhost:6379");
-    };
+    options.Enabled = false;
 });
 ```
 
-### When to use Redis
+When disabled, `NoOpCoreCache` is registered.
 
-- Distributed applications
-- Multiple application instances
-- Kubernetes
-- Cloud deployments
-
----
-
-## Memory
-
-Ideal for:
-
-- Local development
-- Unit tests
-- Small applications
-
-```csharp
-builder.Services.AddCoreCache(options =>
-{
-    options.Redis.Enabled = false;
-});
-```
-
----
-
-# Default Provider
-
-Choose which provider the framework should use.
-
-```csharp
-options.DefaultProvider =
-    CacheProviderType.Redis;
-```
-
-or
-
-```csharp
-options.DefaultProvider =
-    CacheProviderType.Memory;
-```
+`GetOrAddAsync()` continues to execute the factory, while cache read, write, remove, and invalidation operations become no-ops.
 
 ---
 
 # Instance Name
 
-Prefixes every cache key.
+Prefixes cache keys with an application or environment identifier.
 
 ```csharp
 options.InstanceName = "CatalogApi";
 ```
 
-Example generated key:
-
-```text
-CatalogApi:products:15
-```
-
-Using an instance name is recommended whenever multiple applications share the same Redis server.
+The option is intended to help avoid key collisions when multiple applications share the same cache infrastructure.
 
 ---
 
@@ -133,13 +79,20 @@ options.DefaultExpiration =
 
 Individual cache operations can override this value.
 
+```csharp
+await cache.SetAsync(
+    "products",
+    products,
+    TimeSpan.FromMinutes(5));
+```
+
 ---
 
 # Serialization
 
-Choose the serializer that best fits your application.
+Choose the serializer used by the cache.
 
-Serialization is provided by CoreSystem.Serialization
+Serialization is provided by **CoreSystem.Serialization**.
 
 ## JSON
 
@@ -148,11 +101,7 @@ options.SerializerType =
     SerializerType.Json;
 ```
 
-Recommended for:
-
-- Simplicity
-- Debugging
-- Compatibility
+JSON is the default serializer.
 
 ---
 
@@ -163,11 +112,6 @@ options.SerializerType =
     SerializerType.MessagePack;
 ```
 
-Recommended for:
-
-- High-performance APIs
-- Reduced payload size
-
 ---
 
 ## Protocol Buffers
@@ -177,40 +121,11 @@ options.SerializerType =
     SerializerType.Protobuf;
 ```
 
-Recommended for:
-
-- Cross-platform communication
-- Compact binary serialization
-
----
-
-# Redis Configuration
-
-The framework uses the native
-`StackExchange.Redis.ConfigurationOptions`.
-
-Example:
-
-```csharp
-options.Redis.Configuration = redis =>
-{
-    redis.EndPoints.Add("localhost:6379");
-
-    redis.Password = "...";
-
-    redis.Ssl = true;
-
-    redis.ConnectTimeout = 5000;
-
-    redis.AbortOnConnectFail = false;
-};
-```
-
 ---
 
 # HTTP Cache
 
-Maximum response size stored by the middleware.
+Configure the maximum allowed cache entry size.
 
 ```csharp
 options.MaxCacheableSize =
@@ -223,60 +138,35 @@ Default:
 1 MB
 ```
 
----
-
-# Cache Rehydration
-
-Configure how frequently the framework checks whether Redis has recovered.
-
-```csharp
-options.RehydrationInterval =
-    TimeSpan.FromSeconds(30);
-```
+The option is part of the HTTP/cache configuration, while the current `HttpCacheHandler` uses the configured `CacheOptions` for expiration and response caching behavior.
 
 ---
 
-# Using appsettings.json
+# Cache Entry Rehydration
 
-```json
-{
-  "Cache": {
-    "DefaultProvider": "Redis",
+`CacheEntryOptions` provides the `TrackForRehydration` flag.
 
-    "InstanceName": "CatalogApi",
-
-    "DefaultExpiration": "00:30:00",
-
-    "SerializerType": "MessagePack",
-
-    "Redis": {
-      "Enabled": true,
-      "Host": "localhost:6379",
-      "Password": ""
-    }
-  }
-}
-```
-
-Bind the configuration:
+The fallback pipeline uses:
 
 ```csharp
-var section =
-    builder.Configuration.GetSection("Cache");
-
-builder.Services.AddCoreCache(options =>
-{
-    section.Bind(options);
-
-    options.Redis.Configuration = redis =>
-    {
-        redis.EndPoints.Add(section["Redis:Host"]!);
-
-        redis.Password =
-            section["Redis:Password"];
-    };
-});
+CacheEntryOptions.Rehydrate
 ```
+
+when an operation is redirected from the primary storage to the fallback storage.
+
+This marks the entry for rehydration when the external provider becomes available again.
+
+The rehydration process itself belongs to the external-provider/recovery components and is not configured directly through the current `CacheOptions` class.
+
+---
+
+# External Providers
+
+`CoreSystem.Cache` can operate with its Memory provider without an external cache provider.
+
+When an external provider is registered, it becomes the primary storage and Memory is used as the fallback storage.
+
+The external provider configuration is handled by the corresponding provider package and is not part of the `CacheOptions` class shown in the current `CoreSystem.Cache` implementation.
 
 ---
 
@@ -284,42 +174,29 @@ builder.Services.AddCoreCache(options =>
 
 ## Development
 
-| Setting | Value |
-|----------|-------|
-| Provider | Memory |
-| Serializer | Json |
-| Expiration | 5 minutes |
-
----
-
-## Staging
-
-| Setting | Value |
-|----------|-------|
-| Provider | Redis |
-| Serializer | Json |
-| Expiration | 15 minutes |
+```csharp
+builder.Services.AddCoreCache(options =>
+{
+    options.SerializerType = SerializerType.Json;
+    options.DefaultExpiration = TimeSpan.FromMinutes(5);
+});
+```
 
 ---
 
 ## Production
 
-| Setting | Value |
-|----------|-------|
-| Provider | Redis |
-| Serializer | MessagePack |
-| Expiration | 30 minutes |
+The core package does not define a production provider configuration inside `CacheOptions`.
+
+When using an external provider, configure that provider through its corresponding package and keep the common cache settings in `AddCoreCache()`.
 
 ---
 
 # Best Practices
 
-✅ Use Redis for distributed applications.
-
-✅ Set an `InstanceName` when sharing Redis.
-
-✅ Prefer MessagePack for performance-sensitive workloads.
-
-✅ Use JSON during development if payload readability is important.
-
-✅ Configure sensible expiration values.
+- Use an `InstanceName` when multiple applications share the same cache infrastructure.
+- Configure a sensible default expiration.
+- Override expiration for entries with different lifetimes.
+- Choose the serializer according to the application's requirements.
+- Use the Memory provider when an external distributed provider is not required.
+- Configure external provider options in the corresponding provider package.

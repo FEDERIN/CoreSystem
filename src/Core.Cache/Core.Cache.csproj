@@ -9,37 +9,29 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Cache</PackageId>
-		<Version>1.2.0</Version>
-		<AssemblyVersion>1.2.0</AssemblyVersion>
-		<FileVersion>1.2.0.0</FileVersion>
-		<InformationalVersion>1.2.0</InformationalVersion>
+		<Version>2.0.0</Version>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+		<InformationalVersion>2.0.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
-		<Description>Distributed cache abstraction for .NET 8 supporting Redis and In-Memory providers, with native OpenTelemetry integration.</Description>
+		<Description>Production-ready cache abstraction for .NET 8 with In-Memory caching, extensible external storage, tag-based invalidation, HTTP response caching, and OpenTelemetry metrics.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<PackageProjectUrl>https://federin.github.io/CoreSystem/Cache</PackageProjectUrl>
-		<PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageTags>Distributed;Redis;MemoryCache;OpenTelemetry;Observability;CloudNative</PackageTags>
+		<PackageTags>Cache;Caching;DistributedCache;MemoryCache;HTTP;OpenTelemetry;Observability;.NET8</PackageTags>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Storage\Redis\Abstractions\**" />
-	  <EmbeddedResource Remove="Storage\Redis\Abstractions\**" />
-	  <None Remove="Storage\Redis\Abstractions\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CoreSystem.Http" />
 		<PackageReference Include="CoreSystem.Memory" />
-		<PackageReference Include="CoreSystem.Redis" />
 		<PackageReference Include="CoreSystem.Resilience" />
 		<PackageReference Include="CoreSystem.Serialization" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="README_NUGET.md" Pack="true" PackagePath="\" />
-		<None Include="LICENSE" Pack="true" PackagePath="\" />
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,8 +39,13 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<InternalsVisibleTo Include="Core.Cache.Redis" />
+		<InternalsVisibleTo Include="Core.Cache.Rehydration" />
+		<InternalsVisibleTo Include="Core.Cache.Redis.UnitTests" />
+		<InternalsVisibleTo Include="Core.Cache.Rehydration.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.UnitTests" />
 		<InternalsVisibleTo Include="Core.Cache.IntegrationTests" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	</ItemGroup>
+
 </Project>

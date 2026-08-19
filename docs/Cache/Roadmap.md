@@ -21,12 +21,11 @@ The framework will continue to evolve following these principles:
 
 # ✅ Completed
 
-The following capabilities are already available.
+The following capabilities are already available in the current project.
 
 ## Core Infrastructure
 
 - [x] Memory cache provider
-- [x] Redis cache provider
 - [x] Provider abstraction
 - [x] Dependency Injection integration
 
@@ -46,8 +45,7 @@ The following capabilities are already available.
 
 - [x] Cache Aside pattern (`GetOrAddAsync`)
 - [x] Tag-based invalidation
-- [x] Distributed locking
-- [x] Automatic cache rehydration
+- [x] Concurrent cache population protection
 - [x] HTTP response caching
 
 ---
@@ -58,12 +56,14 @@ The following capabilities are already available.
 - [x] MessagePack
 - [x] Protocol Buffers
 
+Serialization is selected through `CacheOptions.SerializerType` and delegated to the CoreSystem serialization infrastructure.
+
 ---
 
 ## Observability
 
 - [x] OpenTelemetry Metrics
-- [x] Health Checks
+- [ ] Health Checks
 
 ---
 
@@ -73,8 +73,8 @@ The next releases will focus on improving flexibility and performance.
 
 ## Pipeline
 
-- [ ] Configurable pipeline ordering
-- [ ] Conditional behaviors
+- [x] Configurable pipeline ordering
+- [x] Conditional behaviors
 - [ ] Custom behavior registration
 
 ---
@@ -96,42 +96,14 @@ The next releases will focus on improving flexibility and performance.
 
 ---
 
-# 🚀 Mid-Term
-
-The following features will expand the framework beyond Redis.
-
-## Storage Providers
-
-- [ ] SQL Server
-- [ ] PostgreSQL
-- [ ] Cosmos DB
-
----
-
-## Cache Strategies
-
-- [ ] Sliding expiration
-- [ ] Cache warming
-- [ ] Background preloading
-- [ ] Hybrid cache strategies
-
----
-
-## Distributed Features
-
-- [ ] Distributed invalidation events
-- [ ] Cache synchronization
-
----
-
 # 🔮 Long-Term Vision
 
 Future versions aim to transform the framework into a complete caching platform.
 
 ## Multi-Level Cache
 
-- [ ] L1 Memory
-- [ ] L2 Redis
+- [ ] L1 Cache
+- [ ] L2 Cache
 - [ ] Transparent synchronization
 
 ---
@@ -155,7 +127,7 @@ Future versions aim to transform the framework into a complete caching platform.
 
 # 💡 Future Pipeline Behaviors
 
-The pipeline architecture makes it possible to introduce additional behaviors without modifying existing code.
+The pipeline architecture makes it possible to introduce additional behaviors without modifying existing cache operations.
 
 Possible future behaviors include:
 
@@ -189,7 +161,7 @@ The project follows Semantic Versioning.
 | Version | Focus |
 |---------|-------|
 | 1.x | Stability, bug fixes, documentation |
-| 2.x | New providers and extensibility |
+| 2.x | Extensibility and advanced pipeline capabilities |
 | 3.x | Advanced caching strategies |
 | 4.x | Ecosystem integration |
 

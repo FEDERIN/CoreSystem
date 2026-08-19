@@ -1,12 +1,11 @@
 ﻿using Core.Cache.Abstractions;
 using Core.Cache.Http;
 using Core.Cache.Options;
-using Core.Resilience.Abstractions;
-using Core.Resilience.Options;
+using Core.Cache.Pipeline.Behaviors;
+using Core.Cache.Services;
 using Core.Serialization.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
 
 namespace Core.Cache.DependencyInjection;
 
@@ -16,13 +15,18 @@ public static class CacheRegistration
         this IServiceCollection services,
         Action<CacheOptions> configure)
     {
-        ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configure);
 
         var options = new CacheOptions();
         configure(options);
 
         services.AddSingleton(options);
+
+        if(!options.Enabled)
+        {
+            services.AddSingleton<ICoreCache, NoOpCoreCache>();
+            return services;
+        }
 
         services
             .AddLogging()
@@ -31,16 +35,13 @@ public static class CacheRegistration
                 serialization.DefaultSerializer = options.SerializerType;
             })
             .AddCacheDiagnostics()
-            .AddCacheMemory()
-            .AddCacheRedis(options);
-
-        if (options.Redis.Enabled)
-        {
-            services.PostConfigure<ResilienceOptions>(EnrichRedisPipeline);
-        }
+            .AddCacheMemory();
 
         services
-            .AddCachePipeline(options)
+            .AddSingleton<LoggingBehavior>()
+            .AddSingleton<MetricsBehavior>()
+            .AddSingleton<FallbackBehavior>()
+            .AddCachePipeline()
             .AddCacheHttp()
             .AddCacheServices();
 
@@ -49,7 +50,14 @@ public static class CacheRegistration
 
     public static IApplicationBuilder UseCoreCache(this IApplicationBuilder app)
     {
-        ArgumentNullException.ThrowIfNull(app);
+        var options = app.ApplicationServices.GetService<CacheOptions>()
+            ?? throw new InvalidOperationException(
+                CacheMessages.MissingRegistration);
+
+        if (!options.Enabled)
+        {
+            return app;
+        }
 
         if (app.ApplicationServices.GetService<IHttpCacheHandler>() is null)
         {
@@ -57,28 +65,5 @@ public static class CacheRegistration
         }
 
         return app.UseMiddleware<CacheMiddleware>();
-    }
-
-    private static void EnrichRedisPipeline(ResilienceOptions options)
-    {
-        if (!options.ContainsPipeline(PipelineType.Redis))
-        {
-            return;
-        }
-
-        ApplyRedisExceptions(options.GetPipeline(PipelineType.Redis));
-    }
-
-    private static void ApplyRedisExceptions(PipelineOptions pipeline)
-    {
-        pipeline.Retry?
-            .Handle<RedisConnectionException>()
-            .Handle<RedisTimeoutException>()
-            .Handle<TimeoutException>();
-
-        pipeline.CircuitBreaker?
-            .Handle<RedisConnectionException>()
-            .Handle<RedisTimeoutException>()
-            .Handle<TimeoutException>();
     }
 }

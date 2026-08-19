@@ -1,6 +1,6 @@
 ﻿namespace Core.Cache.Storage.Abstractions;
 
-internal interface ICacheTagIndex<TProvider>
+public interface ICacheTagIndex<TProvider>
 {
     Task AddAsync(
         string key,

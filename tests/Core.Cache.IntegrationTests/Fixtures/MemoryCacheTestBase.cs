@@ -14,10 +14,7 @@ public abstract class MemoryCacheTestBase
     {
         var services = new ServiceCollection();
 
-        services.AddCoreCache(options =>
-        {
-            options.DefaultProvider = CacheProviderType.Memory;
-        });
+        services.AddCoreCache(options => {});
 
         Services = services.BuildServiceProvider();
 

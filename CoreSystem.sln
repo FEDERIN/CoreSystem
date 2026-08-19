@@ -47,22 +47,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{EF9B0CA0
 		docs\Cache\Extensibility.md = docs\Cache\Extensibility.md
 		docs\Cache\GettingStarted.md = docs\Cache\GettingStarted.md
 		docs\Cache\HealthChecks.md = docs\Cache\HealthChecks.md
+		docs\Cache\HttpCache.md = docs\Cache\HttpCache.md
 		docs\Cache\index.md = docs\Cache\index.md
 		docs\Cache\Observability.md = docs\Cache\Observability.md
 		docs\Cache\Roadmap.md = docs\Cache\Roadmap.md
 		docs\Cache\Why.md = docs\Cache\Why.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{82C00201-5B4D-466F-AF60-CB4729ED69D9}"
-	ProjectSection(SolutionItems) = preProject
-		docs\Cache\images\Architecture.mmd = docs\Cache\images\Architecture.mmd
-		docs\Cache\images\Architecture.svg = docs\Cache\images\Architecture.svg
-		docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.mmd = docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.mmd
-		docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.svg = docs\Cache\images\GetOrAddAsync Cache-Aside Pattern.svg
-		docs\Cache\images\HTTP Cache Middleware Lifecycle.mmd = docs\Cache\images\HTTP Cache Middleware Lifecycle.mmd
-		docs\Cache\images\HTTP Cache Middleware Lifecycle.svg = docs\Cache\images\HTTP Cache Middleware Lifecycle.svg
-		docs\Cache\images\Resilience Flow.mmd = docs\Cache\images\Resilience Flow.mmd
-		docs\Cache\images\Resilience Flow.svg = docs\Cache\images\Resilience Flow.svg
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{DBC21C0A-969B-4484-B169-AB48D4E4DEC9}"
@@ -200,6 +189,41 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resilience", "Resilience", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Idempotency", "Idempotency", "{1E6D4C81-0307-4C3A-A06A-1C78DB4BF238}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Rehydration", "src\Core.Cache.Rehydration\Core.Cache.Rehydration.csproj", "{1765B10F-5063-B3EC-BD85-0397607C7FD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Redis", "src\Core.Cache.Redis\Core.Cache.Redis.csproj", "{B19C8FFB-A20D-06A2-4B86-D056FDF77D08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{4D724D7A-70A1-41C1-BFD7-CBB9D14382FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Rehydration.UnitTests", "tests\Core.Cache.Rehydration.UnitTests\Core.Cache.Rehydration.UnitTests.csproj", "{8AA68C7A-DC7C-C630-252C-A3610FBCAE7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache.Redis.UnitTests", "tests\Core.Cache.Redis.UnitTests\Core.Cache.Redis.UnitTests.csproj", "{EE37C84F-1589-4CDA-A09D-4B6F5354C314}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Redis", "Redis", "{B2B4BF0C-FF56-4BC3-A030-6C6C70F9C7E8}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Cache\Redis\Architecture.md = docs\Cache\Redis\Architecture.md
+		docs\Cache\Redis\BasicUsage.md = docs\Cache\Redis\BasicUsage.md
+		docs\Cache\Redis\Configuration.md = docs\Cache\Redis\Configuration.md
+		docs\Cache\Redis\Extensibility.md = docs\Cache\Redis\Extensibility.md
+		docs\Cache\Redis\GettingStarted.md = docs\Cache\Redis\GettingStarted.md
+		docs\Cache\Redis\HealthChecks.md = docs\Cache\Redis\HealthChecks.md
+		docs\Cache\Redis\index.md = docs\Cache\Redis\index.md
+		docs\Cache\Redis\Roadmap.md = docs\Cache\Redis\Roadmap.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rehydration", "Rehydration", "{1C51AEDD-EA14-42B8-AC93-B073A1E76F8D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Cache\Rehydration\Architecture.md = docs\Cache\Rehydration\Architecture.md
+		docs\Cache\Rehydration\BasicUsage.md = docs\Cache\Rehydration\BasicUsage.md
+		docs\Cache\Rehydration\Configuration.md = docs\Cache\Rehydration\Configuration.md
+		docs\Cache\Rehydration\Extensibility.md = docs\Cache\Rehydration\Extensibility.md
+		docs\Cache\Rehydration\GettingStarted.md = docs\Cache\Rehydration\GettingStarted.md
+		docs\Cache\Rehydration\index.md = docs\Cache\Rehydration\index.md
+		docs\Cache\Rehydration\Roadmap.md = docs\Cache\Rehydration\Roadmap.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Serialization", "Serialization", "{8811B562-5AA6-4F48-A0E7-86EFA82FC756}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -310,6 +334,22 @@ Global
 		{A5CB3D6F-EC62-4E7F-BE38-5CBF4811E7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5CB3D6F-EC62-4E7F-BE38-5CBF4811E7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5CB3D6F-EC62-4E7F-BE38-5CBF4811E7D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B19C8FFB-A20D-06A2-4B86-D056FDF77D08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B19C8FFB-A20D-06A2-4B86-D056FDF77D08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B19C8FFB-A20D-06A2-4B86-D056FDF77D08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B19C8FFB-A20D-06A2-4B86-D056FDF77D08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AA68C7A-DC7C-C630-252C-A3610FBCAE7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AA68C7A-DC7C-C630-252C-A3610FBCAE7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AA68C7A-DC7C-C630-252C-A3610FBCAE7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AA68C7A-DC7C-C630-252C-A3610FBCAE7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE37C84F-1589-4CDA-A09D-4B6F5354C314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE37C84F-1589-4CDA-A09D-4B6F5354C314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE37C84F-1589-4CDA-A09D-4B6F5354C314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE37C84F-1589-4CDA-A09D-4B6F5354C314}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -319,18 +359,17 @@ Global
 		{4E85C4A5-C126-A849-A39B-96D82B5ACFA5} = {9938565C-D966-4DB9-8D3B-6D92CACE56DF}
 		{EC908145-4354-4D09-AB2E-99BCBE7E6315} = {1E6D4C81-0307-4C3A-A06A-1C78DB4BF238}
 		{41535C27-8E2F-4AA0-8F66-C658319FCF79} = {EF9A3793-6BA8-44B0-8ED8-182BD6D4E34A}
-		{05DC2865-9DAD-4837-A61D-0254EA44AC20} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{05DC2865-9DAD-4837-A61D-0254EA44AC20} = {4D724D7A-70A1-41C1-BFD7-CBB9D14382FD}
 		{D5D8670A-7C9E-4893-8B3E-23782A01D780} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{25A1B931-D216-44FC-958B-D8797AD39E08} = {9938565C-D966-4DB9-8D3B-6D92CACE56DF}
 		{EF9B0CA0-5268-4D9A-A85C-7966829B1033} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
-		{82C00201-5B4D-466F-AF60-CB4729ED69D9} = {EF9B0CA0-5268-4D9A-A85C-7966829B1033}
 		{F234E5B5-A761-4AE4-1E28-5ACED02935D3} = {3841D26E-9ED6-43A6-9547-9E12A7E47762}
 		{79BCCBF1-6E43-A1E2-1EC9-D67E34B0CD71} = {3841D26E-9ED6-43A6-9547-9E12A7E47762}
 		{D9056F24-ED62-46AD-8290-B14BC5789BBC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{67AD506D-B6F3-4F89-8F58-5F257586BB44} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{08296D33-B048-43B9-B579-519B8F01905D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D2C6E5CE-2E28-401D-AB9D-42F23A2F7856} = {DC734643-A5AF-4FFF-BFCA-88CC5A09E86B}
-		{B37CAA7B-EAC5-4035-8BAD-B413236154D3} = {5E20CCB9-89C8-4122-BD09-F339FB72E273}
+		{B37CAA7B-EAC5-4035-8BAD-B413236154D3} = {8811B562-5AA6-4F48-A0E7-86EFA82FC756}
 		{3B1D35E6-0C02-4A33-8DE9-BEDD2A49C6AD} = {8C6F6DCD-085E-421B-B86B-B2FE17C95AA5}
 		{E8ACF67B-4636-44E5-A83F-2F04F5FBB42F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{1A0ED75C-5E25-4205-A0A6-F55BBB1B129B} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
@@ -361,6 +400,14 @@ Global
 		{8C6F6DCD-085E-421B-B86B-B2FE17C95AA5} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{5E20CCB9-89C8-4122-BD09-F339FB72E273} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{1E6D4C81-0307-4C3A-A06A-1C78DB4BF238} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1765B10F-5063-B3EC-BD85-0397607C7FD9} = {4D724D7A-70A1-41C1-BFD7-CBB9D14382FD}
+		{B19C8FFB-A20D-06A2-4B86-D056FDF77D08} = {4D724D7A-70A1-41C1-BFD7-CBB9D14382FD}
+		{4D724D7A-70A1-41C1-BFD7-CBB9D14382FD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8AA68C7A-DC7C-C630-252C-A3610FBCAE7C} = {3841D26E-9ED6-43A6-9547-9E12A7E47762}
+		{EE37C84F-1589-4CDA-A09D-4B6F5354C314} = {3841D26E-9ED6-43A6-9547-9E12A7E47762}
+		{B2B4BF0C-FF56-4BC3-A030-6C6C70F9C7E8} = {EF9B0CA0-5268-4D9A-A85C-7966829B1033}
+		{1C51AEDD-EA14-42B8-AC93-B073A1E76F8D} = {EF9B0CA0-5268-4D9A-A85C-7966829B1033}
+		{8811B562-5AA6-4F48-A0E7-86EFA82FC756} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

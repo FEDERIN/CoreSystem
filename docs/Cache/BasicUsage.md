@@ -8,6 +8,7 @@ By the end of this guide you'll know how to:
 - Store values
 - Retrieve values
 - Remove entries
+- Check if entries exist
 - Invalidate tags
 - Use the Cache-Aside pattern
 - Configure expiration
@@ -35,6 +36,8 @@ await cache.SetAsync(
     product,
     TimeSpan.FromMinutes(10));
 ```
+
+An optional collection of tags can also be provided.
 
 ---
 
@@ -85,7 +88,9 @@ var product =
         expiration: TimeSpan.FromMinutes(10));
 ```
 
-The factory executes only when the cache entry does not exist.
+The factory executes when the cache entry does not exist.
+
+The operation is handled by the configured cache provider and execution pipeline.
 
 ---
 
@@ -116,6 +121,8 @@ await cache.SetAsync(
     tags: ["products"]);
 ```
 
+Tags can also be provided through `GetOrAddAsync()`.
+
 ---
 
 # Invalidate a Tag
@@ -125,33 +132,40 @@ await cache.InvalidateByTagAsync(
     "products");
 ```
 
-All cache entries associated with that tag are removed.
+All cache entries associated with that tag are invalidated.
 
 ---
 
 # Working with CancellationToken
 
-All asynchronous operations support cancellation.
+All asynchronous operations exposed by `ICoreCache` support cancellation.
 
 ```csharp
 await cache.GetAsync<Product>(
-    key,
+    "products:1",
     cancellationToken);
 ```
+
+The cancellation token is propagated through the cache operation.
 
 ---
 
 # Typical Usage Pattern
 
 ```csharp
-public async Task<Product?> GetAsync(Guid id)
+public async Task<Product?> GetAsync(
+    Guid id,
+    CancellationToken ct = default)
 {
     return await cache.GetOrAddAsync(
         $"products:{id}",
-        async ct =>
-            await repository.GetByIdAsync(id, ct),
+        async cancellationToken =>
+            await repository.GetByIdAsync(
+                id,
+                cancellationToken),
         expiration: TimeSpan.FromMinutes(15),
-        tags: ["products"]);
+        tags: ["products"],
+        ct: ct);
 }
 ```
 
@@ -168,5 +182,7 @@ This is the recommended way to integrate the framework into application services
 ✅ Group related entries with tags.
 
 ✅ Configure sensible expiration values.
+
+✅ Pass the `CancellationToken` from the calling operation.
 
 ✅ Avoid caching frequently changing data.

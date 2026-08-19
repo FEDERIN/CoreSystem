@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>CoreSystem.Cache.Rehydration</PackageId>
+		<Version>2.0.0</Version>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+		<InformationalVersion>2.0.0</InformationalVersion>
+		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
+		<Description>
+			Cache recovery component for CoreSystem.Cache on .NET 8 that restores
+			tracked memory fallback entries to the primary cache provider after recovery.
+		</Description>
+
+		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+		<PackageProjectUrl>https://federin.github.io/CoreSystem/Cache/Rehydration</PackageProjectUrl>
+
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+		<PackageTags>
+			Cache;Caching;Rehydration;Recovery;Fallback;DistributedCache;.NET8
+		</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Core.Cache.Rehydration.UnitTests" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="CoreSystem.Cache" />
+	</ItemGroup>
+
+</Project>
