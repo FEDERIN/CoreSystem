@@ -51,7 +51,22 @@ nav:
           - Observability: Cache/Observability.md
           - Extensibility: Cache/Extensibility.md
           - Roadmap: Cache/Roadmap.md
-
+          - Redis:
+              - Overview: Cache/Redis/index.md
+              - Getting Started: Cache/Redis/GettingStarted.md
+              - Architecture: Cache/Redis/Architecture.md
+              - Configuration: Cache/Redis/Configuration.md
+              - Basic Usage: Cache/Redis/BasicUsage.md
+              - Health Checks: Cache/Redis/HealthChecks.md
+              - Extensibility: Cache/Redis/Extensibility.md
+              - Roadmap: Cache/Redis/Roadmap.md
+          - Rehydration:
+              - Overview: Cache/Rehydration/index.md
+              - Getting Started: Cache/Rehydration/GettingStarted.md
+              - Architecture: Cache/Rehydration/Architecture.md
+              - Configuration: Cache/Rehydration/Configuration.md
+              - Basic Usage: Cache/Rehydration/BasicUsage.md
+              - Roadmap: Cache/Rehydration/Roadmap.md
       - Http:
           - Overview: Http/index.md
           - Getting Started: Http/GettingStarted.md
