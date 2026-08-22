@@ -5,9 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
-    <PackageVersion Include="CoreSystem.Cache" Version="2.0.0" />
-	<PackageVersion Include="CoreSystem.Cache.Redis" Version="2.0.0" />
-    <PackageVersion Include="CoreSystem.Cache.Rehydration" Version="2.0.0" />
+    <PackageVersion Include="CoreSystem.Cache" Version="2.0.1" />
+    <PackageVersion Include="CoreSystem.Cache.Redis" Version="2.0.1" />
+    <PackageVersion Include="CoreSystem.Cache.Rehydration" Version="2.0.1" />
     <PackageVersion Include="CoreSystem.Http" Version="1.0.6" />
     <PackageVersion Include="CoreSystem.Idempotency" Version="2.0.0" />
     <PackageVersion Include="CoreSystem.Idempotency.PostgreSql" Version="2.0.0" />

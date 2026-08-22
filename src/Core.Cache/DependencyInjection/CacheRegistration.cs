@@ -40,7 +40,6 @@ public static class CacheRegistration
         services
             .AddSingleton<LoggingBehavior>()
             .AddSingleton<MetricsBehavior>()
-            .AddSingleton<FallbackBehavior>()
             .AddCachePipeline()
             .AddCacheHttp()
             .AddCacheServices();
