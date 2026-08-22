@@ -9,10 +9,10 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Cache</PackageId>
-		<Version>2.0.0</Version>
-		<AssemblyVersion>2.0.0</AssemblyVersion>
-		<FileVersion>2.0.0.0</FileVersion>
-		<InformationalVersion>2.0.0</InformationalVersion>
+		<Version>2.0.1</Version>
+		<AssemblyVersion>2.0.1</AssemblyVersion>
+		<FileVersion>2.0.1.0</FileVersion>
+		<InformationalVersion>2.0.1</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Production-ready cache abstraction for .NET 8 with In-Memory caching, extensible external storage, tag-based invalidation, HTTP response caching, and OpenTelemetry metrics.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
 		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 

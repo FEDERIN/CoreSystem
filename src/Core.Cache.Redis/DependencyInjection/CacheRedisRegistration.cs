@@ -1,4 +1,5 @@
 ﻿using Core.Cache.Abstractions;
+using Core.Cache.DependencyInjection;
 using Core.Cache.Options;
 using Core.Cache.Pipeline.Behaviors;
 using Core.Cache.Redis.Builders;
@@ -84,6 +85,8 @@ public static class CacheRedisRegistration
 
         services.AddSingleton<IPrimaryHealthStateWriter>(
             sp => sp.GetRequiredService<RedisHealthState>());
+
+        services.AddCacheFallback();
 
         services.AddSingleton<RedisHealthCheck>();
         services.AddSingleton<IHealthCheckContributor, RedisHealthContributor>();
