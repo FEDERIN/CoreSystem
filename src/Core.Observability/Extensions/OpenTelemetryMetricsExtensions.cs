@@ -47,13 +47,8 @@ internal static class OpenTelemetryMetricsExtensions
                 ["host.name"] = Environment.MachineName
             });
 
-        var contributorTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(s => s.GetTypes())
-            .Where(t => typeof(IObservabilityContributor).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
-
-        foreach (var type in contributorTypes)
+        foreach (var contributor in ObservabilityContributorRegistry.GetRegistered(services))
         {
-            var contributor = (IObservabilityContributor)Activator.CreateInstance(type)!;
             contributor.ConfigureObservability(services, configuration);
         }
 

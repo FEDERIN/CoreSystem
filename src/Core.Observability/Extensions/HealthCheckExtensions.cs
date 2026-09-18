@@ -1,5 +1,4 @@
-﻿using Core.Observability.Abstractions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Observability.Extensions;
@@ -10,15 +9,13 @@ internal static class HealthCheckExtensions
     this IServiceCollection services,
     IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
         var builder = services.AddHealthChecks();
 
-        var contributors = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(s => s.GetTypes())
-            .Where(p => typeof(IHealthCheckContributor).IsAssignableFrom(p) && !p.IsInterface);
-
-        foreach (var type in contributors)
+        foreach (var contributor in HealthCheckContributorRegistry.GetRegistered(services))
         {
-            var contributor = (IHealthCheckContributor)Activator.CreateInstance(type)!;
             contributor.RegisterHealthChecks(builder, configuration);
         }
 
