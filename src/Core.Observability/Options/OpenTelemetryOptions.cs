@@ -20,6 +20,7 @@ public class OtlpTracingOptions
     public bool Enabled { get; set; }
     public string OtlpEndpoint { get; set; } = "http://otel-collector:4317";
     public double SamplingProbability { get; set; } = 1.0;
+    public bool CaptureSqlStatements { get; set; }
 }
 
 public class OtlpMetricsOptions

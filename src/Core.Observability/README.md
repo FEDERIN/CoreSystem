@@ -4,7 +4,7 @@
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Observability?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.15.1-purple?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.19.0-purple?style=for-the-badge)
 
 ---
 
@@ -148,7 +148,9 @@ dotnet add package CoreSystem.Observability
   "OpenTelemetry": {
     "Tracing": {
       "Enabled": true,
-      "OtlpEndpoint": "http://localhost:4317"
+      "OtlpEndpoint": "http://localhost:4317",
+      "SamplingProbability": 1.0,
+      "CaptureSqlStatements": false
     },
     "Metrics": {
       "Enabled": true,
@@ -164,6 +166,10 @@ dotnet add package CoreSystem.Observability
   }
 }
 ```
+
+`CaptureSqlStatements` is disabled by default because SQL statements can contain
+sensitive data. Enable it only after confirming that your queries do not expose
+secrets or personally identifiable information.
 
 ---
 
@@ -276,4 +282,4 @@ MIT License © Federin Pastor Gutierrez Ortiz
 
 # ⭐ Support
 
-If this project helps you, consider giving it a star on GitHub.	
+If this project helps you, consider giving it a star on GitHub.

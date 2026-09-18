@@ -13,8 +13,8 @@ internal static class DiagnosticsRegistration
 
         services.AddSingleton<IdempotencyMetrics>();
 
-        services.AddSingleton<IObservabilityContributor,
-            IdempotencyObservabilityContributor>();
+        services.AddSingleton<IObservabilityContributor>(
+            new IdempotencyObservabilityContributor());
 
         return services;
     }

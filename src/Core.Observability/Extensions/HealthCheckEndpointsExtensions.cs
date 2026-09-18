@@ -12,12 +12,8 @@ internal static class HealthCheckEndpointsExtensions
     {
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
-            Predicate = _ => true,
-            ResponseWriter = async (ctx, _) =>
-            {
-                ctx.Response.ContentType = "application/json; charset=utf-8";
-                await ctx.Response.WriteAsync("""{"status":"Healthy"}""");
-            }
+            Predicate = _ => false,
+            ResponseWriter = WriteHealthResponse
         }).DisableRateLimiting();
 
         app.MapHealthChecks("/ready", new HealthCheckOptions
