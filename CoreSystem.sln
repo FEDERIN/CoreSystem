@@ -227,6 +227,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observability", "Observability", "{CB553F66-5FD5-42B3-B5A6-735DDE6AAA9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observability", "Observability", "{F586C400-A437-4C77-B170-FBFEFF29A94B}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Observability\index.md = docs\Observability\index.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
