@@ -89,7 +89,8 @@ public static class CacheRedisRegistration
         services.AddCacheFallback();
 
         services.AddSingleton<RedisHealthCheck>();
-        services.AddSingleton<IHealthCheckContributor, RedisHealthContributor>();
+        services.AddSingleton<IHealthCheckContributor>(
+            new RedisHealthContributor());
 
         // Resilience
         var resilienceEnabled =

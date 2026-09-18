@@ -13,8 +13,8 @@ internal static class DiagnosticsRegistration
 
         services.AddSingleton<CacheMetrics>();
 
-        services.AddSingleton<IObservabilityContributor,
-            CacheObservabilityContributor>();
+        services.AddSingleton<IObservabilityContributor>(
+            new CacheObservabilityContributor());
 
         return services;
     }

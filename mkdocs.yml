@@ -39,6 +39,9 @@ nav:
 
   - Packages:
 
+      - Observability:
+          - Overview: Observability/index.md
+
       - Cache:
           - Overview: Cache/index.md
           - Getting Started: Cache/GettingStarted.md
