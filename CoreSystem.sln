@@ -236,6 +236,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observability", "Observabil
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RateLimiting", "RateLimiting", "{69D96EB3-D0CB-4891-A907-16987C8CAE9D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\RateLimiting\Configuration.md = docs\RateLimiting\Configuration.md
+		docs\RateLimiting\GettingStarted.md = docs\RateLimiting\GettingStarted.md
+		docs\RateLimiting\index.md = docs\RateLimiting\index.md
+		docs\RateLimiting\Observability.md = docs\RateLimiting\Observability.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

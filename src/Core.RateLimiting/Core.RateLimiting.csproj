@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 	  <TargetFramework>net8.0</TargetFramework>
 	  <ImplicitUsings>enable</ImplicitUsings>
@@ -14,6 +14,7 @@
 	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	  <Description>Safe fixed-window rate limiting for ASP.NET Core APIs.</Description>
 	  <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+	  <PackageProjectUrl>https://federin.github.io/CoreSystem/RateLimiting</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
