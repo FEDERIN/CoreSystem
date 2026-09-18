@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <Deterministic>true</Deterministic>
+	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	  <Optimize>true</Optimize>
+	  <LangVersion>preview</LangVersion>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <PackageId>CoreSystem.RateLimiting</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
+	  <Description>Safe fixed-window rate limiting for ASP.NET Core APIs.</Description>
+	  <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
+	  <PackageProjectUrl>https://federin.github.io/CoreSystem/RateLimiting</PackageProjectUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CoreSystem.Observability.Abstractions" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+  </ItemGroup>
+  <ItemGroup>
+	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+	  <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+	  <InternalsVisibleTo Include="Core.RateLimiting.UnitTests" />
+  </ItemGroup>
+</Project>
