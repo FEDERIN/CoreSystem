@@ -9,6 +9,7 @@ obj/
 .vs/
 .vscode/
 .idea/
+.venv/
 *.swp
 
 # Local configuration
