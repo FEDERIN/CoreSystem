@@ -42,6 +42,12 @@ nav:
       - Observability:
           - Overview: Observability/index.md
 
+      - Rate Limiting:
+          - Overview: RateLimiting/index.md
+          - Getting Started: RateLimiting/GettingStarted.md
+          - Configuration: RateLimiting/Configuration.md
+          - Observability: RateLimiting/Observability.md
+
       - Cache:
           - Overview: Cache/index.md
           - Getting Started: Cache/GettingStarted.md
