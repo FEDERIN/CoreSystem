@@ -15,8 +15,8 @@ internal static class DiagnosticsRegistration
 
         services.AddSingleton<ResilienceMetrics>();
 
-        services.AddSingleton<IObservabilityContributor,
-            ResilienceObservabilityContributor>();
+        services.AddSingleton<IObservabilityContributor>(
+            new ResilienceObservabilityContributor());
 
         return services;
     }

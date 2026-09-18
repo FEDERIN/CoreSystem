@@ -37,11 +37,26 @@ internal static class OpenTelemetryTracingExtensions
         if (oTelOptions.Tracing == null || !oTelOptions.Tracing.Enabled)
             return services;
 
+        var samplingProbability = oTelOptions.Tracing.SamplingProbability;
+        if (double.IsNaN(samplingProbability) ||
+            samplingProbability < 0 ||
+            samplingProbability > 1)
+        {
+            Trace.WriteLine(
+                "[Observability] Tracing SamplingProbability must be between 0 and 1. Using 1.0.");
+            samplingProbability = 1.0;
+        }
+
         // Configure the Resource with application metadata and versioning
         var resourceBuilder = ResourceBuilder.CreateDefault()
             .AddService(
                 serviceName: serviceName ?? "unknown-service",
-                serviceVersion: typeof(OpenTelemetryTracingExtensions).Assembly.GetName().Version?.ToString() ?? "1.0.0")
+                serviceVersion: System.Reflection.Assembly.GetEntryAssembly()
+                    ?.GetName()
+                    .Version
+                    ?.ToString()
+                    ?? typeof(OpenTelemetryTracingExtensions).Assembly.GetName().Version?.ToString()
+                    ?? "1.0.0")
             .AddAttributes(new Dictionary<string, object>
             {
                 ["deployment.environment"] = environment ?? "unknown",
@@ -49,16 +64,12 @@ internal static class OpenTelemetryTracingExtensions
                 ["service.namespace"] = serviceNamespace ?? "default-namespace"
             });
 
-        var contributorTypes = AppDomain.CurrentDomain.GetAssemblies()
-        .SelectMany(s => s.GetTypes())
-        .Where(t => typeof(IObservabilityContributor).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
-
-        var allSources = new List<string>();
-        foreach (var type in contributorTypes)
-        {
-            var contributor = (IObservabilityContributor)Activator.CreateInstance(type)!;
-            allSources.AddRange(contributor.GetActivitySources());
-        }
+        var activitySources = ObservabilityContributorRegistry
+            .GetRegistered(services)
+            .SelectMany(contributor => contributor.GetActivitySources())
+            .Where(source => !string.IsNullOrWhiteSpace(source))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
 
         // Setup OpenTelemetry SDK for Tracing
         services.AddOpenTelemetry()
@@ -67,7 +78,7 @@ internal static class OpenTelemetryTracingExtensions
                 tracerProvider
                     .SetResourceBuilder(resourceBuilder)
                     // Use the SamplingProbability from our centralized options (Safe default to 1.0)
-                    .SetSampler(new TraceIdRatioBasedSampler(oTelOptions.Tracing.SamplingProbability))
+                    .SetSampler(new TraceIdRatioBasedSampler(samplingProbability))
 
                     // Automatic instrumentation for ASP.NET Core requests
                     .AddAspNetCoreInstrumentation(options =>
@@ -89,24 +100,25 @@ internal static class OpenTelemetryTracingExtensions
                     .AddSqlClientInstrumentation(options =>
                     {
                         options.RecordException = true;
+
+                        if (!oTelOptions.Tracing.CaptureSqlStatements)
+                        {
+                            return;
+                        }
+
                         options.EnrichWithSqlCommand = (activity, command) =>
                         {
                             if (command is SqlCommand sqlCommand)
                             {
-                                var query = sqlCommand.CommandText;
-
-                                // Redact sensitive information from traces
-                                if (!string.IsNullOrEmpty(query) && query.Contains("password", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    activity.SetTag("db.statement", "REDACTED_FOR_SECURITY");
-                                }
-                                else
-                                {
-                                    activity.SetTag("db.statement", query);
-                                }
+                                activity.SetTag("db.statement", sqlCommand.CommandText);
                             }
                         };
                     });
+
+                if (activitySources.Length > 0)
+                {
+                    tracerProvider.AddSource(activitySources);
+                }
 
                 // Resilience check for Tracing OTLP endpoint
                 var endpoint = oTelOptions.Tracing.OtlpEndpoint;
