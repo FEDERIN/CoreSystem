@@ -12,7 +12,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
 		<PackageId>CoreSystem.RateLimiting</PackageId>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Safe fixed-window rate limiting for ASP.NET Core APIs.</Description>
 
