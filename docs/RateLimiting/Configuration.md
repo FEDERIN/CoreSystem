@@ -25,3 +25,17 @@ builder.Services.AddCoreRateLimiting(options =>
 ```
 
 For authenticated requests, the key is `subject:<claim value>`. Anonymous requests use `ip:<remote address>`.
+
+## Configuration Binding
+
+`CopyFrom` copies every public option and returns the configured target instance. This makes it suitable for configuration binding without per-property mapping.
+
+```csharp
+var configuredOptions = builder.Configuration
+    .GetSection("Core:RateLimiting")
+    .Get<RateLimitingOptions>()
+    ?? new RateLimitingOptions();
+
+builder.Services.AddCoreRateLimiting(options =>
+    options.CopyFrom(configuredOptions));
+```

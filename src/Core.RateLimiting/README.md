@@ -70,6 +70,22 @@ app.UseAuthorization();
 
 ---
 
+# 🔗 Configuration Binding
+
+Use `CopyFrom` to bind configuration into a source instance and apply every option during registration without mapping properties one by one.
+
+```csharp
+var configuredOptions = builder.Configuration
+    .GetSection("Core:RateLimiting")
+    .Get<RateLimitingOptions>()
+    ?? new RateLimitingOptions();
+
+builder.Services.AddCoreRateLimiting(options =>
+    options.CopyFrom(configuredOptions));
+```
+
+---
+
 # 🔒 Client Identity and Reverse Proxies
 
 Requests are partitioned by `subject:<claim-value>` when authenticated, otherwise by `ip:<remote-address>`.

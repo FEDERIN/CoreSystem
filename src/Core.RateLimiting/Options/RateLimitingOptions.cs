@@ -13,6 +13,28 @@ public sealed class RateLimitingOptions
     public QueueProcessingOrder QueueProcessingOrder { get; set; } = QueueProcessingOrder.OldestFirst;
     public bool AutoReplenishment { get; set; } = true;
     public string SubjectClaimType { get; set; } = ClaimTypes.NameIdentifier;
+
+    /// <summary>
+    /// Copies every rate-limiting option from the specified source instance.
+    /// </summary>
+    /// <param name="source">The options instance to copy.</param>
+    /// <returns>The current options instance.</returns>
+    public RateLimitingOptions CopyFrom(RateLimitingOptions source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        Enabled = source.Enabled;
+        PolicyName = source.PolicyName;
+        PermitLimit = source.PermitLimit;
+        Window = source.Window;
+        QueueLimit = source.QueueLimit;
+        QueueProcessingOrder = source.QueueProcessingOrder;
+        AutoReplenishment = source.AutoReplenishment;
+        SubjectClaimType = source.SubjectClaimType;
+
+        return this;
+    }
+
     internal void Validate()
     {
         if (string.IsNullOrWhiteSpace(PolicyName))
