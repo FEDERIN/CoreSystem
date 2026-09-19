@@ -36,4 +36,23 @@ public sealed class RateLimitingMiddlewareTests
         rejected.Headers.RetryAfter.Should().NotBeNull();
         (await rejected.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).Should().Contain("retryAfterSeconds");
     }
+
+    [Fact]
+    public async Task DisabledRateLimiting_AllowsRequestsWithoutRegisteringLimiter()
+    {
+        using var server = 
+            new TestServer(new WebHostBuilder()
+            .ConfigureServices(services =>
+            services.AddCoreRateLimiting(options =>
+                options.Enabled = false))
+            .Configure(app =>
+            {
+                app.UseCoreRateLimiting();
+                app.Run(context => context.Response.WriteAsync("accepted"));
+            }));
+
+        using var response = await server.CreateClient().GetAsync("/", TestContext.Current.CancellationToken);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
 }

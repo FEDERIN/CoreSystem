@@ -12,54 +12,112 @@ permissions:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' 
+          dotnet-version: '8.0.x'
 
       - name: Extract info
+        shell: bash
         run: |
           # Extract project name (before the '/')
-          PROJECT_NAME=$(echo $GITHUB_REF_NAME | cut -d'/' -f1)
+          PROJECT_NAME=$(echo "$GITHUB_REF_NAME" | cut -d'/' -f1)
+
           # Extract version (after the '/') and remove the 'v' prefix
-          VERSION=$(echo $GITHUB_REF_NAME | cut -d'/' -f2 | sed 's/v//')
-          
-          echo "PROJECT=$PROJECT_NAME" >> $GITHUB_ENV
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          VERSION=$(echo "$GITHUB_REF_NAME" | cut -d'/' -f2 | sed 's/^v//')
+
+          echo "PROJECT=$PROJECT_NAME" >> "$GITHUB_ENV"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+          echo "Project: $PROJECT_NAME"
+          echo "Version: $VERSION"
 
       - name: Validate project folder
+        shell: bash
         run: |
-          if [ ! -d "src/${{ env.PROJECT }}" ]; then
-            echo "Error: Project directory 'src/${{ env.PROJECT }}' does not exist."
+          if [ ! -d "src/${PROJECT}" ]; then
+            echo "Error: Project directory 'src/${PROJECT}' does not exist."
+            exit 1
+          fi
+
+          if [ ! -f "src/${PROJECT}/${PROJECT}.csproj" ]; then
+            echo "Error: Project file 'src/${PROJECT}/${PROJECT}.csproj' does not exist."
             exit 1
           fi
 
       - name: Restore solution
-        run: dotnet restore CoreSystem.sln /p:UseLocalObservabilityAbstractions=false
+        run: |
+          dotnet restore CoreSystem.sln \
+            /p:UseLocalObservabilityAbstractions=false
 
       - name: Build package project
         run: |
-          dotnet build src/${{ env.PROJECT }}/${{ env.PROJECT }}.csproj \
+          dotnet build "src/${PROJECT}/${PROJECT}.csproj" \
             --configuration Release \
             --no-restore \
             /p:UseLocalObservabilityAbstractions=false \
-            /p:Version=${{ env.VERSION }}
+            /p:Version=${VERSION}
 
-      - name: Test solution
+      - name: Test package
+        shell: bash
         run: |
-          dotnet test CoreSystem.sln \
-            --configuration Release \
-            --no-restore \
-            /p:UseLocalObservabilityAbstractions=false
+          UNIT_TEST="tests/${PROJECT}.UnitTests/${PROJECT}.UnitTests.csproj"
+          INTEGRATION_TEST="tests/${PROJECT}.IntegrationTests/${PROJECT}.IntegrationTests.csproj"
+
+          TEST_FOUND=false
+
+          echo "Checking tests for ${PROJECT}..."
+
+          if [ -f "$UNIT_TEST" ]; then
+            TEST_FOUND=true
+
+            echo ""
+            echo "==============================================="
+            echo "Running unit tests"
+            echo "$UNIT_TEST"
+            echo "==============================================="
+
+            dotnet test "$UNIT_TEST" \
+              --configuration Release \
+              --no-build \
+              --no-restore \
+              /p:UseLocalObservabilityAbstractions=false
+          fi
+
+          if [ -f "$INTEGRATION_TEST" ]; then
+            TEST_FOUND=true
+
+            echo ""
+            echo "==============================================="
+            echo "Running integration tests"
+            echo "$INTEGRATION_TEST"
+            echo "==============================================="
+
+            dotnet test "$INTEGRATION_TEST" \
+              --configuration Release \
+              --no-build \
+              --no-restore \
+              /p:UseLocalObservabilityAbstractions=false
+          fi
+
+          if [ "$TEST_FOUND" = false ]; then
+            echo ""
+            echo "Error: No tests found for ${PROJECT}."
+            echo "Expected one or both of:"
+            echo "  ${UNIT_TEST}"
+            echo "  ${INTEGRATION_TEST}"
+            exit 1
+          fi
 
       - name: Pack package
         run: |
-          dotnet pack src/${{ env.PROJECT }}/${{ env.PROJECT }}.csproj \
+          dotnet pack "src/${PROJECT}/${PROJECT}.csproj" \
             --configuration Release \
-            /p:Version=${{ env.VERSION }} \
+            /p:Version=${VERSION} \
             --no-build \
             --no-restore \
             /p:UseLocalObservabilityAbstractions=false \
@@ -67,9 +125,8 @@ jobs:
 
       - name: Publish to NuGet
         run: |
-          # Push the package to NuGet.org
           dotnet nuget push ./nupkgs/*.nupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --api-key "${{ secrets.NUGET_API_KEY }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 

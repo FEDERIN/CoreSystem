@@ -53,10 +53,15 @@ public static class RateLimitingRegistration
         configure(options);
         options.Validate();
 
+        // Always register the options so that the middleware can determine
+        // whether Core.RateLimiting is configured and enabled.
+        services.AddSingleton(options);
+
+        // When rate limiting is disabled, keep the configuration available
+        // but do not register the rate-limiting infrastructure.
         if (!options.Enabled)
             return services;
 
-        services.AddSingleton(options);
         services.AddProblemDetails();
         services.AddMetrics();
         services.AddSingleton<RateLimitingMetrics>();
@@ -122,11 +127,17 @@ public static class RateLimitingRegistration
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        var options = app.ApplicationServices.GetService<RateLimitingOptions>()
-            ?? throw new InvalidOperationException(
+        var options = app.ApplicationServices.GetService<RateLimitingOptions>();
+
+        if (options is null)
+        {
+            throw new InvalidOperationException(
                 "Core.RateLimiting has not been registered. " +
                 "Call services.AddCoreRateLimiting(...).");
+        }
 
+        // When rate limiting is disabled, do not add the ASP.NET Core
+        // rate-limiter middleware to the request pipeline.
         return options.Enabled
             ? app.UseRateLimiter()
             : app;
