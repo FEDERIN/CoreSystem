@@ -23,6 +23,9 @@ plugins:
   - search
   - mermaid2
 
+extra_javascript:
+  - javascripts/external-documentation-links.js
+
 markdown_extensions:
   - admonition
   - tables
@@ -48,34 +51,6 @@ nav:
           - Configuration: RateLimiting/Configuration.md
           - Observability: RateLimiting/Observability.md
 
-      - Cache:
-          - Overview: Cache/index.md
-          - Getting Started: Cache/GettingStarted.md
-          - Why: Cache/Why.md
-          - Architecture: Cache/Architecture.md
-          - Configuration: Cache/Configuration.md
-          - Basic Usage: Cache/BasicUsage.md
-          - HTTP Cache: Cache/HttpCache.md
-          - Health Checks: Cache/HealthChecks.md
-          - Observability: Cache/Observability.md
-          - Extensibility: Cache/Extensibility.md
-          - Roadmap: Cache/Roadmap.md
-          - Redis:
-              - Overview: Cache/Redis/index.md
-              - Getting Started: Cache/Redis/GettingStarted.md
-              - Architecture: Cache/Redis/Architecture.md
-              - Configuration: Cache/Redis/Configuration.md
-              - Basic Usage: Cache/Redis/BasicUsage.md
-              - Health Checks: Cache/Redis/HealthChecks.md
-              - Extensibility: Cache/Redis/Extensibility.md
-              - Roadmap: Cache/Redis/Roadmap.md
-          - Rehydration:
-              - Overview: Cache/Rehydration/index.md
-              - Getting Started: Cache/Rehydration/GettingStarted.md
-              - Architecture: Cache/Rehydration/Architecture.md
-              - Configuration: Cache/Rehydration/Configuration.md
-              - Basic Usage: Cache/Rehydration/BasicUsage.md
-              - Roadmap: Cache/Rehydration/Roadmap.md
       - Http:
           - Overview: Http/index.md
           - Getting Started: Http/GettingStarted.md
@@ -122,3 +97,6 @@ nav:
       - OpenTelemetry: Guides/OpenTelemetry.md
       - Best Practices: Guides/BestPractices.md
       - Performance: Guides/Performance.md
+  
+  - External projects:
+      - Cache: https://federin.github.io/CoreSystem.Cache/
