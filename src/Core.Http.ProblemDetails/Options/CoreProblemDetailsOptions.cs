@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Http.ProblemDetails;
+namespace Core.Http.ProblemDetails.Options;
 
 /// <summary>Configures additional fields for CoreSystem-generated problem details.</summary>
 public sealed class CoreProblemDetailsOptions

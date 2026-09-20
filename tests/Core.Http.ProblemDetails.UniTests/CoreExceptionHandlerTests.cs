@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Core.Http.ProblemDetails;
+using Core.Http.ProblemDetails.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Core.Http.UnitTests.ProblemDetails;
+namespace Core.Http.ProblemDetails.UniTests;
 
 public sealed class CoreExceptionHandlerTests
 {

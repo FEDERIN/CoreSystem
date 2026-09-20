@@ -4,15 +4,14 @@
 
 Production-ready HTTP infrastructure for ASP.NET Core and .NET 8.
 
-CoreSystem.Http provides reusable infrastructure for response capture, replay,
-and RFC 9457 Problem Details in ASP.NET Core applications. It offers focused
-components that simplify response interception and consistent exception handling
-while promoting code reuse across middleware, pipelines, and application frameworks.
+CoreSystem.Http provides reusable infrastructure for capturing and replaying
+HTTP responses in ASP.NET Core applications. It offers lightweight,
+dependency-free components that simplify response interception while promoting
+code reuse across middleware, pipelines, and application frameworks.
 
 Designed as a foundational building block, CoreSystem.Http can be used by
 caching, idempotency, auditing, logging, security, or any feature that requires
-capturing HTTP responses, reproducing them, or translating application exceptions
-to HTTP errors without coupling CoreSystem to domain code.
+capturing or reproducing HTTP responses.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Http?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Http?style=for-the-badge)
@@ -39,9 +38,6 @@ CoreSystem.Http extracts these capabilities into reusable building blocks that c
 - ✅ Lightweight and dependency-free
 - ✅ Built for ASP.NET Core
 - ✅ Reusable across middleware, libraries and application frameworks
-- ✅ RFC 9457 (`application/problem+json`) exception handling
-- ✅ Application-owned exception mapping, error codes, and extensions
-- ✅ Trace identifiers and safe Development-only exception diagnostics
 
 ------------------------------------------------------------------------
 
@@ -90,58 +86,6 @@ await responseWriter.WriteAsync(
     cancellationToken);
 ```
 
-### Problem Details
-
-Define the HTTP representation of your application's exceptions. Domain-specific
-exceptions and mappers remain in the application; CoreSystem only owns the HTTP
-mechanism.
-
-```csharp
-using Core.Http.ProblemDetails;
-
-public sealed class ApiExceptionProblemMapper : IExceptionProblemMapper
-{
-    public ProblemDescriptor Map(Exception exception) => exception switch
-    {
-        OrderNotFoundException => new(
-            StatusCodes.Status404NotFound,
-            "ORDER_NOT_FOUND",
-            "Order not found",
-            "The requested order does not exist",
-            "urn:example:error:order-not-found"),
-        _ => new(
-            StatusCodes.Status500InternalServerError,
-            "INTERNAL_ERROR",
-            "Unexpected error",
-            "An unexpected error occurred")
-    };
-}
-
-builder.Services.AddCoreProblemDetails(options =>
-{
-    options.CustomizeProblemDetails = (problem, context, exception) =>
-    {
-        if (exception is IdempotencyFingerprintMismatchException)
-        {
-            problem.Extensions["idempotencyKey"] =
-                context.Request.Headers["Idempotency-Key"].ToString();
-        }
-    };
-});
-builder.Services.AddCoreExceptionHandler<ApiExceptionProblemMapper>();
-
-var app = builder.Build();
-app.UseExceptionHandler();
-```
-
-The `IdempotencyFingerprintMismatchException` branch is optional and belongs in
-an application that references `CoreSystem.Idempotency`; CoreSystem.Http itself
-does not take a dependency on idempotency or any domain package.
-
-The handler returns `application/problem+json` with `status`, `title`, `detail`,
-`type`, `instance`, `errorCode`, and `traceId`. It adds `exceptionType` and
-`exceptionMessage` only in the Development environment.
-
 ------------------------------------------------------------------------
 
 ## 📖 Public API
@@ -154,10 +98,6 @@ CoreSystem.Http intentionally exposes a small, focused and stable public API.
 | `IHttpResponseWriter` | Interface | Replays a previously captured response to the current `HttpContext`. |
 | `CapturedResponse` | Model | Represents a captured HTTP response, including the status code, headers, content type, and response body. |
 | `AddCoreHttp()` | Extension Method | Registers all CoreSystem.Http services required for response capture and replay. |
-| `ProblemDescriptor` | Model | Domain-agnostic description of an HTTP problem. |
-| `IExceptionProblemMapper` | Interface | Maps application exceptions to `ProblemDescriptor` instances. |
-| `AddCoreProblemDetails()` | Extension Method | Registers RFC 9457 serialization and optional extension customization. |
-| `AddCoreExceptionHandler<TMapper>()` | Extension Method | Registers the mapper-backed ASP.NET Core exception handler. |
 
 ------------------------------------------------------------------------
 
@@ -205,13 +145,12 @@ CoreSystem.Http serves as reusable infrastructure for features such as:
 - Reverse proxies
 - Middleware development
 - Custom ASP.NET Core frameworks
-- Consistent API error contracts across services
 
 ------------------------------------------------------------------------
 
 ## Dependencies
 
-CoreSystem.Http depends on ASP.NET Core and Microsoft.Extensions.Options.
+CoreSystem.Http has no external runtime dependencies beyond ASP.NET Core.
 ------------------------------------------------------------------------
 
 ## 📚 Documentation
@@ -225,6 +164,14 @@ The full documentation includes:
 - Response Replay
 - Extensibility
 - Best Practices
+
+## 📚 Documentation
+
+Documentation is continuously expanding as CoreSystem evolves.
+
+Additional guides, architecture notes and examples will be available in the project's documentation site.
+
+------------------------------------------------------------------------
 
 ## 🤝 Contributing
 

@@ -1,10 +1,12 @@
+using Core.Http.ProblemDetails.Handlers;
+using Core.Http.ProblemDetails.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Core.Http.ProblemDetails;
+namespace Core.Http.ProblemDetails.DependencyInjection;
 
 /// <summary>Registers reusable RFC 9457 problem-details support.</summary>
-public static class ProblemDetailsRegistration
+public static class HttpProblemDetailsRegistration
 {
     /// <summary>Registers RFC 9457 serialization and optional CoreSystem problem customization.</summary>
     public static IServiceCollection AddCoreProblemDetails(

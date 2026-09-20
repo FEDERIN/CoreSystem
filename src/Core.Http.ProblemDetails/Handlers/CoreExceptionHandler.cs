@@ -1,10 +1,11 @@
 using System.Diagnostics;
+using Core.Http.ProblemDetails.Options;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace Core.Http.ProblemDetails;
+namespace Core.Http.ProblemDetails.Handlers;
 
 /// <summary>Writes mapped exceptions as RFC 9457 problem details.</summary>
 public sealed class CoreExceptionHandler<TMapper>(
