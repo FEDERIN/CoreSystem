@@ -38,22 +38,20 @@ jobs:
           fi
 
       - name: Restore solution
-        run: dotnet restore CoreSystem.sln /p:UseLocalObservabilityAbstractions=false
+        run: dotnet restore CoreSystem.sln
 
       - name: Build package project
         run: |
           dotnet build src/${{ env.PROJECT }}/${{ env.PROJECT }}.csproj \
             --configuration Release \
             --no-restore \
-            /p:UseLocalObservabilityAbstractions=false \
             /p:Version=${{ env.VERSION }}
 
       - name: Test solution
         run: |
           dotnet test CoreSystem.sln \
             --configuration Release \
-            --no-restore \
-            /p:UseLocalObservabilityAbstractions=false
+            --no-restore
 
       - name: Pack package
         run: |
@@ -62,7 +60,6 @@ jobs:
             /p:Version=${{ env.VERSION }} \
             --no-build \
             --no-restore \
-            /p:UseLocalObservabilityAbstractions=false \
             --output ./nupkgs
 
       - name: Publish to NuGet
