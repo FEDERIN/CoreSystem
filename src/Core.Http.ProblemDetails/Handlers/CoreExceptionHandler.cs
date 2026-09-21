@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Core.Http.ProblemDetails.Options;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -9,7 +10,7 @@ namespace Core.Http.ProblemDetails.Handlers;
 
 /// <summary>Writes mapped exceptions as RFC 9457 problem details.</summary>
 public sealed class CoreExceptionHandler<TMapper>(
-    TMapper mapper,
+    IServiceScopeFactory scopeFactory,
     IProblemDetailsService problemDetailsService,
     IHostEnvironment environment,
     IOptions<CoreProblemDetailsOptions> options) : IExceptionHandler
@@ -27,6 +28,8 @@ public sealed class CoreExceptionHandler<TMapper>(
         }
 
         httpContext.Response.Clear();
+        await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
+        TMapper mapper = scope.ServiceProvider.GetRequiredService<TMapper>();
         ProblemDescriptor descriptor = mapper.Map(exception);
         var problem = new Microsoft.AspNetCore.Mvc.ProblemDetails
         {
@@ -38,7 +41,7 @@ public sealed class CoreExceptionHandler<TMapper>(
         };
 
         problem.Extensions["errorCode"] = descriptor.ErrorCode;
-        problem.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
+        problem.Extensions["traceId"] = Activity.Current?.TraceId.ToString() ?? httpContext.TraceIdentifier;
 
         if (environment.IsDevelopment())
         {

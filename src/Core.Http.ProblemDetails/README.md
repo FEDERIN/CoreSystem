@@ -18,7 +18,7 @@ keeps its domain exceptions, business error codes, and mapping rules.
 - ✅ RFC 9457 `application/problem+json` responses
 - ✅ Application-owned exception mapping through `IExceptionProblemMapper`
 - ✅ Standard `errorCode` and `traceId` extensions
-- ✅ `Activity.Current` trace ID with `HttpContext.TraceIdentifier` fallback
+- ✅ W3C `Activity.Current.TraceId` with `HttpContext.TraceIdentifier` fallback
 - ✅ Application-specific extensions through a callback
 - ✅ Exception type and message exposed only in Development
 - ✅ No dependency on domain, application, or idempotency packages
@@ -74,7 +74,9 @@ app.UseExceptionHandler();
 
 `AddCoreExceptionHandler<TMapper>()` registers the concrete mapper as scoped
 when it has not already been registered. Register any dependencies required by
-the mapper in the usual way.
+the mapper in the usual way. The exception handler creates a scope for each
+handled exception, so scoped mapper dependencies (such as a DbContext) are
+resolved and disposed correctly.
 
 ------------------------------------------------------------------------
 
@@ -115,7 +117,7 @@ to the following:
   "detail": "An order with this identifier already exists",
   "instance": "/orders/42",
   "errorCode": "ORDER_ALREADY_EXISTS",
-  "traceId": "00-..."
+  "traceId": "4bf92f3577b34da6a3ce929d0e0e4736"
 }
 ```
 

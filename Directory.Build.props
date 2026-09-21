@@ -1,0 +1,14 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)Directory.Build.local.props"
+		Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.local.props')" />
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<UseLocalProjectReferences Condition="'$(UseLocalProjectReferences)' == ''">false</UseLocalProjectReferences>
+		<RestorePackagesWithLockFile Condition="'$(UseLocalProjectReferences)' != 'true'">true</RestorePackagesWithLockFile>
+		<RestoreLockedMode Condition="'$(UseLocalProjectReferences)' != 'true'">true</RestoreLockedMode>
+	</PropertyGroup>
+</Project>
