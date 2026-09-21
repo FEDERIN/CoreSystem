@@ -70,26 +70,6 @@ nav:
           - Extensibility: Resilience/Extensibility.md
           - Roadmap: Resilience/Roadmap.md
             
-      - Idempotency:
-          - Overview: Idempotency/index.md
-          - Getting Started: Idempotency/GettingStarted.md
-          - Why: Idempotency/Why.md
-          - Architecture: Idempotency/Architecture.md
-          - Request Lifecycle: Idempotency/RequestLifecycle.md
-          - Fingerprinting: Idempotency/Fingerprinting.md
-          - Response Replay: Idempotency/ResponseReplay.md
-          - Configuration: Idempotency/Configuration.md
-
-          - Providers:
-              - Redis: Idempotency/Providers/Redis.md
-              - PostgreSQL: Idempotency/Providers/PostgreSQL.md
-
-          - Observability: Idempotency/Observability.md
-
-          - Errors:
-              - Fingerprint Mismatch: Idempotency/Errors/idempotency-fingerprint-mismatch.md
-
-          - Roadmap: Idempotency/Roadmap.md
   - Guides:
       - Home: Guides/index.md
       - Architecture: Guides/Architecture.md
@@ -99,4 +79,4 @@ nav:
       - Performance: Guides/Performance.md
   
   - External projects:
-      - Cache: https://federin.github.io/CoreSystem.Cache/
+      - Overview: External/index.md
