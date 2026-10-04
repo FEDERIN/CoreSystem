@@ -1,6 +1,6 @@
 # AGENTS.md
 
-.NET 8 (SDK pinned to 8.0.402 in `global.json`) monorepo of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). The root `README.md` lists the current packages; Cache and Idempotency were split out — their docs are external, see `docs/External`. Use `dotnet sln list` / `src/` as the source of truth.
+.NET 8 (SDK pinned to 8.0.402 in `global.json`) monorepo of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). The root `README.md` lists the current packages; Cache and Idempotency were split out — they remain part of the ecosystem but have their own repositories and docs are external, see `docs/External`. Do not propose re-creating or re-adding them as packages in this repo. Use `dotnet sln list` / `src/` as the source of truth.
 
 ## Layout
 - `src/Core.<Name>`: one NuGet package per project. `GeneratePackageOnBuild=true`, so every build also produces a `.nupkg`.
