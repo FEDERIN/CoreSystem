@@ -23,6 +23,9 @@ appsettings.Local.json
 Thumbs.db
 .DS_Store
 
+# mkdocs build output
+site/
+
 # Logs
 *.log
 
