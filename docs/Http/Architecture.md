@@ -10,7 +10,7 @@ The framework separates response capture from response replay, providing a small
 
 ---
 
-# Architectural Overview
+## Architectural Overview
 
 Applications interact only with the public abstractions exposed by the framework.
 
@@ -38,7 +38,7 @@ This architecture separates response capture from response replay while allowing
 
 ---
 
-# Design Goals
+## Design Goals
 
 CoreSystem.Http is intentionally focused on a single responsibility.
 
@@ -54,7 +54,7 @@ The framework is designed around the following principles.
 
 ---
 
-# Architectural Patterns
+## Architectural Patterns
 
 CoreSystem.Http combines several well-established software design patterns.
 
@@ -69,7 +69,7 @@ These patterns keep the framework simple while allowing the implementation to ev
 
 ---
 
-# Core Components
+## Core Components
 
 The framework consists of a small number of focused components.
 
@@ -82,7 +82,7 @@ The framework consists of a small number of focused components.
 
 ---
 
-# Response Capture
+## Response Capture
 
 During request execution, the framework temporarily replaces the response body stream with an in-memory buffer.
 
@@ -106,7 +106,7 @@ This process is completely transparent to the application.
 
 ---
 
-# Response Replay
+## Response Replay
 
 Previously captured responses can be replayed without executing the original ASP.NET Core pipeline.
 
@@ -133,7 +133,7 @@ while preserving HTTP behavior such as `HEAD` requests.
 
 ---
 
-# Execution Lifecycle
+## Execution Lifecycle
 
 Every captured response follows the same lifecycle.
 
@@ -162,7 +162,7 @@ The application only interacts with the public abstractions while the framework 
 
 ---
 
-# Dependency Injection
+## Dependency Injection
 
 The framework integrates with the standard ASP.NET Core Dependency Injection container.
 
@@ -184,7 +184,7 @@ Applications depend only on framework abstractions.
 
 ---
 
-# Design Principles
+## Design Principles
 
 When extending the framework, follow these principles.
 
@@ -200,7 +200,7 @@ Following these principles helps ensure that custom extensions remain consistent
 
 ---
 
-# Integration with CoreSystem
+## Integration with CoreSystem
 
 CoreSystem.Http is designed as foundational infrastructure.
 
@@ -211,16 +211,16 @@ graph TD
 
     Http["CoreSystem.Http"]
 
-    Http --> Cache["CoreSystem.Cache"]
+    Http --> Resilience["CoreSystem.Resilience"]
 
-    Http --> Idempotency["CoreSystem.Idempotency"]
+    Http --> RateLimiting["CoreSystem.RateLimiting"]
 ```
 
 This separation allows HTTP infrastructure to evolve independently from application features.
 
 ---
 
-# Summary
+## Summary
 
 CoreSystem.Http provides reusable infrastructure for capturing and replaying HTTP responses.
 

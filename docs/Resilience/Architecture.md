@@ -8,7 +8,7 @@ The framework provides an abstraction over Polly through `IResiliencePipeline`, 
 
 ---
 
-# Architectural Overview
+## Architectural Overview
 
 Applications interact with the public abstractions exposed by the framework.
 
@@ -42,7 +42,7 @@ Only strategies configured for the selected pipeline are added.
 
 ---
 
-# Design Goals
+## Design Goals
 
 The framework is designed around a few core principles.
 
@@ -55,7 +55,7 @@ The framework is designed around a few core principles.
 
 ---
 
-# Architectural Patterns
+## Architectural Patterns
 
 `CoreSystem.Resilience` uses several components with clear responsibilities.
 
@@ -72,7 +72,7 @@ The framework registers these components through the standard .NET Dependency In
 
 ---
 
-# Core Components
+## Core Components
 
 The framework exposes a small set of public abstractions while keeping the concrete implementation internal.
 
@@ -95,7 +95,7 @@ The available `PipelineType` values provided by the core are:
 
 ---
 
-# Pipeline Construction
+## Pipeline Construction
 
 During service registration, the configured `ResilienceOptions` are registered together with the pipeline infrastructure.
 
@@ -127,7 +127,7 @@ The resulting pipelines are stored in the registry and reused when requested thr
 
 ---
 
-# Execution Lifecycle
+## Execution Lifecycle
 
 Every protected operation follows the same execution flow.
 
@@ -166,7 +166,7 @@ The pipeline supports both operations that return no result and operations that 
 
 ---
 
-# Dependency Injection
+## Dependency Injection
 
 The framework integrates with the standard .NET Dependency Injection container.
 
@@ -196,7 +196,7 @@ When `ResilienceOptions.Enabled` is `false`, the framework registers a `NoOpResi
 
 ---
 
-# Metrics Flow
+## Metrics Flow
 
 The framework records the metrics implemented by `ResilienceMetrics` using `System.Diagnostics.Metrics`.
 
@@ -223,7 +223,7 @@ The framework registers its `Core.Resilience` meter through its observability co
 
 ---
 
-# Design Principles
+## Design Principles
 
 When working with the framework, follow these principles.
 
@@ -236,7 +236,7 @@ When working with the framework, follow these principles.
 
 ---
 
-# Summary
+## Summary
 
 `CoreSystem.Resilience` provides a modular pipeline architecture for executing protected operations through configurable resilience strategies.
 

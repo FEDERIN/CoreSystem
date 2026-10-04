@@ -6,17 +6,17 @@ Following these guidelines helps you create applications that are more reliable,
 
 ---
 
-# Design Principles
+## Design Principles
 
 CoreSystem is built around a few fundamental principles.
 
-## Keep packages focused
+### Keep packages focused
 
 Each package should solve a single problem.
 
 Good
 
-- CoreSystem.Cache
+- CoreSystem.RateLimiting
 - CoreSystem.Resilience
 - CoreSystem.Http
 
@@ -24,7 +24,7 @@ Avoid creating packages with multiple unrelated responsibilities.
 
 ---
 
-## Prefer composition over inheritance
+### Prefer composition over inheritance
 
 Compose behaviors using Dependency Injection instead of inheritance whenever possible.
 
@@ -32,37 +32,37 @@ Example
 
 ```csharp
 builder.Services
-    .AddCoreCache()
+    .AddCoreRateLimiting()
     .AddCoreResilience()
     .AddCoreHttp();
 ```
 
 ---
 
-## Follow dependency inversion
+### Follow dependency inversion
 
 Depend on abstractions instead of concrete implementations.
 
 Good
 
 ```csharp
-ICoreCache
+IAsyncKeyLock
 ```
 
 Avoid
 
 ```csharp
-RedisCache
+MemoryLockProvider
 ```
 
 ---
 
-# Dependency Injection
+## Dependency Injection
 
 Register packages using the provided extension methods.
 
 ```csharp
-builder.Services.AddCoreCache();
+builder.Services.AddCoreRateLimiting();
 builder.Services.AddCoreResilience();
 ```
 
@@ -70,7 +70,7 @@ Avoid manual service registration unless customization is required.
 
 ---
 
-# Configuration
+## Configuration
 
 Keep configuration inside appsettings.json.
 
@@ -79,8 +79,8 @@ Good
 ```json
 {
   "Core": {
-    "Cache": {
-      "DefaultExpiration": "00:30:00"
+    "RateLimiting": {
+      "PermitLimit": 100
     }
   }
 }
@@ -90,21 +90,21 @@ Avoid hardcoded values.
 
 ---
 
-# Caching
+## Rate Limiting
 
-Use Cache-Aside whenever possible.
+Apply rate limiting at the edge for public endpoints.
 
-✔ Cache reads
+✔ Use per-user or per-IP partitions when possible
 
-✔ Invalidate after writes
+✔ Return `429` with `Retry-After` semantics
 
-✔ Cache immutable data
+✔ Emit metrics for rejected requests
 
-Avoid caching rapidly changing information unless necessary.
+Avoid unlimited public endpoints or leaking internal state in errors.
 
 ---
 
-# Resilience
+## Resilience
 
 Use Retry only for transient failures.
 
@@ -116,7 +116,7 @@ Avoid retrying validation errors or business rule violations.
 
 ---
 
-# Observability
+## Observability
 
 Enable metrics and tracing in production.
 
@@ -124,15 +124,14 @@ Expose OpenTelemetry metrics whenever possible.
 
 Monitor
 
-- Cache Hit Rate
-- Cache Miss Rate
 - Retry Count
 - Timeout Count
 - Circuit Breaker State
+- Rejected Requests (429)
 
 ---
 
-# Performance
+## Performance
 
 Reuse services registered by Dependency Injection.
 
@@ -144,7 +143,7 @@ Avoid blocking calls.
 
 ---
 
-# Error Handling
+## Error Handling
 
 Log unexpected failures.
 
@@ -154,7 +153,7 @@ Throw meaningful exceptions.
 
 ---
 
-# Testing
+## Testing
 
 Unit test public APIs.
 
@@ -164,9 +163,9 @@ Validate configuration during startup.
 
 ---
 
-# Security
+## Security
 
-Never cache sensitive information without encryption.
+Never log or trace sensitive information.
 
 Validate external inputs.
 
@@ -174,7 +173,7 @@ Protect configuration secrets.
 
 ---
 
-# Versioning
+## Versioning
 
 Follow Semantic Versioning.
 
@@ -186,7 +185,7 @@ Increment
 
 ---
 
-# Documentation
+## Documentation
 
 Document every public API.
 
@@ -196,7 +195,7 @@ Keep documentation synchronized with releases.
 
 ---
 
-# Summary
+## Summary
 
 Following these practices helps build applications that are
 

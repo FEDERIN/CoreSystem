@@ -8,7 +8,7 @@ This document describes the extension points that are currently available in the
 
 ---
 
-# Extension Points
+## Extension Points
 
 The current implementation provides several extension points and abstractions.
 
@@ -23,7 +23,7 @@ The internal strategy builder mechanism is used by the framework to configure th
 
 ---
 
-# Pipeline Builder
+## Pipeline Builder
 
 The framework exposes the `IPipelineBuilder` abstraction for creating resilience pipelines.
 
@@ -51,7 +51,7 @@ Applications can replace the registered `IPipelineBuilder` implementation throug
 
 ---
 
-# Strategy Builders
+## Strategy Builders
 
 The framework internally uses `IStrategyBuilder` to configure resilience strategies.
 
@@ -83,7 +83,7 @@ Protected Operation
 
 ---
 
-# Pipeline Types
+## Pipeline Types
 
 Applications select pipelines using the `PipelineType` abstraction.
 
@@ -120,7 +120,7 @@ The provided implementation does not include a mechanism for dynamically adding 
 
 ---
 
-# Replacing Default Services
+## Replacing Default Services
 
 Framework services are registered through the standard .NET Dependency Injection container.
 
@@ -138,7 +138,7 @@ Replacing framework services should be reserved for scenarios where the default 
 
 ---
 
-# Metrics
+## Metrics
 
 CoreSystem.Resilience publishes its built-in metrics through `System.Diagnostics.Metrics`.
 
@@ -155,7 +155,7 @@ Applications can combine these metrics with their own application-level telemetr
 
 ---
 
-# Current Extensibility Boundaries
+## Current Extensibility Boundaries
 
 The current implementation provides extensibility primarily through abstractions and Dependency Injection.
 
@@ -170,7 +170,7 @@ New resilience strategies would currently require changes to the framework imple
 
 ---
 
-# Best Practices
+## Best Practices
 
 ✅ Use `IResiliencePipeline` and `IResiliencePipelineProvider` instead of depending directly on Polly.
 
@@ -184,7 +184,7 @@ New resilience strategies would currently require changes to the framework imple
 
 ---
 
-# Summary
+## Summary
 
 CoreSystem.Resilience provides a modular architecture based on public pipeline abstractions and Dependency Injection.
 

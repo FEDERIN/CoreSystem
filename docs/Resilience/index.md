@@ -13,13 +13,14 @@ CoreSystem.Resilience provides a clean abstraction over resilience strategies fo
 
 ## 📚 Table of Contents
 
-* 🚀 Getting Started
-* 🏗️ Architecture
-* 🧩 Core Components
-* ⚙️ Pipeline Configuration
-* 🔁 Retry Strategy
-* ⏱️ Timeout Strategy
-* 🔌 Circuit Breaker Strategy
-* 📊 Observability
-* 🧩 Extensibility
-* 🗺️ Roadmap
+- 🚀 [Getting Started](./GettingStarted.md)
+- ❓ [Why CoreSystem.Resilience?](./Why.md)
+- 🏗️ [Architecture](./Architecture.md)
+- 🧩 [Core Components](./Architecture.md#core-components)
+- ⚙️ [Configuration](./Configuration.md)
+- 🔁 [Retry Strategy](./Retry.md)
+- ⏱️ [Timeout Strategy](./Timeout.md)
+- 🔌 [Circuit Breaker Strategy](./CircuitBreaker.md)
+- 📊 [Observability](./Observability.md)
+- 🧩 [Extensibility](./Extensibility.md)
+- 🗺️ [Roadmap](./Roadmap.md)

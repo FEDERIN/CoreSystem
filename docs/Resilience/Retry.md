@@ -6,7 +6,7 @@ Transient failures are temporary issues that may recover after a short delay. Re
 
 ---
 
-# Why Retry?
+## Why Retry?
 
 Operations that communicate with external dependencies can occasionally fail because of temporary conditions.
 
@@ -21,7 +21,7 @@ Retry can help applications recover from these failures without requiring retry 
 
 ---
 
-# Basic Configuration
+## Basic Configuration
 
 Configure Retry when building a resilience pipeline.
 
@@ -42,7 +42,7 @@ In this example, the operation can be executed up to **three additional times** 
 
 ---
 
-# Configuration Options
+## Configuration Options
 
 | Option                 | Description                                                 | Default        |
 | ---------------------- | ----------------------------------------------------------- | -------------- |
@@ -55,11 +55,11 @@ In this example, the operation can be executed up to **three additional times** 
 
 ---
 
-# Delay Strategies
+## Delay Strategies
 
 Retry supports multiple backoff algorithms.
 
-## Constant
+### Constant
 
 Uses the same delay between retry attempts.
 
@@ -79,7 +79,7 @@ retry.BackoffType = BackoffType.Constant;
 
 ---
 
-## Linear
+### Linear
 
 The delay increases linearly between retry attempts.
 
@@ -99,7 +99,7 @@ retry.BackoffType = BackoffType.Linear;
 
 ---
 
-## Exponential
+### Exponential
 
 The delay increases exponentially between retry attempts.
 
@@ -121,7 +121,7 @@ This is the default backoff type.
 
 ---
 
-# Jitter
+## Jitter
 
 Retry supports jitter through the `UseJitter` option.
 
@@ -135,7 +135,7 @@ The default value in CoreSystem.Resilience is `false`.
 
 ---
 
-# Handling Exceptions
+## Handling Exceptions
 
 By default, Retry does not add custom handled exceptions to the strategy.
 
@@ -166,7 +166,7 @@ Only configured exception types are considered by the custom Retry predicate.
 
 ---
 
-# Matching Inner Exceptions
+## Matching Inner Exceptions
 
 Some operations may throw an exception that contains the actual transient exception as an inner exception.
 
@@ -197,7 +197,7 @@ When it is disabled, only the exception directly evaluated by the Retry predicat
 
 ---
 
-# Execution Flow
+## Execution Flow
 
 ```mermaid
 flowchart TD
@@ -243,7 +243,7 @@ Protected Operation
 
 ---
 
-# Metrics
+## Metrics
 
 Retry records the number of retry attempts using `System.Diagnostics.Metrics`.
 
@@ -255,7 +255,7 @@ The metric is recorded each time the Retry strategy performs a retry.
 
 ---
 
-# Best Practices
+## Best Practices
 
 ✅ Retry only exceptions that are appropriate for retry.
 
@@ -271,7 +271,7 @@ The metric is recorded each time the Retry strategy performs a retry.
 
 ---
 
-# Common Scenarios
+## Common Scenarios
 
 Retry can be useful for operations involving potentially transient failures, such as:
 
@@ -285,7 +285,7 @@ Retry should not automatically be applied to every exception. Validation errors,
 
 ---
 
-# Summary
+## Summary
 
 The Retry strategy provides configurable retries for selected exception types.
 
