@@ -6,7 +6,7 @@ The framework records resilience-related metrics through `ResilienceMetrics`, al
 
 ---
 
-# Why Metrics Matter
+## Why Metrics Matter
 
 Resilience behavior can be monitored through metrics that provide visibility into the execution of configured strategies.
 
@@ -21,7 +21,7 @@ These metrics are recorded by the resilience strategies and the pipeline executi
 
 ---
 
-# Architecture
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -39,7 +39,7 @@ The framework creates a meter named `Core.Resilience` and registers it through t
 
 ---
 
-# Built-in Metrics
+## Built-in Metrics
 
 The framework currently publishes the following metrics.
 
@@ -58,7 +58,7 @@ Retry and timeout metrics are counters. Circuit breaker state transition metrics
 
 ---
 
-# Registering the Meter
+## Registering the Meter
 
 The framework registers its meter through `ResilienceObservabilityContributor`.
 
@@ -77,7 +77,7 @@ The framework does not configure a specific exporter. Exporter configuration rem
 
 ---
 
-# Metric Tags
+## Metric Tags
 
 Some metrics include tags when they are recorded.
 
@@ -100,7 +100,7 @@ The exact tags available depend on the metric being recorded.
 
 ---
 
-# Metric Lifecycle
+## Metric Lifecycle
 
 ```mermaid
 sequenceDiagram
@@ -136,7 +136,7 @@ Execution duration is recorded for the pipeline execution.
 
 ---
 
-# Observability Integration
+## Observability Integration
 
 The framework uses the standard .NET metrics API through `System.Diagnostics.Metrics`.
 
@@ -158,7 +158,7 @@ The provided code does not configure a specific monitoring backend or exporter.
 
 ---
 
-# Operational Recommendations
+## Operational Recommendations
 
 ### Retry
 
@@ -178,7 +178,7 @@ Monitor pipeline execution duration to identify changes in the time required to 
 
 ---
 
-# Future Metrics
+## Future Metrics
 
 Additional metrics may be introduced in future versions.
 

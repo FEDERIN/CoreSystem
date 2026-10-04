@@ -17,7 +17,7 @@ Install the package you want to use.
 Example:
 
 ```bash
-dotnet add package CoreSystem.Cache
+dotnet add package CoreSystem.Resilience
 ```
 
 ## Register the services
@@ -25,7 +25,7 @@ dotnet add package CoreSystem.Cache
 Register the package during application startup.
 
 ```csharp
-builder.Services.AddCoreCache(options =>
+builder.Services.AddCoreResilience(options =>
 {
     // Configure your options here
 });
@@ -34,21 +34,19 @@ builder.Services.AddCoreCache(options =>
 ## First Example
 
 ```csharp
-var value = await cache.GetOrAddAsync(
-    "products",
-    async () => await repository.GetProductsAsync(),
-    TimeSpan.FromMinutes(5));
+var result = await pipeline.ExecuteAsync(async token =>
+    await httpClient.GetFromJsonAsync<string>("https://example.com", token));
 ```
 
 ## Next Steps
 
 Choose a package to continue learning.
 
-- Cache
 - Resilience
+- Rate Limiting
 - Http
-- Idempotency
 - Memory
 - Redis
 - Serialization
 - Observability
+- External projects (Cache, Idempotency)

@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CC99C87C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CC99C87C-68B7-48BD-9903-804D628BC53A}"
 	ProjectSection(SolutionItems) = preProject
+		AGENTS.md = AGENTS.md
 		docs\GettingStarted.md = docs\GettingStarted.md
 		docs\idempotency-flow.mmd = docs\idempotency-flow.mmd
 		docs\idempotency-flow.png = docs\idempotency-flow.png
@@ -95,6 +96,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 	ProjectSection(SolutionItems) = preProject
 		Directory.Packages.props = Directory.Packages.props
 		mkdocs.yml = mkdocs.yml
+		README.md = README.md
 		requirements.txt = requirements.txt
 	EndProjectSection
 EndProject

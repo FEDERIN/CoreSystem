@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoreSystem.Cache.Redis" />
-    <PackageReference Include="CoreSystem.Idempotency.PostgreSql" />
-    <PackageReference Include="CoreSystem.Idempotency.Redis" />
+    <PackageReference Include="CoreSystem.Resilience" />
   </ItemGroup>
 
   <ItemGroup>

@@ -73,7 +73,7 @@ section:
     "Metrics": {
       "Enabled": true,
       "OtlpEndpoint": "http://localhost:4317",
-      "Meters": ["Core.Idempotency", "Core.Resilience"]
+      "Meters": ["Core.Resilience", "Core.RateLimiting"]
     }
   }
 }
@@ -100,7 +100,7 @@ Register CoreSystem modules before `AddObservability` so their observability
 and health-check contributors are included during setup.
 
 ```csharp
-builder.Services.AddCoreIdempotency(options =>
+builder.Services.AddCoreResilience(options =>
 {
     // Configure the module.
 });

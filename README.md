@@ -38,32 +38,19 @@ composable.
 
 # 📦 Ecosystem Packages
 
-  ----------------------------------------------------------------------------------
-  Package                           Description                   Status
-  --------------------------------- ----------------------------- ------------------
-  CoreSystem.Cache                        Distributed cache with Memory ✅ Stable
-                                    and Redis providers           
+| Package | Description | Status |
+| ------- | ----------- | ------ |
+| [CoreSystem.Memory](https://www.nuget.org/packages/CoreSystem.Memory) | In-process asynchronous keyed locks | ✅ Stable |
+| [CoreSystem.Redis](https://www.nuget.org/packages/CoreSystem.Redis) | Redis infrastructure and distributed locking | ✅ Stable |
+| [CoreSystem.Serialization](https://www.nuget.org/packages/CoreSystem.Serialization) | JSON, MessagePack and Protobuf abstraction | ✅ Stable |
+| [CoreSystem.Observability](https://www.nuget.org/packages/CoreSystem.Observability) | Logging, Metrics, Tracing and Health Checks | ✅ Stable |
+| [CoreSystem.Observability.Abstractions](https://www.nuget.org/packages/CoreSystem.Observability.Abstractions) | Extensibility contracts | ✅ Stable |
+| [CoreSystem.Resilience](https://www.nuget.org/packages/CoreSystem.Resilience) | Polly-based resilience pipelines | ✅ Stable |
+| [CoreSystem.RateLimiting](https://www.nuget.org/packages/CoreSystem.RateLimiting) | Configurable rate limiting with metrics | ✅ Stable |
+| [CoreSystem.Http](https://www.nuget.org/packages/CoreSystem.Http) | HTTP response capture and replay infrastructure | ✅ Stable |
+| [CoreSystem.Http.ProblemDetails](https://www.nuget.org/packages/CoreSystem.Http.ProblemDetails) | RFC 9457 problem details and exception mapping | ✅ Stable |
 
-  CoreSystem.Idempotency                  HTTP request idempotency      ✅ Stable
-                                    middleware                    
-
-  CoreSystem.Memory                       In-process asynchronous keyed ✅ Stable
-                                    locks                         
-
-  CoreSystem.Redis                        Redis infrastructure and      ✅ Stable
-                                    distributed locking           
-
-  CoreSystem.Serialization                JSON, MessagePack and         ✅ Stable
-                                    Protobuf abstraction          
-
-  CoreSystem.Observability                Logging, Metrics, Tracing and ✅ Stable
-                                    Health Checks                 
-
-  CoreSystem.Observability.Abstractions   Extensibility contracts       ✅ Stable
-
-  CoreSystem.Resilience                   Polly-based resilience        🚧 Coming Soon
-                                    pipelines                     
-  ----------------------------------------------------------------------------------
+External projects: [CoreSystem.Cache](https://www.nuget.org/packages/CoreSystem.Cache) and [CoreSystem.Idempotency](https://www.nuget.org/packages/CoreSystem.Idempotency) are maintained in their own repositories — see docs/External.
 
 ------------------------------------------------------------------------
 
@@ -72,20 +59,16 @@ composable.
 ``` mermaid
 graph TD
 
-Application --> Cache
-Application --> Idempotency
+Application --> Http
+Application --> RateLimiting
+Application --> Resilience
 Application --> Observability
 
-Cache --> Memory
-Cache --> Redis
-Cache --> Serialization
+Resilience --> Observability.Abstractions
+RateLimiting --> Observability.Abstractions
 
-Idempotency --> Redis
-Idempotency --> PostgreSQL
-
+Observability --> Observability.Abstractions
 Observability --> OpenTelemetry
-
-Resilience --> Polly
 ```
 
 ------------------------------------------------------------------------
@@ -118,13 +101,14 @@ dotnet build
 
 ``` text
 src/
- ├── Core.Cache
- ├── Core.Idempotency
+ ├── Core.Http
+ ├── Core.Http.ProblemDetails
  ├── Core.Memory
  ├── Core.Redis
  ├── Core.Serialization
  ├── Core.Observability
  ├── Core.Observability.Abstractions
+ ├── Core.RateLimiting
  └── Core.Resilience
 ```
 
@@ -134,21 +118,26 @@ src/
 
 ## Completed
 
--   Distributed Cache
--   Redis Infrastructure
 -   Memory Synchronization
+-   Redis Infrastructure
 -   Serialization
 -   Observability
--   Idempotency
+-   Resilience
+-   Rate Limiting
+-   HTTP infrastructure and Problem Details
 
-## In Progress
+## External / split out
 
--   Core.Resilience
+-   [CoreSystem.Cache](https://www.nuget.org/packages/CoreSystem.Cache)
+-   [CoreSystem.Cache.Redis](https://www.nuget.org/packages/CoreSystem.Cache.Redis)
+-   [CoreSystem.Cache.Rehydration](https://www.nuget.org/packages/CoreSystem.Cache.Rehydration)
+-   [CoreSystem.Idempotency](https://www.nuget.org/packages/CoreSystem.Idempotency)
+-   [CoreSystem.Idempotency.Redis](https://www.nuget.org/packages/CoreSystem.Idempotency.Redis)
+-   [CoreSystem.Idempotency.PostgreSql](https://www.nuget.org/packages/CoreSystem.Idempotency.PostgreSql)
 
 ## Planned
 
 -   Messaging
--   Rate Limiting
 -   Security
 -   API Gateway utilities
 

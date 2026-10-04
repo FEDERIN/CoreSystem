@@ -1,4 +1,4 @@
-﻿services:
+services:
   # 1. PostgreSQL (Provider)
   postgres:
     image: postgres:16-alpine
@@ -28,7 +28,7 @@
     container_name: minimal-test-api
     build:
       context: ../.. 
-      dockerfile: samples/Minimal.Test.Api/Dockerfile
+      dockerfile: samples/CoreSystem.Samples.Api/Dockerfile
     ports:
       - "5185:8080"
     environment:
@@ -40,23 +40,6 @@
       - OpenTelemetry__Metrics__Enabled=true
       - OpenTelemetry__Tracing__Enabled=true
       - OpenTelemetry__Logging__Enabled=true
-      # List of meters to instrument (The 0 indicates the first item in the list)
-      - OpenTelemetry__Metrics__Meters__0=CoreSystem.Idempotency
-
-      # Idempotency Configuration (This was missing)
-      - Idempotency__Enabled=true
-      - Idempotency__Provider=${IDEMPOTENCY_PROVIDER}
-      - Idempotency__HeaderName=X-Idempotency-Key
-      - Idempotency__Expiration=24:00:00
-      - Idempotency__MeterName=CoreSystem.Idempotency
-
-      # Connection Strings
-      - ConnectionStrings__Idempotency=${IDEMPOTENCY_CONNECTION}
-
-      # Configure which HTTP methods should be considered for idempotency (This was missing)
-      - Idempotency__AllowedMethods__0=POST
-      - Idempotency__AllowedMethods__1=PUT
-      - Idempotency__AllowedMethods__2=DELETE
     depends_on:
       - otel-collector
       - postgres

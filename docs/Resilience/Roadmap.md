@@ -6,7 +6,7 @@ The roadmap provides visibility into the planned evolution of the framework. Pri
 
 ---
 
-# Guiding Principles
+## Guiding Principles
 
 CoreSystem.Resilience will continue to evolve following these principles:
 
@@ -19,11 +19,11 @@ CoreSystem.Resilience will continue to evolve following these principles:
 
 ---
 
-# ✅ Completed
+## ✅ Completed
 
 The following capabilities are available in the current implementation.
 
-## Core Infrastructure
+### Core Infrastructure
 
 * [x] Configured resilience pipelines
 * [x] Dependency Injection integration
@@ -34,7 +34,7 @@ The following capabilities are available in the current implementation.
 
 ---
 
-## Resilience Strategies
+### Resilience Strategies
 
 * [x] Retry
 * [x] Circuit Breaker
@@ -42,7 +42,7 @@ The following capabilities are available in the current implementation.
 
 ---
 
-## Configuration
+### Configuration
 
 * [x] Fluent configuration API
 * [x] Strongly typed options
@@ -50,7 +50,7 @@ The following capabilities are available in the current implementation.
 
 ---
 
-## Observability
+### Observability
 
 * [x] Built-in metrics
 * [x] OpenTelemetry metrics integration
@@ -61,11 +61,11 @@ The following capabilities are available in the current implementation.
 
 ---
 
-# 🚧 Short-Term
+## 🚧 Short-Term
 
 The next releases will focus on improving flexibility and developer experience.
 
-## Pipeline
+### Pipeline
 
 * [ ] Conditional strategy execution
 * [ ] Pipeline validation
@@ -74,7 +74,7 @@ The next releases will focus on improving flexibility and developer experience.
 
 ---
 
-## Metrics
+### Metrics
 
 * [ ] Additional resilience metrics
 * [ ] Metric tags and dimensions
@@ -82,7 +82,7 @@ The next releases will focus on improving flexibility and developer experience.
 
 ---
 
-## Developer Experience
+### Developer Experience
 
 * [ ] More samples
 * [ ] Extended documentation
@@ -91,11 +91,11 @@ The next releases will focus on improving flexibility and developer experience.
 
 ---
 
-# 🚀 Mid-Term
+## 🚀 Mid-Term
 
 The following features will improve extensibility and operational capabilities.
 
-## Resilience Strategies
+### Resilience Strategies
 
 * [ ] Rate Limiter
 * [ ] Hedging
@@ -104,7 +104,7 @@ The following features will improve extensibility and operational capabilities.
 
 ---
 
-## Configuration
+### Configuration
 
 * [ ] Dynamic configuration reload
 * [ ] Environment-specific configuration
@@ -112,7 +112,7 @@ The following features will improve extensibility and operational capabilities.
 
 ---
 
-## Observability
+### Observability
 
 * [ ] Distributed tracing
 * [ ] Activity correlation
@@ -120,11 +120,11 @@ The following features will improve extensibility and operational capabilities.
 
 ---
 
-# 🔮 Long-Term Vision
+## 🔮 Long-Term Vision
 
 Future versions aim to expand CoreSystem.Resilience with additional pipeline and operational capabilities.
 
-## Advanced Pipeline Features
+### Advanced Pipeline Features
 
 * [ ] Pipeline composition
 * [ ] Nested pipelines
@@ -133,7 +133,7 @@ Future versions aim to expand CoreSystem.Resilience with additional pipeline and
 
 ---
 
-## Runtime Features
+### Runtime Features
 
 * [ ] Dynamic pipeline registration
 * [ ] Runtime pipeline discovery
@@ -141,7 +141,7 @@ Future versions aim to expand CoreSystem.Resilience with additional pipeline and
 
 ---
 
-## Ecosystem Integration
+### Ecosystem Integration
 
 * [ ] HTTP client integration
 * [ ] Messaging integration
@@ -150,7 +150,7 @@ Future versions aim to expand CoreSystem.Resilience with additional pipeline and
 
 ---
 
-# 💡 Future Strategies
+## 💡 Future Strategies
 
 The pipeline architecture allows new resilience strategies to be introduced without changing the existing resilience pipeline abstraction.
 
@@ -165,7 +165,7 @@ Potential future strategies include:
 
 ---
 
-# Community Ideas
+## Community Ideas
 
 Ideas proposed by the community may be incorporated into future releases.
 
@@ -177,7 +177,7 @@ Suggestions are welcome through:
 
 ---
 
-# Release Strategy
+## Release Strategy
 
 The project follows Semantic Versioning.
 
@@ -190,7 +190,7 @@ The project follows Semantic Versioning.
 
 ---
 
-# Contributing
+## Contributing
 
 Contributions are always welcome.
 

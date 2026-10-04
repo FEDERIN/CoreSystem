@@ -8,7 +8,7 @@ CoreSystem.Resilience provides configuration for the circuit breaker while using
 
 ---
 
-# Why Use a Circuit Breaker?
+## Why Use a Circuit Breaker?
 
 When a dependency repeatedly fails, continuing to execute operations can increase failures and resource consumption.
 
@@ -23,7 +23,7 @@ This helps:
 
 ---
 
-# How It Works
+## How It Works
 
 The circuit breaker uses three states.
 
@@ -43,9 +43,9 @@ stateDiagram-v2
 
 ---
 
-# Circuit States
+## Circuit States
 
-## Closed
+### Closed
 
 The circuit operates normally and allows executions.
 
@@ -55,7 +55,7 @@ When the configured failure conditions are reached, the circuit transitions to *
 
 ---
 
-## Open
+### Open
 
 The circuit prevents executions from reaching the protected operation.
 
@@ -63,7 +63,7 @@ After the configured `BreakDuration` has elapsed, the circuit can transition to 
 
 ---
 
-## Half-Open
+### Half-Open
 
 The circuit allows an execution to determine whether the dependency has recovered.
 
@@ -73,7 +73,7 @@ If it fails according to the configured exception handling rules, the circuit ca
 
 ---
 
-# Configuring a Circuit Breaker
+## Configuring a Circuit Breaker
 
 ```csharp
 builder.Services.AddCoreResilience(options =>
@@ -96,7 +96,7 @@ The circuit breaker is only added when `CircuitBreakerOptions.Enabled` is `true`
 
 ---
 
-# Configuration Options
+## Configuration Options
 
 | Option                 | Description                                                              | Default      |
 | ---------------------- | ------------------------------------------------------------------------ | ------------ |
@@ -109,7 +109,7 @@ The circuit breaker is only added when `CircuitBreakerOptions.Enabled` is `true`
 
 ---
 
-# Execution Flow
+## Execution Flow
 
 ```mermaid
 flowchart TD
@@ -139,7 +139,7 @@ flowchart TD
 
 ---
 
-# Handling Exceptions
+## Handling Exceptions
 
 The Circuit Breaker can be configured with specific exception types.
 
@@ -161,7 +161,7 @@ Only the configured exception types are considered by the Circuit Breaker.
 
 ---
 
-## Matching Inner Exceptions
+### Matching Inner Exceptions
 
 By default, exception matching only considers the exception being evaluated.
 
@@ -179,7 +179,7 @@ With this option enabled, the framework searches the exception chain and also ha
 
 ---
 
-# Built-in Metrics
+## Built-in Metrics
 
 CoreSystem.Resilience records Circuit Breaker state transitions through `System.Diagnostics.Metrics`.
 
@@ -193,7 +193,7 @@ These metrics are recorded by the internal `ResilienceMetrics` component.
 
 ---
 
-# Combining with Other Strategies
+## Combining with Other Strategies
 
 The framework builds configured strategies in the following order:
 
@@ -219,7 +219,7 @@ The Circuit Breaker can therefore be combined with Retry and Timeout when all th
 
 ---
 
-# Best Practices
+## Best Practices
 
 ✅ Configure the failure ratio according to the expected behavior of the dependency.
 
@@ -233,7 +233,7 @@ The Circuit Breaker can therefore be combined with Retry and Timeout when all th
 
 ---
 
-# Summary
+## Summary
 
 The Circuit Breaker strategy prevents repeated executions when a configured failure threshold is reached.
 

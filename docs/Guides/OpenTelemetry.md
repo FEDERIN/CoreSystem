@@ -10,13 +10,11 @@
 
 ## Meter Names
 
-CoreSystem.Cache
-
 CoreSystem.Resilience
 
 CoreSystem.Http
 
-CoreSystem.Idempotency
+CoreSystem.RateLimiting
 
 ...
 

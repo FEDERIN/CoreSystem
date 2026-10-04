@@ -1,5 +1,3 @@
-using Core.Cache.DependencyInjection;
-using Core.Idempotency.DependencyInjection;
 using Core.Observability;
 using CoreSystem.Samples.Core.Interfaces;
 using CoreSystem.Samples.Core.Services;
@@ -24,13 +22,11 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 app.UseObservabilityEndpoints();
-app.UseCoreIdempotency();
-app.UseCoreCache();
 
 try
 {
     app.MapControllers();
-    Log.Information("Starting web host with Observability and Idempotency");
+    Log.Information("Starting web host with Observability");
     app.Run();
 }
 catch (Exception ex)

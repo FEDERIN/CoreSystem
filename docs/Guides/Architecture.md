@@ -17,17 +17,17 @@ The primary goals of CoreSystem are:
 
 ---
 
-# Design Principles
+## Design Principles
 
 CoreSystem follows a consistent set of architectural principles across all packages.
 
-## Single Responsibility
+### Single Responsibility
 
 Each package focuses on solving a specific problem.
 
 Examples:
 
-* **CoreSystem.Cache** provides distributed caching.
+* **CoreSystem.RateLimiting** provides rate limiting.
 * **CoreSystem.Resilience** provides resilience pipelines.
 * **CoreSystem.Http** provides reusable HTTP infrastructure.
 * **CoreSystem.Serialization** provides serialization services.
@@ -35,7 +35,7 @@ Examples:
 
 ---
 
-## Modular Architecture
+### Modular Architecture
 
 Packages are designed to be consumed independently whenever possible.
 
@@ -43,12 +43,12 @@ Applications only install the packages they require.
 
 ---
 
-## Dependency Injection First
+### Dependency Injection First
 
 Every package integrates naturally with the Microsoft dependency injection ecosystem.
 
 ```csharp
-builder.Services.AddCoreCache();
+builder.Services.AddCoreRateLimiting();
 
 builder.Services.AddCoreResilience();
 
@@ -57,7 +57,7 @@ builder.Services.AddCoreObservability();
 
 ---
 
-## Extensibility
+### Extensibility
 
 CoreSystem exposes public abstractions that allow applications to customize behavior without modifying the framework.
 
@@ -65,7 +65,7 @@ Extension points are implemented through contracts and dependency injection.
 
 ---
 
-## Optional Components
+### Optional Components
 
 CoreSystem is intentionally modular.
 
@@ -73,7 +73,7 @@ Not every application requires every package.
 
 For example:
 
-* An application may use **CoreSystem.Cache** without **CoreSystem.Observability**.
+* An application may use **CoreSystem.Serialization** without **CoreSystem.Observability**.
 * An application may use **CoreSystem.Http** independently.
 * An application may only require **CoreSystem.Resilience**.
 
@@ -81,7 +81,7 @@ Applications decide which packages to include based on their requirements.
 
 ---
 
-# Ecosystem Overview
+## Ecosystem Overview
 
 ```text
                            Applications
@@ -89,24 +89,14 @@ Applications decide which packages to include based on their requirements.
         ┌─────────────────────────┼─────────────────────────┐
         │                         │                         │
         ▼                         ▼                         ▼
-   CoreSystem.Cache              CoreSystem.Idempotency         CoreSystem.Resilience
+   CoreSystem.Http     CoreSystem.Memory      CoreSystem.Serialization
+   CoreSystem.RateLimiting      CoreSystem.Redis    CoreSystem.Http.ProblemDetails
         │                         │                         │
-        │                         │                         │
-        ├──────────────┐          │                         │
-        ▼              ▼          ▼                         ▼
-   CoreSystem.Memory     CoreSystem.Http  CoreSystem.Serialization
-
-────────────────────────────────────────────────────────────
-
-                    Shared Contracts
-
-          CoreSystem.Observability.Abstractions
-
-────────────────────────────────────────────────────────────
-
-                  Optional Infrastructure
-
-                 CoreSystem.Observability
+        ▼                         ▼                         ▼
+   CoreSystem.Resilience ──────►  CoreSystem.Observability.Abstractions
+                                  ▲
+                                  │
+                        CoreSystem.Observability
 ```
 
 The diagram illustrates the logical organization of the CoreSystem ecosystem.
@@ -117,11 +107,11 @@ Applications decide which optional packages should be registered.
 
 ---
 
-# Shared Contracts
+## Shared Contracts
 
 Some capabilities are shared through abstraction packages.
 
-## CoreSystem.Observability.Abstractions
+### CoreSystem.Observability.Abstractions
 
 This package defines the contracts used by the observability infrastructure.
 
@@ -134,9 +124,9 @@ The package contains interfaces only and does not provide runtime implementation
 
 ---
 
-# Optional Infrastructure
+## Optional Infrastructure
 
-## CoreSystem.Observability
+### CoreSystem.Observability
 
 CoreSystem.Observability provides a complete implementation for application observability.
 
@@ -156,22 +146,20 @@ This approach keeps the remaining packages lightweight while still providing a r
 
 ---
 
-# Package Responsibilities
+## Package Responsibilities
 
-## CoreSystem.Cache
+### CoreSystem.RateLimiting
 
 Responsibilities:
 
-* Distributed caching
-* Cache-aside pattern
-* HTTP response caching
-* Cache invalidation
-* Health checks
+* Rate limiting policies
+* Per-user / per-IP throttling
+* Rate limiting metrics
 * Extensibility
 
 ---
 
-## CoreSystem.Resilience
+### CoreSystem.Resilience
 
 Responsibilities:
 
@@ -182,7 +170,7 @@ Responsibilities:
 
 ---
 
-## CoreSystem.Http
+### CoreSystem.Http
 
 Responsibilities:
 
@@ -193,17 +181,18 @@ Responsibilities:
 
 ---
 
-## CoreSystem.Idempotency
+### CoreSystem.Http.ProblemDetails
 
 Responsibilities:
 
-* Request fingerprinting
-* Response replay
-* Idempotency storage
+* RFC 9457 problem details
+* Exception-to-problem mapping
+* Correlation identifiers
+* Error response middleware
 
 ---
 
-## CoreSystem.Memory
+### CoreSystem.Memory
 
 Responsibilities:
 
@@ -212,16 +201,16 @@ Responsibilities:
 
 ---
 
-## CoreSystem.Redis
+### CoreSystem.Redis
 
 Responsibilities:
 
 * Redis integration
-* Distributed cache support
+* Distributed locking support
 
 ---
 
-## CoreSystem.Serialization
+### CoreSystem.Serialization
 
 Responsibilities:
 
@@ -231,7 +220,7 @@ Responsibilities:
 
 ---
 
-## CoreSystem.Observability
+### CoreSystem.Observability
 
 Responsibilities:
 
@@ -243,7 +232,7 @@ Responsibilities:
 
 ---
 
-# Architecture Layers
+## Architecture Layers
 
 CoreSystem can be viewed as a layered architecture.
 
@@ -252,7 +241,7 @@ Applications
       │
       ▼
 Feature Packages
-(Cache, Idempotency)
+(RateLimiting, Http.ProblemDetails)
 
       │
       ▼
@@ -279,7 +268,7 @@ These layers describe the conceptual organization of the ecosystem rather than s
 
 ---
 
-# Architecture Goals
+## Architecture Goals
 
 CoreSystem is designed to provide:
 
@@ -296,14 +285,14 @@ CoreSystem is designed to provide:
 
 ---
 
-# Next Steps
+## Next Steps
 
 After understanding the overall architecture, continue with the documentation for each package.
 
-* CoreSystem.Cache
+* CoreSystem.RateLimiting
 * CoreSystem.Resilience
 * CoreSystem.Http
-* CoreSystem.Idempotency
+* CoreSystem.Http.ProblemDetails
 * CoreSystem.Memory
 * CoreSystem.Redis
 * CoreSystem.Serialization

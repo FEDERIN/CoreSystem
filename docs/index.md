@@ -25,10 +25,9 @@ CoreSystem helps developers build applications that are:
 
 | Package            | Description                                                                                       |
 | ------------------ | ------------------------------------------------------------------------------------------------- |
-| Core.Cache         | Distributed and in-memory caching with HTTP caching, tag invalidation, and automatic rehydration. |
 | Core.Resilience    | Retry, timeout, circuit breaker, fallback, and resilience pipelines.                              |
 | Core.Http          | HTTP abstractions and middleware for modern applications.                                         |
-| Core.Idempotency   | Request deduplication and response replay for APIs.                                               |
+| Core.RateLimiting  | Configurable rate limiting with metrics and policy-based throttling.                              |
 | Core.Memory        | High-performance keyed asynchronous locks.                                                        |
 | Core.Redis         | Redis integration shared across the ecosystem.                                                    |
 | Core.Serialization | Unified serialization abstractions.                                                               |
@@ -40,14 +39,14 @@ CoreSystem helps developers build applications that are:
 
 Choose a package to get started:
 
-* Cache
 * Resilience
+* Rate Limiting
 * Http
-* Idempotency
 * Memory
 * Redis
 * Serialization
 * Observability
+* External projects (Cache, Idempotency)
 
 ---
 

@@ -15,7 +15,7 @@ By the end of this guide you will know how to:
 
 ---
 
-# 📋 Prerequisites
+## 📋 Prerequisites
 
 Before getting started, ensure you have:
 
@@ -25,7 +25,7 @@ Before getting started, ensure you have:
 
 ---
 
-# 📦 Step 1 — Install the Package
+## 📦 Step 1 — Install the Package
 
 Install the NuGet package.
 
@@ -35,7 +35,7 @@ dotnet add package CoreSystem.Resilience
 
 ---
 
-# ⚙️ Step 2 — Register the Framework
+## ⚙️ Step 2 — Register the Framework
 
 Register **CoreSystem.Resilience** in the dependency injection container.
 
@@ -76,7 +76,7 @@ The strategies are applied in the framework-defined order:
 
 ---
 
-# 🧩 Step 3 — Resolve a Pipeline
+## 🧩 Step 3 — Resolve a Pipeline
 
 Inject `IResiliencePipelineProvider` into your service.
 
@@ -95,7 +95,7 @@ If the requested pipeline has not been registered, the provider throws `Resilien
 
 ---
 
-# ▶️ Step 4 — Execute an Operation
+## ▶️ Step 4 — Execute an Operation
 
 Protect an asynchronous operation by executing it through the pipeline.
 
@@ -112,7 +112,7 @@ The operation receives the `CancellationToken` provided by the resilience pipeli
 
 ---
 
-# 🛡 Adding Multiple Strategies
+## 🛡 Adding Multiple Strategies
 
 Pipelines may contain one or more resilience strategies.
 
@@ -146,6 +146,6 @@ Only configured and enabled strategies are added to the pipeline.
 
 The core currently provides:
 
-- Retry
-- Timeout
-- Circuit Breaker
+- [Retry](./Retry.md)
+- [Timeout](./Timeout.md)
+- [Circuit Breaker](./CircuitBreaker.md)

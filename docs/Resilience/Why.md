@@ -62,4 +62,4 @@ Different workloads can use different `PipelineType` configurations while sharin
 
 ## Next Steps
 
-Continue with the **Architecture** section to understand how resilience pipelines are constructed, registered, resolved, and executed internally.
+Continue with the [**Architecture**](./Architecture.md) section to understand how resilience pipelines are constructed, registered, resolved, and executed internally.

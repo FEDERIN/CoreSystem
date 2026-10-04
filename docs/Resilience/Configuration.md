@@ -13,7 +13,7 @@ You'll learn how to:
 
 ---
 
-# Configuration Overview
+## Configuration Overview
 
 The framework is configured through the `AddCoreResilience()` extension.
 
@@ -36,7 +36,7 @@ The available pipeline types provided by the core are:
 
 ---
 
-# Creating a Pipeline
+## Creating a Pipeline
 
 Register a new pipeline by specifying its type and configuring the desired strategies.
 
@@ -69,7 +69,7 @@ The framework builds the configured pipelines when the pipeline registry is init
 
 ---
 
-# Registering Multiple Pipelines
+## Registering Multiple Pipelines
 
 Applications can register multiple independent resilience pipelines.
 
@@ -98,7 +98,7 @@ Each pipeline can be resolved independently through `IResiliencePipelineProvider
 
 ---
 
-# Retry Configuration
+## Retry Configuration
 
 Configure retry behavior for selected exceptions.
 
@@ -149,7 +149,7 @@ Supported backoff types are:
 
 ---
 
-# Timeout Configuration
+## Timeout Configuration
 
 Configure the maximum execution time allowed for protected operations.
 
@@ -172,7 +172,7 @@ Unlike Retry and Circuit Breaker, Timeout does not have an `Enabled` property. T
 
 ---
 
-# Circuit Breaker Configuration
+## Circuit Breaker Configuration
 
 Protect downstream operations by temporarily blocking requests after repeated failures.
 
@@ -217,7 +217,7 @@ pipeline.CircuitBreaker = new CircuitBreakerOptions
 
 ---
 
-# Handling Exceptions
+## Handling Exceptions
 
 Retry and Circuit Breaker can be configured to handle specific exception types.
 
@@ -271,7 +271,7 @@ pipeline.CircuitBreaker = new CircuitBreakerOptions
 
 ---
 
-# Disabling Resilience
+## Disabling Resilience
 
 Resilience can be disabled globally through `ResilienceOptions.Enabled`.
 
@@ -288,7 +288,7 @@ The returned pipeline executes the supplied operation directly without applying 
 
 ---
 
-# Resolving Pipelines
+## Resolving Pipelines
 
 Resolve a configured pipeline using dependency injection.
 
@@ -313,8 +313,9 @@ await _pipeline.ExecuteAsync(async cancellationToken =>
 If the requested pipeline has not been registered, `IResiliencePipelineProvider` throws `ResiliencePipelineNotFoundException`.
 
 ---
+## Recommended Settings
 
-## Staging
+### Staging
 
 | Strategy        | Recommendation                                                      |
 | --------------- | ------------------------------------------------------------------- |
@@ -324,7 +325,7 @@ If the requested pipeline has not been registered, `IResiliencePipelineProvider`
 
 ---
 
-## Production
+### Production
 
 | Strategy        | Recommendation                                                  |
 | --------------- | --------------------------------------------------------------- |
@@ -336,7 +337,7 @@ If the requested pipeline has not been registered, `IResiliencePipelineProvider`
 
 ---
 
-# Best Practices
+## Best Practices
 
 ✅ Configure one pipeline for each infrastructure workload.
 

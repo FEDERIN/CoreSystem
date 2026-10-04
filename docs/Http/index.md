@@ -18,6 +18,6 @@ development.
 
 ## 📚 Table of Contents
 
-- 🚀 Getting Started
-- ❓ Why CoreSystem.Http?
-- 🏗️ Architecture
+- 🚀 [Getting Started](./GettingStarted.md)
+- ❓ [Why CoreSystem.Http?](./Why.md)
+- 🏗️ [Architecture](./Architecture.md)

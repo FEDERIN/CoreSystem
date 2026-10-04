@@ -8,7 +8,7 @@ Timeouts help prevent slow or unresponsive dependencies from consuming applicati
 
 ---
 
-# Why Use a Timeout?
+## Why Use a Timeout?
 
 External dependencies such as databases, Redis, HTTP services, or message brokers may occasionally become slow or stop responding.
 
@@ -23,7 +23,7 @@ A timeout ensures that operations do not continue indefinitely when the configur
 
 ---
 
-# Basic Configuration
+## Basic Configuration
 
 Configure a timeout when building a pipeline.
 
@@ -44,7 +44,7 @@ In this example, operations that exceed two seconds are cancelled by the timeout
 
 ---
 
-# Executing an Operation
+## Executing an Operation
 
 Resolve the pipeline and execute the protected operation.
 
@@ -62,7 +62,7 @@ The operation receives the cancellation token supplied by the resilience pipelin
 
 ---
 
-# Execution Flow
+## Execution Flow
 
 ```mermaid
 sequenceDiagram
@@ -98,7 +98,7 @@ end
 
 ---
 
-# Configuration Options
+## Configuration Options
 
 | Property | Description                                       | Default      |
 | -------- | ------------------------------------------------- | ------------ |
@@ -108,7 +108,7 @@ The timeout must be greater than zero. Assigning a zero or negative value throws
 
 ---
 
-# Typical Scenarios
+## Typical Scenarios
 
 Timeouts can be used for operations that depend on external systems.
 
@@ -125,7 +125,7 @@ The specific dependency integration is outside the scope of this package.
 
 ---
 
-# Combining Strategies
+## Combining Strategies
 
 Timeout can be combined with Retry and Circuit Breaker.
 
@@ -151,7 +151,7 @@ This order is defined by the internal strategy ordering used when the pipeline i
 
 ---
 
-# Timeout Metrics
+## Timeout Metrics
 
 The framework defines a metric for timeout events.
 
@@ -169,7 +169,7 @@ The framework also defines a pipeline execution duration histogram:
 
 ---
 
-# Best Practices
+## Best Practices
 
 ✅ Configure timeouts according to the expected execution time of the operation.
 
@@ -183,7 +183,7 @@ The framework also defines a pipeline execution duration histogram:
 
 ---
 
-# Common Pitfalls
+## Common Pitfalls
 
 Avoid configuring timeouts that are:
 
@@ -199,7 +199,7 @@ Choose a timeout value appropriate for the operation being protected.
 
 ---
 
-# Summary
+## Summary
 
 The Timeout strategy prevents protected operations from running longer than the configured duration.
 

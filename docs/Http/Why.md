@@ -66,4 +66,4 @@ If your feature needs to inspect or reproduce an HTTP response, CoreSystem.Http 
 
 ## Next Steps
 
-Continue with the **Architecture** section to understand how response capture and replay are separated and how CoreSystem.Http integrates with the ASP.NET Core request pipeline.
+Continue with the [**Architecture**](./Architecture.md) section to understand how response capture and replay are separated and how CoreSystem.Http integrates with the ASP.NET Core request pipeline.

@@ -12,10 +12,9 @@ Describe the standard registration pattern used by all CoreSystem packages.
 
 Example:
 
-- AddCoreCache()
 - AddCoreResilience()
 - AddCoreHttp()
-- AddCoreIdempotency()
+- AddCoreRateLimiting()
 - AddCoreMemory()
 - AddCoreRedis()
 
@@ -27,7 +26,7 @@ Explain how each package uses the Options pattern.
 
 Example:
 
-builder.Services.AddCoreCache(options =>
+builder.Services.AddCoreResilience(options =>
 {
     ...
 });
@@ -59,13 +58,9 @@ Describe how packages depend on each other.
 ```mermaid
 graph TD
 
-    Cache[CoreSystem.Cache]
-    Cache --> Http[CoreSystem.Http]
-    Cache --> Serialization[CoreSystem.Serialization]
-    Cache --> Memory[CoreSystem.Memory]
-    Cache --> Redis[CoreSystem.Redis]
-    Cache --> Resilience[CoreSystem.Resilience]
-    Cache --> Observability[CoreSystem.Observability]
+    Resilience[CoreSystem.Resilience] --> Abstractions[CoreSystem.Observability.Abstractions]
+    RateLimiting[CoreSystem.RateLimiting] --> Abstractions
+    Observability[CoreSystem.Observability] --> Abstractions
 ```
 ---
 
