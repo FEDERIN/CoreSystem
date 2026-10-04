@@ -4,7 +4,7 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 
 ## What changed recently
 
-- `CoreSystem.Cache*` and `CoreSystem.Idempotency*` are no longer in this repo. Their pins in `Directory.Packages.props` were removed and the samples no longer reference them.
+- `CoreSystem.Cache*` and `CoreSystem.Idempotency*` belong to the ecosystem but live in their own repos (see `docs/External/index.md`). Do not re-create or re-suggest them here (also noted in AGENTS.md).
 - Their docs are treated as external projects: everything related lives in `docs/External/index.md`.
 - `samples/` consumes published NuGet packages except its internal ProjectReferences (`Samples.Core`, `Samples.Infrastructure`). They do not validate changes in `src/`.
 - The Dockerfile path in `samples/CoreSystem.Samples.Api/docker-compose.yml` used to point to `samples/Minimal.Test.Api/Dockerfile` (broken); it now points to `samples/CoreSystem.Samples.Api/Dockerfile`.
