@@ -42,7 +42,7 @@ This section contains benchmark results for CoreSystem packages.
 
 Examples include:
 
-- Cache performance
+- Rate limiting policies
 - Memory provider
 - Redis provider
 - Serialization performance
@@ -66,11 +66,11 @@ Examples include:
 - Prefer async/await for I/O.
 - Do not mix synchronous and asynchronous APIs.
 
-### Caching
+### Resilience
 
-- Cache frequently accessed data.
-- Configure sensible expiration policies.
-- Use distributed caching only when necessary.
+- Use timeouts on every outbound call.
+- Configure sensible retry policies.
+- Measure retry and timeout overhead before tuning.
 
 ### Serialization
 
@@ -95,7 +95,7 @@ Examples include:
 - Memory usage vs. CPU utilization
 - Throughput vs. latency
 - Retry count vs. response time
-- Cache freshness vs. cache hit ratio
+- Concurrency vs. throughput
 
 Understanding these trade-offs helps select the appropriate configuration for each application.
 

@@ -61,16 +61,6 @@
           "Grpc.Core.Api": "2.70.0"
         }
       },
-      "MessagePack.Annotations": {
-        "type": "Transitive",
-        "resolved": "3.1.8",
-        "contentHash": "SitOtZ4tOlAZZPF7p52M7143F+Cuz7o/aU0MrtAXX0+ZkPXzDNroOFhzzE2ogMFThsoEW/E6akXVVcBFM9ZKaw=="
-      },
-      "MessagePackAnalyzer": {
-        "type": "Transitive",
-        "resolved": "3.1.8",
-        "contentHash": "Vm4g0cR4YRKRchEOmMJ0uVFU6yxdg7cJa2KHv3SUAHEsdYKvMpHMF5A1hZfsix89ymD5cmuzRnw9a6dKMcvq+Q=="
-      },
       "Microsoft.Bcl.Cryptography": {
         "type": "Transitive",
         "resolved": "8.0.0",
@@ -239,11 +229,6 @@
           "Microsoft.IdentityModel.Logging": "8.16.0"
         }
       },
-      "Microsoft.NET.StringTools": {
-        "type": "Transitive",
-        "resolved": "17.11.4",
-        "contentHash": "mudqUHhNpeqIdJoUx2YDWZO/I9uEDYVowan89R6wsomfnUJQk6HteoQTlNjZDixhT2B4IXMkMtgZtoceIjLRmA=="
-      },
       "Microsoft.SqlServer.Server": {
         "type": "Transitive",
         "resolved": "1.0.0",
@@ -256,14 +241,6 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
           "OpenTelemetry.Api": "1.19.0"
-        }
-      },
-      "Pipelines.Sockets.Unofficial": {
-        "type": "Transitive",
-        "resolved": "2.2.16",
-        "contentHash": "nonu9l0YrZH6krVYbskBjE7uG0VMAnvOQ9PU+RmzUsy+++vHkqzzCkHRoP877OiA3iRTxJyNDLfpcU8hrJ3/YQ==",
-        "dependencies": {
-          "System.IO.Pipelines": "8.0.0"
         }
       },
       "Polly.Core": {
@@ -358,16 +335,6 @@
           "Microsoft.IdentityModel.Tokens": "8.16.0"
         }
       },
-      "System.IO.Hashing": {
-        "type": "Transitive",
-        "resolved": "10.0.2",
-        "contentHash": "AKJknIFi9O3+rGExxTry188JPvUoZAPcCtS2qdqyFhIzsxQ1Ap94BeGDG0VzVEHakhmRxmJtVih6TsHoghIt/g=="
-      },
-      "System.IO.Pipelines": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "FHNOatmUq0sqJOkTx+UF/9YK1f180cnW5FVqnQMvYUN0elp6wFzbtPSiqbo1/ru8ICp43JM1i7kKkk6GsNGHlA=="
-      },
       "System.Security.Cryptography.Pkcs": {
         "type": "Transitive",
         "resolved": "8.0.1",
@@ -384,146 +351,8 @@
       "coresystem.samples.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Cache.Redis": "[2.0.2, )",
-          "CoreSystem.Idempotency.PostgreSql": "[2.0.0, )",
-          "CoreSystem.Idempotency.Redis": "[2.0.0, )",
+          "CoreSystem.Resilience": "[2.0.0, )",
           "CoreSystem.Samples.Core": "[1.0.0, )"
-        }
-      },
-      "CoreSystem.Cache": {
-        "type": "CentralTransitive",
-        "requested": "[2.0.2, )",
-        "resolved": "2.0.2",
-        "contentHash": "W2w0wyYS2dxOFwWRDQU2X51cdxJf6phmhMc1nJjHNfDZoJ0bCRRLyEAuN2xPPtwnq/KwK6jDzKN0T89ThDwmQg==",
-        "dependencies": {
-          "CoreSystem.Http": "1.0.6",
-          "CoreSystem.Memory": "1.0.0",
-          "CoreSystem.Resilience": "2.0.0",
-          "CoreSystem.Serialization": "1.2.0"
-        }
-      },
-      "CoreSystem.Cache.Redis": {
-        "type": "CentralTransitive",
-        "requested": "[2.0.2, )",
-        "resolved": "2.0.2",
-        "contentHash": "zY6uIjkqq+uVX2AdkcxbxMndNV+vIDeLwKMropR8ZTnlJweCXOb9r4u5WFbjAIsiisDnZEcUpNxYUtcMV0Y7nA==",
-        "dependencies": {
-          "CoreSystem.Cache": "2.0.2",
-          "CoreSystem.Cache.Rehydration": "2.0.2",
-          "CoreSystem.Http": "1.0.6",
-          "CoreSystem.Memory": "1.0.0",
-          "CoreSystem.Redis": "1.0.0",
-          "CoreSystem.Resilience": "2.0.0",
-          "CoreSystem.Serialization": "1.2.0"
-        }
-      },
-      "CoreSystem.Cache.Rehydration": {
-        "type": "CentralTransitive",
-        "requested": "[2.0.2, )",
-        "resolved": "2.0.2",
-        "contentHash": "5Ec1uTKg/nyW8eCfZopxAcXzJY4r/3r9Mi1Gl+Jmr/OMIeeCgiAxTV+xxcxQBoXtcyb6lQcX0qSKzjhEOTIIHQ==",
-        "dependencies": {
-          "CoreSystem.Cache": "2.0.2",
-          "CoreSystem.Http": "1.0.6",
-          "CoreSystem.Memory": "1.0.0",
-          "CoreSystem.Resilience": "2.0.0",
-          "CoreSystem.Serialization": "1.2.0"
-        }
-      },
-      "CoreSystem.Http": {
-        "type": "CentralTransitive",
-        "requested": "[1.0.6, )",
-        "resolved": "1.0.6",
-        "contentHash": "dMvLo/Mc0WvPU4ehPTxqLX+tOyPYBdfHA4a6Wql+T522LaX2goruNrb738IgV2UFp6vd7SOJLKgEvB9RvVGRGQ==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2"
-        }
-      },
-      "CoreSystem.Idempotency": {
-        "type": "CentralTransitive",
-        "requested": "[2.0.0, )",
-        "resolved": "2.0.0",
-        "contentHash": "suvynWe3Qy0OEeK5r3uixsBWWb94OkhlEfu909EyO1y4QB+BUjnql+6vO4zBghmydxOeQ/JM2ms/X65RDWDvLA==",
-        "dependencies": {
-          "CoreSystem.Http": "1.0.6",
-          "CoreSystem.Observability.Abstractions": "1.0.0",
-          "CoreSystem.Serialization": "1.2.0",
-          "MessagePack": "3.1.8",
-          "Microsoft.Extensions.Configuration": "8.0.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "8.0.2",
-          "Microsoft.Extensions.DependencyInjection": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
-          "Microsoft.Extensions.Options": "8.0.2",
-          "OpenTelemetry": "1.15.3",
-          "OpenTelemetry.Api": "1.15.3",
-          "OpenTelemetry.Extensions.Hosting": "1.15.3",
-          "protobuf-net": "3.2.56",
-          "protobuf-net.Core": "3.2.56"
-        }
-      },
-      "CoreSystem.Idempotency.PostgreSql": {
-        "type": "CentralTransitive",
-        "requested": "[2.0.0, )",
-        "resolved": "2.0.0",
-        "contentHash": "RRYeii4HrYZV2Z3tvBYCEcxoziFjjEHjOgcYtt315tl5YHv7OB5z3UVlv9Olg+Z7/aUXUtYMEroHUZV2EANLzA==",
-        "dependencies": {
-          "CoreSystem.Http": "1.0.6",
-          "CoreSystem.Idempotency": "2.0.0",
-          "CoreSystem.Observability.Abstractions": "1.0.0",
-          "CoreSystem.Serialization": "1.2.0",
-          "Dapper": "2.1.79",
-          "MessagePack": "3.1.8",
-          "Microsoft.Extensions.Configuration": "8.0.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "8.0.2",
-          "Microsoft.Extensions.DependencyInjection": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
-          "Microsoft.Extensions.Options": "8.0.2",
-          "Npgsql": "8.0.3",
-          "OpenTelemetry": "1.15.3",
-          "OpenTelemetry.Api": "1.15.3",
-          "OpenTelemetry.Extensions.Hosting": "1.15.3",
-          "protobuf-net": "3.2.56",
-          "protobuf-net.Core": "3.2.56"
-        }
-      },
-      "CoreSystem.Idempotency.Redis": {
-        "type": "CentralTransitive",
-        "requested": "[2.0.0, )",
-        "resolved": "2.0.0",
-        "contentHash": "+mXkbvMo8ksQvIbnj8e94VuTg3W7tnuCbpQ+Bzh5GC4LtqwFEp+yHFVD2lBSz07ooBdjc/WTat/qjiQqWiG51A==",
-        "dependencies": {
-          "CoreSystem.Http": "1.0.6",
-          "CoreSystem.Idempotency": "2.0.0",
-          "CoreSystem.Observability.Abstractions": "1.0.0",
-          "CoreSystem.Redis": "1.0.0",
-          "CoreSystem.Serialization": "1.2.0",
-          "MessagePack": "3.1.8",
-          "Microsoft.Extensions.Configuration": "8.0.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "8.0.2",
-          "Microsoft.Extensions.DependencyInjection": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
-          "Microsoft.Extensions.Options": "8.0.2",
-          "OpenTelemetry": "1.15.3",
-          "OpenTelemetry.Api": "1.15.3",
-          "OpenTelemetry.Extensions.Hosting": "1.15.3",
-          "StackExchange.Redis": "2.13.1",
-          "protobuf-net": "3.2.56",
-          "protobuf-net.Core": "3.2.56"
-        }
-      },
-      "CoreSystem.Memory": {
-        "type": "CentralTransitive",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "g0XKS5e6+CYlAQpac88rH9CFHljPIcpHEmKDCtRwoRgmnNLJ+ooyWezM6sK6Tw64VgpekBPczBOx3kSjL3GQVg==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2"
         }
       },
       "CoreSystem.Observability.Abstractions": {
@@ -536,16 +365,6 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
           "Microsoft.Extensions.Options": "8.0.2"
-        }
-      },
-      "CoreSystem.Redis": {
-        "type": "CentralTransitive",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "/BVlUVXAOEpiYYJ0NLZnCJa/X5dfaeCrTxHHpBrKjsA+vxpNsbWF+WQQtev85E2KbRfDILZlEBZbOnYVUcojpQ==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "StackExchange.Redis": "2.13.1"
         }
       },
       "CoreSystem.Resilience": {
@@ -566,36 +385,6 @@
           "OpenTelemetry.Api": "1.15.3",
           "OpenTelemetry.Extensions.Hosting": "1.15.3",
           "Polly": "8.7.0"
-        }
-      },
-      "CoreSystem.Serialization": {
-        "type": "CentralTransitive",
-        "requested": "[1.2.0, )",
-        "resolved": "1.2.0",
-        "contentHash": "iK4qNShDzRdRz/QMunS6PonoMZ9LO5GKQSbpqEzOUIqcWQp/jLftaLW91718NrfgTDsS7vRFJSEJBrYCw8M9vA==",
-        "dependencies": {
-          "MessagePack": "3.1.7",
-          "Microsoft.Extensions.DependencyInjection": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "protobuf-net": "3.2.56",
-          "protobuf-net.Core": "3.2.56"
-        }
-      },
-      "Dapper": {
-        "type": "CentralTransitive",
-        "requested": "[2.1.79, )",
-        "resolved": "2.1.79",
-        "contentHash": "8YijbzgTfmqmQOnVNorYM6K++pxqnW3nJ4aC1sRHzxUA2CcuoJ9gsTem3kgBnPRMc38zZHl4Esb6hAezXIEEuw=="
-      },
-      "MessagePack": {
-        "type": "CentralTransitive",
-        "requested": "[3.1.8, )",
-        "resolved": "3.1.8",
-        "contentHash": "Qk2q+9FVxnMSp+NQ9y3SLz3HqWe7Rg3KRMHhBX28FkKUoOeP9YIU86mA4pFOxDDjUIRA9e7Ssbxs/LwWUcAzPw==",
-        "dependencies": {
-          "MessagePack.Annotations": "3.1.8",
-          "MessagePackAnalyzer": "3.1.8",
-          "Microsoft.NET.StringTools": "17.11.4"
         }
       },
       "Microsoft.Data.SqlClient": {
@@ -704,15 +493,6 @@
           "Microsoft.Extensions.Primitives": "8.0.0"
         }
       },
-      "Npgsql": {
-        "type": "CentralTransitive",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "6WEmzsQJCZAlUG1pThKg/RmeF6V+I0DmBBBE/8YzpRtEzhyZzKcK7ulMANDm5CkxrALBEC8H+5plxHWtIL7xnA==",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
-        }
-      },
       "OpenTelemetry": {
         "type": "CentralTransitive",
         "requested": "[1.19.0, )",
@@ -803,21 +583,6 @@
           "Polly.Core": "8.7.0"
         }
       },
-      "protobuf-net": {
-        "type": "CentralTransitive",
-        "requested": "[3.2.56, )",
-        "resolved": "3.2.56",
-        "contentHash": "4IPJeTYAMNewlN8MDaFkcmR/9hLhJeo9eARnTh104zh7mf+vXT2gu5MUfUnkSQU+CH578Q6vcdU7LQDQPG6eaw==",
-        "dependencies": {
-          "protobuf-net.Core": "3.2.56"
-        }
-      },
-      "protobuf-net.Core": {
-        "type": "CentralTransitive",
-        "requested": "[3.2.56, )",
-        "resolved": "3.2.56",
-        "contentHash": "d6QOukTpDzs7zZv9tPnBZMtvHDNeHJQXUhMx54g4urUQsXK3oo9U70H9HvklYq7hlQ4A7AHJl7EVEqyCXXIl8Q=="
-      },
       "Serilog.AspNetCore": {
         "type": "CentralTransitive",
         "requested": "[8.0.3, )",
@@ -852,17 +617,6 @@
           "Google.Protobuf": "3.30.1",
           "Grpc.Net.Client": "2.70.0",
           "Serilog": "4.2.0"
-        }
-      },
-      "StackExchange.Redis": {
-        "type": "CentralTransitive",
-        "requested": "[2.13.1, )",
-        "resolved": "2.13.1",
-        "contentHash": "jC5wkRe8K6HPoDENUws+fl2d7+GKz+ky8SWEDzYzPx6hHt2EwxWm01gmYPWLzlT49jfYYap0guB5bExtyX9aIQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "Pipelines.Sockets.Unofficial": "2.2.16",
-          "System.IO.Hashing": "10.0.2"
         }
       },
       "System.Configuration.ConfigurationManager": {
