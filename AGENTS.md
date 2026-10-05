@@ -12,7 +12,7 @@
 - Package versions are managed centrally in `Directory.Packages.props`. Do not put `Version=` on `PackageReference`.
 - `Directory.Build.props` turns on `RestoreLockedMode`, and `packages.lock.json` files are committed. After adding, removing, or changing a package, run `dotnet restore CoreSystem.sln --use-lock-file --force-evaluate` and commit the updated lock files. Otherwise restore fails.
 - Most libraries reference each other as **NuGet packages**, not project references. For example, `Core.Resilience` and `Core.RateLimiting` use `PackageReference CoreSystem.Observability.Abstractions`, so local Abstractions changes do not reach them until that package is published and the central version is bumped.
-- Exception: `Core.Observability` uses a `ProjectReference` to Abstractions by default (`UseLocalObservabilityAbstractions=true`).
+- Exception: `Core.Observability` can use a `ProjectReference` to Abstractions by passing `-p:UseLocalObservabilityAbstractions=true` (defaults to false, i.e. the published NuGet package).
 
 ## Commands
 - Build/test everything: `dotnet build CoreSystem.sln` / `dotnet test CoreSystem.sln -c Release` (CI uses Release).
