@@ -2,6 +2,18 @@
   "version": 2,
   "dependencies": {
     "net8.0": {
+      "CoreSystem.Observability.Abstractions": {
+        "type": "Direct",
+        "requested": "[1.0.0, )",
+        "resolved": "1.0.0",
+        "contentHash": "6w85mkwo//o+F85a+lTi9Tu7s9M9e4z3B6z6wx5VQxWQJMo1lkgRFGtSAKOEQsrv94DS1aIE+H3HME31y8Mokg==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
+          "Microsoft.Extensions.Options": "8.0.2"
+        }
+      },
       "Microsoft.Data.SqlClient": {
         "type": "Direct",
         "requested": "[7.1.0, )",
@@ -422,12 +434,6 @@
         "type": "Transitive",
         "resolved": "8.0.0",
         "contentHash": "+TUFINV2q2ifyXauQXRwy4CiBhqvDEDZeVJU7qfxya4aRYOKzVBpN+4acx25VcPB9ywUN6C0n8drWl110PhZEg=="
-      },
-      "CoreSystem.Observability.Abstractions": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "[8.0.28, )"
-        }
       },
       "Microsoft.Extensions.Caching.Abstractions": {
         "type": "CentralTransitive",

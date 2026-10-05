@@ -13,7 +13,7 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 
 - `Core.Resilience` → `CoreSystem.Observability.Abstractions` (package)
 - `Core.RateLimiting` → `CoreSystem.Observability.Abstractions` (package)
-- `Core.Observability` → `Core.Observability.Abstractions` (project, via `UseLocalObservabilityAbstractions=true`)
+- `Core.Observability` → `CoreSystem.Observability.Abstractions` (package by default; ProjectReference only with `UseLocalObservabilityAbstractions=true`)
 - Everything else in `src/` has no internal dependencies.
 
 ## Debt / things to watch
