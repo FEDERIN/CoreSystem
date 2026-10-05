@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<UseLocalObservabilityAbstractions Condition="'$(UseLocalObservabilityAbstractions)' == ''">true</UseLocalObservabilityAbstractions>
+	<UseLocalObservabilityAbstractions Condition="'$(UseLocalObservabilityAbstractions)' == ''">false</UseLocalObservabilityAbstractions>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
