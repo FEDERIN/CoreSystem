@@ -1,0 +1,69 @@
+name: Samples Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - samples/**
+      - src/**
+      - Directory.Packages.props
+      - Directory.Build.props
+      - .github/workflows/samples-smoke.yml
+
+  pull_request:
+    branches: [main]
+    paths:
+      - samples/**
+      - src/**
+      - Directory.Packages.props
+      - Directory.Build.props
+      - .github/workflows/samples-smoke.yml
+
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start the compose stack (API + OTel collector)
+        working-directory: samples/CoreSystem.Samples.Api
+        run: docker compose up -d --build otel-collector minimal-api
+
+      - name: Wait for the API to become healthy
+        run: |
+          for i in $(seq 1 24); do
+            if curl -fsS http://localhost:5185/health; then
+              echo "API is healthy"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "API did not become healthy in time"
+          docker compose -f samples/CoreSystem.Samples.Api/docker-compose.yml logs minimal-api
+          exit 1
+
+      - name: Verify readiness endpoint
+        run: curl -fsS http://localhost:5185/ready
+
+      - name: Exercise the resilient GET endpoint
+        run: curl -fsS http://localhost:5185/api/Order/data/1
+
+      - name: Verify metrics flow through the OTel collector
+        run: |
+          # Give the app time to emit its first metrics batch (OTLP export interval)
+          sleep 75
+          curl -fsS http://localhost:8889/metrics | grep -q "aspnetcore_routing_match_attempts_total"
+
+      - name: Dump container logs on failure
+        if: failure()
+        working-directory: samples/CoreSystem.Samples.Api
+        run: docker compose logs --tail=100
+
+      - name: Tear down the stack
+        if: always()
+        working-directory: samples/CoreSystem.Samples.Api
+        run: docker compose down -v
