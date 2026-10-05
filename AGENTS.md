@@ -28,7 +28,7 @@
 
 ## Memory
 
-- At the start, read `.opencode/memory.md` to learn the current state of the project and past decisions.
+- At the start, read `MEMORY.md` to learn the current state of the project and past decisions.
 - When a task is finished, update it: current state, important decisions (with their rationale), and mistakes to avoid.
 - Keep it short (max ~50 lines): summarize or drop what no longer adds value.
 - If something becomes a permanent rule, propose moving it to `AGENTS.md` instead of keeping it in memory.
