@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.7.11811.120
@@ -147,7 +147,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http", "Http", "{F5B58E9E-4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Http.ProblemDetails", "src\Core.Http.ProblemDetails\Core.Http.ProblemDetails.csproj", "{5EA9F12D-43DC-4DC3-807D-454FF3E61003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Http.ProblemDetails.UniTests", "tests\Core.Http.ProblemDetails.UniTests\Core.Http.ProblemDetails.UniTests.csproj", "{E633AE5D-37C8-4F4A-8D1D-284C37FECB73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Http.ProblemDetails.UnitTests", "tests\Core.Http.ProblemDetails.UnitTests\Core.Http.ProblemDetails.UnitTests.csproj", "{E633AE5D-37C8-4F4A-8D1D-284C37FECB73}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{FCF11E0C-9784-4342-ADBB-D70CD88C02A4}"
 	ProjectSection(SolutionItems) = preProject

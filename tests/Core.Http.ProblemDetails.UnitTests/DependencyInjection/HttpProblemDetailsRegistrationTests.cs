@@ -1,10 +1,10 @@
-﻿using Core.Http.ProblemDetails.DependencyInjection;
+using Core.Http.ProblemDetails.DependencyInjection;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 
-namespace Core.Http.ProblemDetails.UniTests.DependencyInjection;
+namespace Core.Http.ProblemDetails.UnitTests.DependencyInjection;
 
 public sealed class HttpProblemDetailsRegistrationTests
 {

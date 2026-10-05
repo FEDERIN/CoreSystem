@@ -1,4 +1,4 @@
-namespace Core.Http.ProblemDetails.UniTests;
+namespace Core.Http.ProblemDetails.UnitTests;
 
 public sealed class ProblemDescriptorTests
 {

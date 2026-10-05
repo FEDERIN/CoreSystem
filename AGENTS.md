@@ -4,7 +4,7 @@
 
 ## Layout
 - `src/Core.<Name>`: one NuGet package per project. `GeneratePackageOnBuild=true`, so every build also produces a `.nupkg`.
-- `tests/Core.<Name>.UnitTests`: xUnit v3 + FluentAssertions + Moq. **Exception:** the ProblemDetails test project is spelled `Core.Http.ProblemDetails.UniTests`, and `InternalsVisibleTo` in `src/Core.Http.ProblemDetails` uses that same name.
+- `tests/Core.<Name>.UnitTests`: xUnit v3 + FluentAssertions + Moq.
 - `samples/`: demo API plus a docker-compose stack (OTel collector, Prometheus, Grafana).
 - `docs/` + `mkdocs.yml`: MkDocs site with one folder per package. It is deployed to GitHub Pages on push to `main`.
 
@@ -17,7 +17,7 @@
 ## Commands
 - Build/test everything: `dotnet build CoreSystem.sln` / `dotnet test CoreSystem.sln -c Release` (CI uses Release).
 - Single project: `dotnet test tests/Core.Redis.UnitTests -c Release`.
-- Affected tests only: `pwsh scripts/test-changed.ps1`. It maps changed `src/X` → `tests/X.UnitTests` and runs the full suite when solution-wide files, `Core.Serialization`, or `Core.Observability.Abstractions` change. It **misses** `Core.Http.ProblemDetails.UniTests` because of the misspelling, so run that project yourself.
+- Affected tests only: `pwsh scripts/test-changed.ps1`. It maps changed `src/X` → `tests/X.UnitTests` and runs the full suite when solution-wide files, `Core.Serialization`, or `Core.Observability.Abstractions` change.
 - Docs: `pip install -r requirements.txt`, then `mkdocs build` (or `mkdocs serve`).
 - `*.bat` files are gitignored and only exist locally (`serve-docs.bat`, `generate-lock-files.bat`, `setup/`). Don't rely on them or add new ones expecting them to be committed.
 
