@@ -19,7 +19,6 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 ## Debt / things to watch
 
 - `Core.Observability` declares `<Version>1.1.0</Version>` but `Directory.Packages.props` pins `CoreSystem.Observability` to `1.0.0`, and the assembly does not set `AssemblyVersion` (defaults to 1.0.0.0). Other projects reference Abstractions as a package, so local changes do not propagate until published.
-- `tests/Core.Http.ProblemDetails.UniTests` is misspelled ("Uni" instead of "Unit"). `scripts/test-changed.ps1` looks for `*.UnitTests.csproj`, so it misses that project when mapping `src/` → tests.
 - `*.bat` and `site/` are in `.gitignore`. `setup/*.bat`, `serve-docs.bat`, `generate-lock-files.bat` are local-only.
 - There is no `Core.Memory`, `Core.Redis`, or `Core.Serialization` section under `docs/` (only `README_NUGET.md` in each folder): docs coverage is incomplete.
 - `CoreSystem.Resilience` already exists and is published (v2.0.0); older READMEs once marked it as planned.

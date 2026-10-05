@@ -15,7 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace Core.Http.ProblemDetails.UniTests;
+namespace Core.Http.ProblemDetails.UnitTests;
 
 public sealed class CoreExceptionHandlerTests
 {
