@@ -4,7 +4,8 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 
 ## Current state (Oct 2026 release cycle complete)
 
-- **Published** (NuGet.org + GitHub Packages): Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.2, Redis 1.0.2, Observability 1.0.1, Observability.Abstractions 1.0.1, RateLimiting 1.2.1, Resilience 2.0.1, Serialization 1.2.2, **Correlation 1.0.0** (new package, extracted from Observability via PR #50).
+- **Published** (NuGet.org + GitHub Packages): Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis 1.0.3, Observability 1.0.1, Observability.Abstractions 1.0.1, RateLimiting 1.2.1, Resilience 2.0.1, Serialization 1.2.3, **Correlation 1.0.0** (new package, extracted from Observability via PR #50). Memory/Redis/Serialization got a patch purely to ship the corrected README.
+- Every `src/Core.*` project has exactly one `README.md` (packed via `PackageReadmeFile`). The `README_NUGET.md` convention is gone — do not reintroduce it.
 - `Core.Observability` and `CoreSystem.Correlation` are independent packages with **no cross-reference** (verified: no `PackageReference`/`ProjectReference`/usings between them). Composition is opt-in by the user.
 - `CorrelationOptions.SectionName` is `"Core:Correlation"` (not `Core:Observability:Correlation`).
 - Central pins in `Directory.Packages.props` match the published versions; lock files regenerated.
@@ -16,6 +17,7 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - `tests/Core.Resilience.UnitTests` legitimately references `StackExchange.Redis` (uses `RedisConnectionException`/`RedisTimeoutException` in pipeline tests) — not a stray dependency.
 - `tests/Core.Observability.UnitTests` was deleted: after the correlation extraction it had zero tests. Its contracts are now covered by `tests/Core.Observability.Abstractions.UnitTests` (3 contract tests).
 - `<TargetFramework>net8.0</TargetFramework>` stays declared in every csproj even though `Directory.Build.props` sets it. Closed as a non-issue: keeping it explicit makes each project readable and independently buildable.
+- READMEs are verified against the real public API, not just eyeballed: the Memory README referenced `IMemoryLockProvider` (never existed, it is `IAsyncKeyLock`) and `docs/Serialization` documented the `internal` `ISerializerFactory` instead of the public `IPayloadSerializer`. Check the type name in `src/` before writing an example.
 
 ## Open items
 
