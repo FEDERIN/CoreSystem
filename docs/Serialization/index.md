@@ -37,13 +37,11 @@ dotnet add package CoreSystem.Serialization
 ```csharp
 builder.Services.AddCoreSerialization();
 
-public sealed class OrderService(ISerializerFactory factory)
+public sealed class OrderService(IPayloadSerializer serializer)
 {
-    public async Task<byte[]> SerializeAsync(Order order, CancellationToken ct)
-    {
-        var serializer = factory.GetSerializer(SerializationType.Json);
-        return await serializer.SerializeAsync(order, ct);
-    }
+    public byte[] Serialize(Order order) => serializer.Serialize(order);
+
+    public Order? Deserialize(byte[] payload) => serializer.Deserialize<Order>(payload);
 }
 ```
 

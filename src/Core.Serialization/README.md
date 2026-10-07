@@ -83,6 +83,19 @@ builder.Services.AddCoreSerialization(options =>
 
 ---
 
+## 📖 Documentation
+
+The full documentation includes:
+
+- Getting Started
+- Configuration
+- Supported serializers
+- Exception handling
+
+Visit the GitHub repository for the complete documentation.
+
+---
+
 ## 📚 Supported Serializers
 
 ### JSON

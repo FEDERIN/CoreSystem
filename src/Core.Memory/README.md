@@ -45,7 +45,7 @@ builder.Services.AddCoreMemory();
 Inject the lock provider:
 
 ``` csharp
-public sealed class OrderService(IMemoryLockProvider lockProvider)
+public sealed class OrderService(IAsyncKeyLock lockProvider)
 {
 }
 ```
@@ -71,6 +71,27 @@ await using (await lockProvider.AcquireAsync($"orders:{orderId}"))
 
 ------------------------------------------------------------------------
 
+## ⚙️ Configuration
+
+Locks are created on demand with production-ready defaults; there is nothing to
+configure. Inject `IAsyncKeyLock` and acquire by key.
+
+---
+
+## 📖 Documentation
+
+The full documentation includes:
+
+- Getting Started
+- Dependency Injection
+- Typical use cases
+- Design
+- Important limitations
+
+Visit the GitHub repository for the complete documentation.
+
+---
+
 ## 📚 Design
 
 Each key has its own asynchronous lock backed by `SemaphoreSlim`. Locks
@@ -81,7 +102,7 @@ preventing unnecessary memory growth.
 Application
       │
       ▼
-IMemoryLockProvider
+IAsyncKeyLock
       │
       ▼
 ConcurrentDictionary
