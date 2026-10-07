@@ -17,6 +17,8 @@ public static class ObservabilityDependencyInjection
     /// </summary>
     /// <param name="builder">The WebApplicationBuilder of the API.</param>
     /// <param name="environment">The current hosting environment name.</param>
+    /// <param name="serviceName">The logical service name used for traces and logs.</param>
+    /// <param name="serviceNamespace">The service namespace used to group the service in traces.</param>
     /// <returns>The updated WebApplicationBuilder.</returns>
     public static WebApplicationBuilder AddObservability(
         this WebApplicationBuilder builder,

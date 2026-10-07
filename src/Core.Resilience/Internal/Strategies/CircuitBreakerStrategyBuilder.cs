@@ -7,7 +7,7 @@ using Polly.CircuitBreaker;
 
 namespace Core.Resilience.Internal.Strategies;
 
-internal sealed class CircuitBreakerStrategyBuilder(ResilienceMetrics metrics) 
+internal sealed class CircuitBreakerStrategyBuilder(ResilienceMetrics metrics)
     : IStrategyBuilder
 {
     private readonly ResilienceMetrics _metrics = metrics;

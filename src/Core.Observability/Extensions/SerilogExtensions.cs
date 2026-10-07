@@ -39,7 +39,7 @@ internal static class SerilogExtensions
                 .Enrich.WithThreadId()
                 .Enrich.WithProperty("environment", environment ?? "unknown")
                 .Enrich.WithProperty("service.name", serviceName ?? "unknown-service")
-                .WriteTo.Console();
+                .WriteTo.Console(formatProvider: System.Globalization.CultureInfo.InvariantCulture);
 
             // Configure OpenTelemetry Sink if enabled
             if (oTelOptions.Logging != null && oTelOptions.Logging.Enabled)

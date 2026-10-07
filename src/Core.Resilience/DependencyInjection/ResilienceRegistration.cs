@@ -5,8 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Resilience.DependencyInjection;
 
+/// <summary>Registration extensions for the CoreSystem resilience pipeline.</summary>
 public static class ResilienceRegistration
 {
+    /// <summary>Adds CoreSystem resilience services configured via a delegate.</summary>
     public static IServiceCollection AddCoreResilience(
         this IServiceCollection services,
         Action<ResilienceOptions> configure)

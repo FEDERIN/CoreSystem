@@ -23,7 +23,7 @@ public static class RedisRegistration
     /// <returns>
     /// The updated service collection.
     /// </returns>
-    public static IServiceCollection  AddCoreRedis(
+    public static IServiceCollection AddCoreRedis(
         this IServiceCollection services,
         Action<RedisLockOptions>? configure = null)
     {

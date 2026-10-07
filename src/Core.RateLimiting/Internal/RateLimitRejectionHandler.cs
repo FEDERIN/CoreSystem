@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Threading.RateLimiting;
 
 namespace Core.RateLimiting.Internal;
@@ -57,10 +58,11 @@ internal sealed class RateLimitRejectionHandler(
     {
         if (retryAfterSeconds is not null)
         {
-            httpContext.Response.Headers.RetryAfter = retryAfterSeconds.Value.ToString();
+            httpContext.Response.Headers.RetryAfter = retryAfterSeconds.Value.ToString(CultureInfo.InvariantCulture);
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Rejections are not a hot path and this keeps the log template simple.")]
     private void RecordRejection(int? retryAfterSeconds)
     {
         _metrics.RecordRejection(_options.PolicyName);

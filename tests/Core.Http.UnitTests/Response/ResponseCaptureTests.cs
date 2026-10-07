@@ -19,7 +19,7 @@ public sealed class ResponseCaptureTests
             async ctx =>
             {
                 await ctx.Response.WriteAsync("Hello World");
-            }, 
+            },
             TestContext.Current.CancellationToken);
 
         // Assert

@@ -1,0 +1,8 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
+
+	<PropertyGroup>
+		<!-- xUnit convention: test names use underscores (Method_Sce_Nario). -->
+		<NoWarn>$(NoWarn);CA1707;CA1848</NoWarn>
+	</PropertyGroup>
+</Project>

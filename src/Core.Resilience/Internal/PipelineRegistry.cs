@@ -7,8 +7,8 @@ internal sealed class PipelineRegistry(
     ResilienceOptions options,
     IPipelineBuilder builder)
 {
-    public IReadOnlyDictionary<PipelineType, IResiliencePipeline> Pipelines { get; } 
-        = 
+    public IReadOnlyDictionary<PipelineType, IResiliencePipeline> Pipelines { get; }
+        =
         options.Pipelines.ToDictionary(
             x => x.Key,
             x => builder.Build(x.Key, x.Value));

@@ -19,7 +19,7 @@ public sealed class RetryOptions : ExceptionHandlingOptions
     /// Gets or sets the delay between retry attempts.
     /// </summary>
     public TimeSpan Delay { get; set; } = TimeSpan.FromMilliseconds(200);
-    
+
     /// <summary>
     /// Gets or sets the type of backoff strategy to use.
     /// </summary>
