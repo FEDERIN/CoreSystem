@@ -8,6 +8,7 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - Their docs are treated as external projects: everything related lives in `docs/External/index.md`.
 - `samples/` consumes published NuGet packages except its internal ProjectReferences (`Samples.Core`, `Samples.Infrastructure`). They do not validate changes in `src/`.
 - CI: `.github/workflows/ci.yml` now runs restore/build/test (Release) on push to `main` and PRs, with NuGet cache keyed on `packages.lock.json`. CodeQL remains separate. `samples-smoke.yml` and `publish.yml` unchanged.
+- 2026-10-07: branch `release/nuget-updates-oct2026` created and pushed; commit `110bc50` (English). First publish from it: tag `Core.Http/v1.1.0` → NuGet.org + GitHub Packages via `publish.yml` run 37558591452 (success). Remaining planned: patch bumps for ProblemDetails 1.0.2, Memory 1.0.1, Observability 1.0.1, Abstractions 1.0.1, RateLimiting 1.2.1, Redis 1.0.1, Resilience 2.0.1, Serialization 1.2.1, then props pins refresh.
 - The Dockerfile path in `samples/CoreSystem.Samples.Api/docker-compose.yml` used to point to `samples/Minimal.Test.Api/Dockerfile` (broken); it now points to `samples/CoreSystem.Samples.Api/Dockerfile`.
 
 ## Real internal dependencies
