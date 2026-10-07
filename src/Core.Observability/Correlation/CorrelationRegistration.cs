@@ -7,6 +7,7 @@ namespace Core.Observability.Correlation;
 /// <summary>Registers CoreSystem request correlation services and middleware.</summary>
 public static class CorrelationRegistration
 {
+    /// <summary>Registers correlation services using a delegate-based configuration.</summary>
     public static IServiceCollection AddCoreCorrelation(
         this IServiceCollection services,
         Action<CorrelationOptions>? configure = null)
@@ -22,6 +23,7 @@ public static class CorrelationRegistration
         return services;
     }
 
+    /// <summary>Registers correlation services bound from configuration.</summary>
     public static IServiceCollection AddCoreCorrelation(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -35,6 +37,7 @@ public static class CorrelationRegistration
         return services;
     }
 
+    /// <summary>Adds the correlation ID middleware to the pipeline.</summary>
     public static IApplicationBuilder UseCoreCorrelationId(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);

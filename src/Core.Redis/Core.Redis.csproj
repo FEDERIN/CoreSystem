@@ -1,16 +1,11 @@
-ï»¿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 	  <TargetFramework>net8.0</TargetFramework>
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <Nullable>enable</Nullable>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <Deterministic>true</Deterministic>
-	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
-	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
-	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	  <PackageId>CoreSystem.Redis</PackageId>
-	  <Version>1.0.0</Version>
+	  <Version>1.0.1</Version>
 	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	  <Description>Production-ready Redis infrastructure library for .NET 8 providing connection management, distributed locking, and dependency injection integration built on StackExchange.Redis.</Description>
 	  <PackageTags>
@@ -31,15 +26,15 @@
 	  <PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Redis</PackageProjectUrl>
 	  <PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
 	  <PackageLicenseFile>LICENSE</PackageLicenseFile>	 
-	  <AssemblyVersion>1.0.0.0</AssemblyVersion>
-	  <FileVersion>1.0.0.0</FileVersion>
-	  <InformationalVersion>1.0.0</InformationalVersion>
+	  <AssemblyVersion>1.0.1.0</AssemblyVersion>
+	  <FileVersion>1.0.1.0</FileVersion>
+	  <InformationalVersion>1.0.1</InformationalVersion>
 	  <PackageReleaseNotes>
 		  Initial stable release.
-		  â€¢ Redis Connection Factory
-		  â€¢ Distributed Lock Provider
-		  â€¢ Dependency Injection integration
-		  â€¢ Production-ready defaults
+		  • Redis Connection Factory
+		  • Distributed Lock Provider
+		  • Dependency Injection integration
+		  • Production-ready defaults
 	  </PackageReleaseNotes>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>

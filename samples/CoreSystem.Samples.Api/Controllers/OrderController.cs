@@ -16,7 +16,7 @@ public class OrderController(IProductService myService) : ControllerBase
     }
 
     [HttpPost("data")]
-    public async Task<IActionResult> PostData([FromBody] object data)
+    public IActionResult PostData([FromBody] object data)
     {
         return Ok(data);
     }

@@ -12,6 +12,7 @@ public sealed class CorrelationIdMiddleware(
 {
     private readonly CorrelationOptions _options = options.Value;
 
+    /// <summary>Processes the request, ensuring a correlation identifier is available.</summary>
     public async Task InvokeAsync(HttpContext context)
     {
         if (!_options.Enabled)

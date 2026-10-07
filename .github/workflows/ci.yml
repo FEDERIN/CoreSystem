@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore solution
+        run: dotnet restore CoreSystem.sln
+
+      - name: Build solution
+        run: dotnet build CoreSystem.sln --configuration Release --no-restore
+
+      - name: Check formatting
+        run: dotnet format CoreSystem.sln --verify-no-changes --no-restore
+
+      - name: Test solution
+        run: dotnet test CoreSystem.sln --configuration Release --no-build
+
+      - name: Audit vulnerable packages
+        continue-on-error: true
+        run: dotnet list CoreSystem.sln package --vulnerable --include-transitive

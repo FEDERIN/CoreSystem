@@ -24,6 +24,7 @@ public interface IResponseCapture
     /// A <see cref="CapturedResponse"/> containing the captured response body,
     /// status code, and headers.
     /// </returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "'next' matches ASP.NET Core middleware conventions and renaming would break named-argument callers.")]
     Task<CapturedResponse> CaptureAsync(
         HttpContext context,
         RequestDelegate next,

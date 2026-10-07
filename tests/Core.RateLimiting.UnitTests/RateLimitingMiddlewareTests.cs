@@ -40,7 +40,7 @@ public sealed class RateLimitingMiddlewareTests
     [Fact]
     public async Task DisabledRateLimiting_AllowsRequestsWithoutRegisteringLimiter()
     {
-        using var server = 
+        using var server =
             new TestServer(new WebHostBuilder()
             .ConfigureServices(services =>
             services.AddCoreRateLimiting(options =>
