@@ -4,9 +4,9 @@
     "net8.0": {
       "CoreSystem.Resilience": {
         "type": "Direct",
-        "requested": "[2.0.0, )",
-        "resolved": "2.0.0",
-        "contentHash": "83jYS77uvbyJKXRyhLVhfo06iA4vV6JuQrHM4QXIrmSyiY6BOiXYOEtgeNdTGBqR31vjSR2fUIAuh1oGwZF7tg==",
+        "requested": "[2.0.1, )",
+        "resolved": "2.0.1",
+        "contentHash": "viEUl2pNeCiQoS+13djRJJZpeHJ3YJE35sJvhGQAUg7FO98vABPF0qbjCsHHyOroMa78uZJy0cFJOtRyIrh8og==",
         "dependencies": {
           "CoreSystem.Observability.Abstractions": "1.0.0",
           "Microsoft.Extensions.Configuration": "8.0.0",
@@ -16,9 +16,9 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
           "Microsoft.Extensions.Options": "8.0.2",
-          "OpenTelemetry": "1.15.3",
-          "OpenTelemetry.Api": "1.15.3",
-          "OpenTelemetry.Extensions.Hosting": "1.15.3",
+          "OpenTelemetry": "1.19.0",
+          "OpenTelemetry.Api": "1.19.0",
+          "OpenTelemetry.Extensions.Hosting": "1.19.0",
           "Polly": "8.7.0"
         }
       },
@@ -139,9 +139,9 @@
       },
       "CoreSystem.Observability.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "6w85mkwo//o+F85a+lTi9Tu7s9M9e4z3B6z6wx5VQxWQJMo1lkgRFGtSAKOEQsrv94DS1aIE+H3HME31y8Mokg==",
+        "requested": "[1.0.1, )",
+        "resolved": "1.0.1",
+        "contentHash": "YhqdxLhgxLgxb0UJl7sOS8k3ELarGzdGdDgZSDV+6OswFFYEifeDQXPMByQ8+ZKBmXjrpHyO+JqXsUMyUVPh9A==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
