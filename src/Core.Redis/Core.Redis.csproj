@@ -31,10 +31,10 @@
 	  <InformationalVersion>1.0.1</InformationalVersion>
 	  <PackageReleaseNotes>
 		  Initial stable release.
-		  • Redis Connection Factory
-		  • Distributed Lock Provider
-		  • Dependency Injection integration
-		  • Production-ready defaults
+		  - Redis Connection Factory
+		  - Distributed Lock Provider
+		  - Dependency Injection integration
+		  - Production-ready defaults
 	  </PackageReleaseNotes>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>

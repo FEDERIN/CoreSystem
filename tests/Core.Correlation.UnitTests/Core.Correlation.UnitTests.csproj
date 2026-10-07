@@ -13,6 +13,6 @@
     <PackageReference Include="xunit.runner.visualstudio"><PrivateAssets>all</PrivateAssets></PackageReference>
     <PackageReference Include="xunit.v3" />
   </ItemGroup>
-  <ItemGroup><ProjectReference Include="..\..\src\Core.Observability\Core.Observability.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="..\..\src\Core.Correlation\Core.Correlation.csproj" /></ItemGroup>
   <ItemGroup><Using Include="Xunit" /></ItemGroup>
 </Project>

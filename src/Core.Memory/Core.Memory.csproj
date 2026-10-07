@@ -30,11 +30,11 @@
 		<InformationalVersion>1.0.1</InformationalVersion>
 		<PackageReleaseNotes>
 			Initial stable release.
-			• In-memory keyed asynchronous lock provider
-			• Thread-safe synchronization
-			• Automatic lock lifecycle management
-			• Dependency Injection integration
-			• Production-ready implementation
+			- In-memory keyed asynchronous lock provider
+			- Thread-safe synchronization
+			- Automatic lock lifecycle management
+			- Dependency Injection integration
+			- Production-ready implementation
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>

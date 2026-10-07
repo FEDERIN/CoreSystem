@@ -1,4 +1,4 @@
-namespace Core.Observability.Correlation;
+namespace Core.Correlation;
 
 /// <summary>Configures correlation identifiers for incoming HTTP requests.</summary>
 public sealed class CorrelationOptions

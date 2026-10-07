@@ -31,11 +31,11 @@
 	  <InformationalVersion>1.2.1</InformationalVersion>
 	  <PackageReleaseNotes>
 		  Initial stable release.
-		  • Unified serialization abstraction
-		  • JSON serializer
-		  • MessagePack serializer
-		  • Protocol Buffers serializer
-		  • Dependency Injection integration
+		  - Unified serialization abstraction
+		  - JSON serializer
+		  - MessagePack serializer
+		  - Protocol Buffers serializer
+		  - Dependency Injection integration
 	  </PackageReleaseNotes>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Core.Observability.Correlation;
+namespace Core.Correlation;
 
 /// <summary>Establishes a safe correlation identifier for the current request.</summary>
 public sealed class CorrelationIdMiddleware(
