@@ -15,16 +15,14 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - `Resilience` published as 2.0.1 (not 3.0.0) despite the `ct` → `cancellationToken` rename in `NoOpResiliencePipeline`: the old name already disagreed with `IResiliencePipeline`, so it was a consistency bugfix. Noted in `PackageReleaseNotes`.
 - `tests/Core.Resilience.UnitTests` legitimately references `StackExchange.Redis` (uses `RedisConnectionException`/`RedisTimeoutException` in pipeline tests) — not a stray dependency.
 - `tests/Core.Observability.UnitTests` was deleted: after the correlation extraction it had zero tests. Its contracts are now covered by `tests/Core.Observability.Abstractions.UnitTests` (3 contract tests).
+- `<TargetFramework>net8.0</TargetFramework>` stays declared in every csproj even though `Directory.Build.props` sets it. Closed as a non-issue: keeping it explicit makes each project readable and independently buildable.
 
 ## Open items
 
-- PR #51 (`chore/refresh-central-pins`) must be merged; local `main` is ahead with the same commit.
-- `container_name: minimal-test-api` in the samples compose was renamed to `core-samples-api` for naming consistency (compose validated). Unpushed.
-- `<TargetFramework>net8.0</TargetFramework>` is still repeated in every csproj even though root `Directory.Build.props` sets it. Left as-is deliberately: removing it makes the projects depend on the props file for their target framework.
+None. PR #51 merged; `main` is clean and CI, Samples Smoke, CodeQL and Pages are green.
 
 ## Gotchas
 
-- PowerShell `Set-Content` without `-Encoding utf8` silently corrupts files (`U+FFFD` mojibake). This damaged three csproj release notes and broke `MSBuildWorkspace`/`dotnet format`. Use the editor tools or `-Encoding utf8`.
 - Build/format must stay green with `TreatWarningsAsErrors` + `AnalysisLevel latest-recommended`; public APIs without XML docs are build errors.
 - Many source files carry a UTF-8 BOM from Visual Studio. That is the committed state — do not "normalize" it away.
 - `main` is protected: always branch + PR via `gh pr create`.
