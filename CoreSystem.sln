@@ -155,6 +155,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Correlation", "src\Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Correlation.UnitTests", "tests\Core.Correlation.UnitTests\Core.Correlation.UnitTests.csproj", "{7212FDC4-B82D-49AA-B0CF-2E15FF935580}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".opencode", ".opencode", "{B06745F0-16C8-4A1C-94CB-75190F3572A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skills", "skills", "{6911CD95-AEB3-4E59-9398-65923C637F73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{457A621A-3F7D-4227-9C2D-6F8B7D4EBE04}"
+	ProjectSection(SolutionItems) = preProject
+		.opencode\skills\readme\SKILL.md = .opencode\skills\readme\SKILL.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -287,6 +296,8 @@ Global
 		{16860879-ED22-41D9-A052-85AAAF4B4A5F} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
 		{4C42FAEB-AB18-43E8-9EC8-394F09990769} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7212FDC4-B82D-49AA-B0CF-2E15FF935580} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{6911CD95-AEB3-4E59-9398-65923C637F73} = {B06745F0-16C8-4A1C-94CB-75190F3572A8}
+		{457A621A-3F7D-4227-9C2D-6F8B7D4EBE04} = {6911CD95-AEB3-4E59-9398-65923C637F73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

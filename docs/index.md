@@ -32,6 +32,8 @@ CoreSystem helps developers build applications that are:
 | Core.Redis         | Redis integration shared across the ecosystem.                                                    |
 | Core.Serialization | Unified serialization abstractions.                                                               |
 | Core.Observability | Metrics, tracing, and logging integration based on OpenTelemetry.                                 |
+| Core.Correlation | Correlation-id propagation middleware for ASP.NET Core.                                           |
+| Core.Http.ProblemDetails | Consistent RFC 9457 problem details for APIs.                                                     |
 
 ---
 
@@ -46,6 +48,7 @@ Choose a package to get started:
 * Redis
 * Serialization
 * Observability
+* Correlation
 * External projects (Cache, Idempotency)
 
 ---
