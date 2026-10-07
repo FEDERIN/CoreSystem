@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Memory</PackageId>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Production-ready in-memory synchronization library for .NET 8 providing lightweight keyed asynchronous locks for coordinating concurrent operations within a single process.</Description>
 		<PackageTags>
@@ -25,9 +25,9 @@
 		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Memory</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<AssemblyVersion>1.0.2.0</AssemblyVersion>
-		<FileVersion>1.0.2.0</FileVersion>
-		<InformationalVersion>1.0.2</InformationalVersion>
+		<AssemblyVersion>1.0.3.0</AssemblyVersion>
+		<FileVersion>1.0.3.0</FileVersion>
+		<InformationalVersion>1.0.3</InformationalVersion>
 		<PackageReleaseNotes>
 			Initial stable release.
 			- In-memory keyed asynchronous lock provider
