@@ -20,6 +20,8 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 
 - Tag `Core.Correlation/v1.0.0` published (run 37565321182, success, 2026-10-07). PR #50 still open (expected after all this work); Observability 1.0.1 tag still requested once PR #50 merges.
 
+- Observability 1.0.1 tag published (run 37566736184, success, 2026-10-07). Full publish batch now: Http 1.1.0, ProblemDetails 1.0.2, Memory 1.0.2, Redis 1.0.2, Abstractions 1.0.1, Resilience 2.0.1, Serialization 1.2.2, RateLimiting 1.2.1, Correlation 1.0.0, Observability 1.0.1. Observability remains Correlation-free (separate packages).
+
 - Branch `feat/correlation-package` on top of merged PR #49: extracts correlation middleware into `CoreSystem.Correlation` 1.0.0 (src/Core.Correlation + tests/Core.Correlation.UnitTests, namespace `Core.Correlation`), Observability test project deleted (did not cover anything left in Observability).
 - 63286e2..05aebe0 encoded PowerShell `Set-Content` without explicit encoding rewrote 3 csproj (Memory/Redis/Serialization) with mojibake (U+FFFD); repaired in feat branch by replacing with ASCII '-'. Avoid Set-Content for file edits; use edit tools / UTF8 explicit encoding.
 - Next publish candidates after this lands: CoreSystem.Correlation 1.0.0 + CoreSystem.Observability 1.0.1.
