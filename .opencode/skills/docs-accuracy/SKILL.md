@@ -8,8 +8,8 @@ description: Use when writing or reviewing README.md files, docs pages, code exa
 Documentation that lies is worse than no documentation. A user copies an example,
 it does not compile, and they conclude the library is broken.
 
-**This class of error ships to NuGet and cannot be corrected** — published versions
-are immutable, so fixing it requires a new patch release.
+**This class of error ships to the registry and cannot be corrected** — published
+versions are immutable, so fixing it requires a new patch release.
 
 ## Always verify type names against source
 
@@ -62,7 +62,7 @@ For package READMEs, see the `readme` skill for the mandated section layout. For
 accuracy:
 
 - One README per project, named `README.md`, packed via `<PackageReadmeFile>`.
-- All content in **English** for NuGet-facing material.
+- All content in **English** for registry-facing material.
 - Use fenced code blocks with a language tag (```` ```csharp ````, ```` ```bash ````).
 - No HTML `<p>`/`<br>` in package READMEs.
 - Keep README under ~200 lines; move depth into `docs/`.

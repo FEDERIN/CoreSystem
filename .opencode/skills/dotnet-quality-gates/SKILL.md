@@ -32,7 +32,7 @@ warnings are fixed produces hundreds of errors and the gate gets abandoned.
 
 ## Gate configuration
 
-Put these in the root `Directory.Build.props` (or `Directory.Packages.props` companion):
+Put these in the root `Directory.Build.props`:
 
 ```xml
 <PropertyGroup>

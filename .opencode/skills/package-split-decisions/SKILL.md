@@ -18,13 +18,13 @@ Keep it together when the feature is inseparable from the parent's value proposi
 
 ## Worked example: correlation middleware
 
-A request-correlation middleware (reads/generates `X-Correlation-Id`, enriches the
-log scope) lived inside an observability package that pulls in Serilog and
+A request-correlation middleware (reads or generates `X-Correlation-Id`, enriches
+the log scope) lived inside an observability package that pulls in Serilog and
 OpenTelemetry. But the middleware only uses `ILogger`, `IOptions` and
 `IServiceCollection` — no Serilog, no OTel.
 
-Splitting was right because an API that just wants a correlation header was forced to
-take the whole observability stack.
+Splitting was right because an API that just wants a correlation header was forced
+to take the whole observability stack.
 
 But the split must **not** be papered over with a reverse dependency
 (observability → correlation). That would reintroduce exactly the coupling the split
@@ -78,5 +78,5 @@ history before changing a section name.
 ## Verify the packages are consumable as advertised
 
 After a split, confirm the new package builds standalone, packs correctly, and that
-its README shows the right install command and namespace. See the
-`nuget-release` and `docs-accuracy` skills.
+its README shows the right install command and namespace. See the `nuget-release`
+and `docs-accuracy` skills.
