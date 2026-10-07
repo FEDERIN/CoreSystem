@@ -16,10 +16,12 @@ if (-not $changedFiles) {
 $fullSuitePatterns = @(
     '^CoreSystem\.sln$',
     '^Directory\.Packages\.props$',
+    '^Directory\.Build(\.local)?\.props$',
     '^global\.json$',
     '^NuGet\.config$',
     '^src/Core\.Serialization/',
-    '^src/Core\.Observability\.Abstractions/'
+    '^src/Core\.Observability\.Abstractions/',
+    '^tests/Directory\.Build\.props$'
 )
 
 $requiresFullSuite = $changedFiles | Where-Object {

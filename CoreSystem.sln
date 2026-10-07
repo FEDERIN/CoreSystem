@@ -175,6 +175,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Redis", "Redis", "{5118FE47
 		docs\Redis\index.md = docs\Redis\index.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.Abstractions.UnitTests", "tests\Core.Observability.Abstractions.UnitTests\Core.Observability.Abstractions.UnitTests.csproj", "{00CB0873-650C-4C33-BE4D-B48DA5849BAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -265,6 +267,10 @@ Global
 		{7212FDC4-B82D-49AA-B0CF-2E15FF935580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7212FDC4-B82D-49AA-B0CF-2E15FF935580}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7212FDC4-B82D-49AA-B0CF-2E15FF935580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00CB0873-650C-4C33-BE4D-B48DA5849BAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00CB0873-650C-4C33-BE4D-B48DA5849BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00CB0873-650C-4C33-BE4D-B48DA5849BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00CB0873-650C-4C33-BE4D-B48DA5849BAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -311,6 +317,7 @@ Global
 		{457A621A-3F7D-4227-9C2D-6F8B7D4EBE04} = {6911CD95-AEB3-4E59-9398-65923C637F73}
 		{600A703B-F6BC-4B2C-9B84-7838506D11D7} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
 		{5118FE47-2053-49FD-82B9-EC4BE3D7C56C} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{00CB0873-650C-4C33-BE4D-B48DA5849BAF} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}
