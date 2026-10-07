@@ -1,10 +1,10 @@
-namespace Core.Correlation;
+﻿namespace Core.Correlation;
 
 /// <summary>Configures correlation identifiers for incoming HTTP requests.</summary>
 public sealed class CorrelationOptions
 {
     /// <summary>The configuration section name used to bind these options.</summary>
-    public const string SectionName = "Core:Observability:Correlation";
+    public const string SectionName = "Core:Correlation";
 
     /// <summary>Enables correlation identifier propagation.</summary>
     public bool Enabled { get; set; } = true;
