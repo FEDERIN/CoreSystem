@@ -1,5 +1,4 @@
-﻿using Core.Observability.Abstractions;
-using Core.Observability.Options;
+﻿using Core.Observability.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

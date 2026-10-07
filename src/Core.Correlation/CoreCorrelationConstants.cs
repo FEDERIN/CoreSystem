@@ -1,4 +1,4 @@
-namespace Core.Observability.Correlation;
+namespace Core.Correlation;
 
 /// <summary>Constants used by CoreSystem correlation middleware.</summary>
 public static class CoreCorrelationConstants

@@ -45,6 +45,18 @@ nav:
       - Observability:
           - Overview: Observability/index.md
 
+      - Correlation:
+          - Overview: Correlation/index.md
+
+      - Memory:
+          - Overview: Memory/index.md
+
+      - Redis:
+          - Overview: Redis/index.md
+
+      - Serialization:
+          - Overview: Serialization/index.md
+
       - Rate Limiting:
           - Overview: RateLimiting/index.md
           - Getting Started: RateLimiting/GettingStarted.md
@@ -56,7 +68,8 @@ nav:
           - Getting Started: Http/GettingStarted.md
           - Why: Http/Why.md
           - Architecture: Http/Architecture.md
-  
+          - Problem Details: Http/ProblemDetails.md
+
       - Resilience:
           - Overview: Resilience/index.md
           - Getting Started: Resilience/GettingStarted.md

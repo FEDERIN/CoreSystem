@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Core.Observability.Correlation;
+namespace Core.Correlation;
 
 /// <summary>Registers CoreSystem request correlation services and middleware.</summary>
 public static class CorrelationRegistration

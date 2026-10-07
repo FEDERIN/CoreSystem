@@ -1,4 +1,3 @@
-using Core.Observability.Correlation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,7 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Core.Observability.UnitTests.Correlation;
+namespace Core.Correlation.UnitTests;
 
 public sealed class CorrelationIdMiddlewareTests
 {
