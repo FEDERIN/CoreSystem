@@ -1,43 +1,71 @@
+﻿---
+name: Readme Structure
+description: Use when creating or editing a package README.md that ships to a package registry (NuGet/npm/PyPI). Defines the mandatory section layout, badge style, emoji headings and code-block conventions so all package docs in one ecosystem stay consistent.
 ---
-name: CoreSystem Readme Structure
-description: Use when creating or editing a package README.md (CoreSystem.* nuget packages). It defines the mandatory structure, badge style, emojis, conventions and code blocks so all package docs stay consistent. Base pattern: src/Core.Resilience/README.md.
----
 
-# CoreSystem README Structure
+# Package Readme Structure
 
-Every `src/Core.*/README.md` (the file packed into the NuGet `<PackageReadmeFile>`) must follow the structure of `src/Core.Resilience/README.md`. If a section does not apply, keep the header anyway or drop it explicitly — do not invent new top-level sections.
+Every package README that gets published to a registry must follow one structure,
+identical across the ecosystem. Pick the most complete existing README in the
+repository as the canonical pattern and mirror its section order.
 
-## Rules
+## Layout
 
-1. **Title**: `# ⚡ CoreSystem.<PackageName>` with one leading emoji.
+1. **Title**: `# ÔÜí <PackageId>` ÔÇö one leading emoji.
 2. **Tagline**: a single `> **one-line summary in English.**`
-3. **Intro paragraph**: 1–3 sentences explaining what problem the package solves and why it exists.
-4. **Badges block** (4 badges, one per line, for Rider with `style=for-the-badge`):
+3. **Intro paragraph**: 1ÔÇô3 sentences on what problem it solves and why it exists.
+4. **Badges block** ÔÇö one badge per line, `style=for-the-badge` so they render
+   compactly in Rider:
+
    ```markdown
-   ![NuGet](https://img.shields.io/nuget/v/CoreSystem.<Package>?style=for-the-badge)
-   ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.<Package>?style=for-the-badge)
+   ![NuGet](https://img.shields.io/nuget/v/<PackageId>?style=for-the-badge)
+   ![Downloads](https://img.shields.io/nuget/dt/<PackageId>?style=for-the-badge)
    ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
    ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
    ```
-5. `---` horizontal separators between major sections.
-6. **`## ✨ Features`**: bullet list `- ✅ <feature>`. ✅ on every item.
-7. **`## 📦 Installation`**: `dotnet add package ...` fenced bash block.
-8. **`## 🚀 Quick Start`**: minimal `csharp` example, plus short prose per code block.
-9. **Core concepts section(s)**: one or more `##` sections describing what the package does, with tables, sequence diagrams in ```text blocks and 1-2 code snippets. Example tables from Resilience: strategies, metrics.
-10. **`## 🏗 Architecture`**: ASCII architecture diagram in ```text, short paragraph.
-11. **`## 📖 Documentation`**: bullets of what the docs cover. No links needed; the GitHub repo is the anchor.
-12. **`## 🤝 Contributing`**: short.
-13. **`## 📄 License`**: `Released under the MIT License.` exactly.
 
-## General conventions
+5. `---` horizontal rule between major sections.
+6. **`## Ô£¿ Features`** ÔÇö bullet list, `- Ô£à <feature>` on every item.
+7. **`## ­ƒôª Installation`** ÔÇö install command in a fenced bash block.
+8. **`## ­ƒÜÇ Quick Start`** ÔÇö minimal runnable example, one short prose line before
+   each block so the reader knows what it does.
+9. **Concept sections** ÔÇö one or more `##` covering the package's substance: tables,
+   ASCII diagrams in ```text blocks, per-API notes.
+10. **`## ­ƒÅù Architecture`** ÔÇö ASCII diagram, then a short paragraph.
+11. **`## ­ƒôû Documentation`** ÔÇö bullets of what the full docs cover.
+12. **`## ­ƒñØ Contributing`** ÔÇö short.
+13. **`## ­ƒôä License`** ÔÇö `Released under the MIT License.` exactly.
 
-- All content in **English**, consistent with the rest of the NuGet-facing material.
-- Do **not** use HTML `<p>`/`<br>` in package READMEs (unlike the root repo README).
-- Code blocks: fenced with language tag (```` ```csharp ````, ```` ```bash ````, ```` ```text ````).
-- Emoji conventions: `⚡` package, `✨` features, `📦` install, `🚀` quick start, `🏗` architecture, `📖` docs, `🤝` contributing, `📄` license, `✅` feature bullets, `.NET-8.0` badge.
-- Headings: one `#` title, `##` sections, `###` only inside a section.
-- Keep README ≤ ~200 lines.
+If a section does not apply, keep the heading with a one-line note or drop it
+deliberately. Do not invent new top-level sections.
 
-## Copy template
+## Conventions
 
-Copy `src/Core.Resilience/README.md` and replace: title, tagline, intro, package name in badges/install command, features list, quick start API names, strategies/metrics table, architecture diagram, docs bullets.
+- Content in **English** for registry-facing material.
+- No HTML `<p>`/`<br>` in package READMEs (they may appear in a root repo README).
+- Fenced code blocks always carry a language tag: ```` ```csharp ````,
+  ```` ```bash ````, ```` ```text ````.
+- Emoji vocabulary: `ÔÜí` package ┬À `Ô£¿` features ┬À `­ƒôª` install ┬À `­ƒÜÇ` quick start ┬À
+  `­ƒÅù` architecture ┬À `­ƒôû` docs ┬À `­ƒñØ` contributing ┬À `­ƒôä` license ┬À `­ƒº®` components ┬À
+  `ÔÜÖ´©Å` configuration ┬À `Ô£à` feature bullets.
+- Headings: exactly one `#`, then `##`, and `###` only inside a section.
+- Keep under ~200 lines; push depth into the docs site.
+
+## One README per package
+
+Keep exactly one `README.md` per project and pack that file. Do not maintain a
+second `README_NUGET.md` / `README_PACKAGE.md` alongside it ÔÇö the packed file is the
+one consumers see, and two files drift apart. See the `nuget-release` skill for the
+csproj wiring.
+
+## Accuracy is part of structure
+
+Before shipping, verify every type name, signature and package name in the README
+against the source. A well-structured README that does not compile is still broken.
+See the `docs-accuracy` skill.
+
+## Adaptation template
+
+Copy the canonical README and replace: title, tagline, intro, package id in badges
+and install command, features list, quick-start API names, concept tables,
+architecture diagram, docs bullets. Keep the section order identical.
