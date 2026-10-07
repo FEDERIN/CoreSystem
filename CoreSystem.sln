@@ -99,6 +99,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http", "Http", "{0021FB38-8
 		docs\Http\Architecture.md = docs\Http\Architecture.md
 		docs\Http\GettingStarted.md = docs\Http\GettingStarted.md
 		docs\Http\index.md = docs\Http\index.md
+		docs\Http\ProblemDetails.md = docs\Http\ProblemDetails.md
 		docs\Http\Why.md = docs\Http\Why.md
 	EndProjectSection
 EndProject
@@ -162,6 +163,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{457A621A-3F7D-4227-9C2D-6F8B7D4EBE04}"
 	ProjectSection(SolutionItems) = preProject
 		.opencode\skills\readme\SKILL.md = .opencode\skills\readme\SKILL.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Correlation", "Correlation", "{600A703B-F6BC-4B2C-9B84-7838506D11D7}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Correlation\index.md = docs\Correlation\index.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Redis", "Redis", "{5118FE47-2053-49FD-82B9-EC4BE3D7C56C}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Redis\index.md = docs\Redis\index.md
 	EndProjectSection
 EndProject
 Global
@@ -298,6 +309,8 @@ Global
 		{7212FDC4-B82D-49AA-B0CF-2E15FF935580} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{6911CD95-AEB3-4E59-9398-65923C637F73} = {B06745F0-16C8-4A1C-94CB-75190F3572A8}
 		{457A621A-3F7D-4227-9C2D-6F8B7D4EBE04} = {6911CD95-AEB3-4E59-9398-65923C637F73}
+		{600A703B-F6BC-4B2C-9B84-7838506D11D7} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
+		{5118FE47-2053-49FD-82B9-EC4BE3D7C56C} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}
