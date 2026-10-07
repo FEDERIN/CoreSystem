@@ -4,9 +4,9 @@
     "net8.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "6w85mkwo//o+F85a+lTi9Tu7s9M9e4z3B6z6wx5VQxWQJMo1lkgRFGtSAKOEQsrv94DS1aIE+H3HME31y8Mokg==",
+        "requested": "[1.0.1, )",
+        "resolved": "1.0.1",
+        "contentHash": "YhqdxLhgxLgxb0UJl7sOS8k3ELarGzdGdDgZSDV+6OswFFYEifeDQXPMByQ8+ZKBmXjrpHyO+JqXsUMyUVPh9A==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",

@@ -25,7 +25,7 @@ services:
 
   # 3. Your Minimal API (Sample Project)
   minimal-api:
-    container_name: minimal-test-api
+    container_name: core-samples-api
     build:
       context: ../.. 
       dockerfile: samples/CoreSystem.Samples.Api/Dockerfile
