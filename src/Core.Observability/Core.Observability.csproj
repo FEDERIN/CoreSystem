@@ -7,12 +7,15 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>CoreSystem.Observability</PackageId>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <InformationalVersion>1.0.1</InformationalVersion>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
+    <InformationalVersion>1.0.2</InformationalVersion>
     <Authors>Federin Pastor Gutierrez Ortiz</Authors>
     <Description>Standardized observability for .NET 8 Cloud-Native apps with OpenTelemetry and Serilog.</Description>
+    <PackageReleaseNotes>
+      1.0.2: Package-only fix. The 1.0.1 nuspec declared CoreSystem.Observability.Abstractions 1.0.0 because the package was tagged before the central pin was refreshed. This release declares 1.0.1. No code or API changes.
+    </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 	<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Observability</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
