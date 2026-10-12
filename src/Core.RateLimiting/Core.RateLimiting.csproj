@@ -7,19 +7,22 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
 		<PackageId>CoreSystem.RateLimiting</PackageId>
-		<Version>1.2.2</Version>
-		<AssemblyVersion>1.2.2.0</AssemblyVersion>
-		<FileVersion>1.2.2.0</FileVersion>
-		<InformationalVersion>1.2.2</InformationalVersion>
+		<Version>1.2.3</Version>
+		<AssemblyVersion>1.2.3.0</AssemblyVersion>
+		<FileVersion>1.2.3.0</FileVersion>
+		<InformationalVersion>1.2.3</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Safe fixed-window rate limiting for ASP.NET Core APIs.</Description>
 		<PackageReleaseNotes>
 			1.2.2: Package-only fix. The 1.2.1 nuspec declared CoreSystem.Observability.Abstractions 1.0.0 because the package was tagged before the central pin was refreshed. This release declares 1.0.1. No code or API changes.
+			1.2.3: Package metadata fix. Ships the LICENSE file and declares PackageLicenseFile. Every other CoreSystem package did already; this one was the only package published without a license. No code or API changes.
 		</PackageReleaseNotes>
 
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<PackageProjectUrl>https://federin.github.io/CoreSystem/RateLimiting</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -33,6 +36,7 @@
 
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="LICENSE" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
