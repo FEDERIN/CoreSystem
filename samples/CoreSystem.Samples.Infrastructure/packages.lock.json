@@ -4,11 +4,11 @@
     "net8.0": {
       "CoreSystem.Resilience": {
         "type": "Direct",
-        "requested": "[2.0.1, )",
-        "resolved": "2.0.1",
-        "contentHash": "viEUl2pNeCiQoS+13djRJJZpeHJ3YJE35sJvhGQAUg7FO98vABPF0qbjCsHHyOroMa78uZJy0cFJOtRyIrh8og==",
+        "requested": "[2.0.2, )",
+        "resolved": "2.0.2",
+        "contentHash": "n/Pj9Kb1CUSoBOm+PzSoaNEZoJxvPykkK5p0euSkcE+2B1AtoHiQzQq14fZschWvRcE81ouDxMd2FUbJY14Y4A==",
         "dependencies": {
-          "CoreSystem.Observability.Abstractions": "1.0.0",
+          "CoreSystem.Observability.Abstractions": "1.0.1",
           "Microsoft.Extensions.Configuration": "8.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Configuration.Binder": "8.0.2",
