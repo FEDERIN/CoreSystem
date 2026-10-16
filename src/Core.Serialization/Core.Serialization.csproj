@@ -6,7 +6,7 @@
 	  <Nullable>enable</Nullable>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageId>CoreSystem.Serialization</PackageId>
-	  <Version>1.2.3</Version>
+	  <Version>1.2.4</Version>
 	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
 	  <Description>Production-ready serialization library for .NET 8 with a unified abstraction over JSON, MessagePack, and Protocol Buffers, designed for high-performance applications.</Description>
 	  <PackageTags>
@@ -26,9 +26,9 @@
 	  <PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Serialization</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
-	  <AssemblyVersion>1.2.3.0</AssemblyVersion>
-	  <FileVersion>1.2.3.0</FileVersion>
-	  <InformationalVersion>1.2.3</InformationalVersion>
+	  <AssemblyVersion>1.2.4.0</AssemblyVersion>
+	  <FileVersion>1.2.4.0</FileVersion>
+	  <InformationalVersion>1.2.4</InformationalVersion>
 	  <PackageReleaseNotes>
 		  Initial stable release.
 		  - Unified serialization abstraction
@@ -36,6 +36,7 @@
 		  - MessagePack serializer
 		  - Protocol Buffers serializer
 		  - Dependency Injection integration
+		  1.2.4: Dependency refresh. MessagePack 3.1.8 to 3.1.12 (clears Moderate advisory GHSA-qhrr-8q5h-9q3h); protobuf-net and protobuf-net.Core 3.2.56 to 3.4.30. No code or API changes.
 	  </PackageReleaseNotes>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>

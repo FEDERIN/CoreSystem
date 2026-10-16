@@ -15,7 +15,7 @@
 		<Description>Safe fixed-window rate limiting for ASP.NET Core APIs.</Description>
 		<PackageReleaseNotes>
 			1.2.2: Package-only fix. The 1.2.1 nuspec declared CoreSystem.Observability.Abstractions 1.0.0 because the package was tagged before the central pin was refreshed. This release declares 1.0.1. No code or API changes.
-			1.2.3: Package metadata fix. Ships the LICENSE file and declares PackageLicenseFile. Every other CoreSystem package did already; this one was the only package published without a license. No code or API changes.
+			1.2.3: Dependency refresh (OpenTelemetry.Extensions.Hosting 1.19.0 to 1.20.0; CoreSystem.Observability.Abstractions refreshed to 1.0.2, which brings Microsoft.Extensions.Diagnostics.HealthChecks 8.0.32) plus package metadata fix: ships the LICENSE file and declares PackageLicenseFile. Every other CoreSystem package did already; this one was the only package published without a license. No code or API changes.
 		</PackageReleaseNotes>
 
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
