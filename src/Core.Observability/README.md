@@ -11,7 +11,7 @@ registered by other CoreSystem modules.
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Observability?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.19.0-purple?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.0-purple?style=for-the-badge)
 
 ---
 

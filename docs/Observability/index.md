@@ -9,7 +9,7 @@ their own metrics, activity sources, and health checks.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Observability?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.19.0-purple?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.0-purple?style=for-the-badge)
 
 ---
 

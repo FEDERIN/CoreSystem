@@ -2,13 +2,17 @@
 
 Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md.
 
-## Current state (Oct 2026 release cycle complete)
+## Current state (Oct 2026 dependency refresh, in review on `chore/dependency-refresh-release`)
 
-- **Published** (NuGet.org + GitHub Packages): Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis 1.0.3, Observability 1.0.1, Observability.Abstractions 1.0.1, RateLimiting 1.2.1, Resilience 2.0.1, Serialization 1.2.3, **Correlation 1.0.0** (new package, extracted from Observability via PR #50). Memory/Redis/Serialization got a patch purely to ship the corrected README.
+- **Published** (NuGet.org + GitHub Packages): Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis 1.0.3, Observability 1.0.2, Observability.Abstractions 1.0.1, RateLimiting 1.2.2, Resilience 2.0.2, Serialization 1.2.3, Correlation 1.0.0. Verified against the NuGet flat-container API, not just tags — a tag exists for every published version, but the tag alone does not prove the push succeeded.
+- **Staged but NOT yet published**: `Core.RateLimiting` 1.2.3. PR #56 already claimed it for the LICENSE fix and it was never tagged, so the dependency refresh was folded into that same 1.2.3 instead of burning 1.2.4.
+- **Pending release** (versions staged on the branch): Abstractions 1.0.2, Observability 1.0.3, RateLimiting 1.2.3, Resilience 2.0.3, Redis 1.0.4, Serialization 1.2.4. Http, Http.ProblemDetails, Memory and Correlation have no dependency changes and are deliberately *not* bumped.
+- The full solution now audits **zero vulnerable packages** (was: MessagePack 3.1.8 Moderate GHSA-qhrr-8q5h-9q3h, cleared by 3.1.12).
 - Every `src/Core.*` project has exactly one `README.md` (packed via `PackageReadmeFile`). The `README_NUGET.md` convention is gone — do not reintroduce it.
 - `Core.Observability` and `CoreSystem.Correlation` are independent packages with **no cross-reference** (verified: no `PackageReference`/`ProjectReference`/usings between them). Composition is opt-in by the user.
 - `CorrelationOptions.SectionName` is `"Core:Correlation"` (not `Core:Observability:Correlation`).
 - Central pins in `Directory.Packages.props` match the published versions; lock files regenerated.
+- OpenTelemetry stack is at **1.20.0** (all 8 `OpenTelemetry*` pins bumped together). `OpenTelemetry.Api.ProviderBuilderExtensions` is *not* centrally pinned — it follows automatically as a transitive dep, verified at 1.20.0. `Serilog.Sinks.OpenTelemetry` 4.2.0 is independent of the OTel SDK version and needs no bump alongside.
 
 ## Decisions and rationale
 
@@ -21,10 +25,23 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 
 ## Open items
 
-None. PR #51 merged; `main` is clean and CI, Samples Smoke, CodeQL and Pages are green.
+- Release `chore/dependency-refresh-release` in **two phases**, because `CoreSystem.Observability.Abstractions` is a NuGet dependency of Observability, RateLimiting and Resilience:
+  1. Tag now (no ordering constraints): `Core.Observability.Abstractions/v1.0.2`, `Core.Redis/v1.0.4`, `Core.Serialization/v1.2.4`.
+  2. Once 1.0.2 is on NuGet, bump the `CoreSystem.Observability.Abstractions` pin in `Directory.Packages.props` to 1.0.2, re-run `dotnet restore --use-lock-file --force-evaluate`, then tag `Core.Resilience/v2.0.3`, `Core.RateLimiting/v1.2.3`, `Core.Observability/v1.0.3`. Then bump the `CoreSystem.Observability` and `CoreSystem.Resilience` pins for the samples a second time, to 1.0.3 and 2.0.3.
+- Skipped the `README`/`docs` version refresh for the 6 bumped packages: dependency bumps change no public surface, so only the OTel badge in `docs/Observability/index.md` + `src/Core.Observability/README.md` needed touching.
+- PR #57 (`chore/bump-central-pins-after-publish`, Observability 1.0.2 / Resilience 2.0.2) was open and green for 4 days; it is now merged as `16c96e8`. Always merge those before cutting a release branch, not after.
 
 ## Gotchas
 
+- `CentralPackageTransitivePinningEnabled=true` means a `PackageVersion` pin wins over what a dependency asks for. Bumping only the top package in a family fails with **NU1109 downgrade**. Worked example (Oct 2026): `Microsoft.SourceLink.GitHub` 10.0.300 → 10.0.402 forced bumping `Microsoft.Build.Tasks.Git` 10.0.303 → 10.0.402 too, because the GitHub package depends on Tasks.Git with an exact-ish floor. Always bump the whole family together, then `dotnet restore CoreSystem.sln --use-lock-file --force-evaluate`.
+- **SourceLink ceiling is 10.0.402.** `Microsoft.SourceLink.GitHub` 11.x is RC and only ships `net10.0`/`net472` assets, so it cannot be consumed by this repo's `net8.0` + SDK 8.0.402.
+- **Vulnerable transitives are fixed with a central pin, not by upgrading the parent.** `System.Security.Cryptography.Pkcs` came in at 8.0.1 via `Microsoft.Data.SqlClient`, which still asks for exactly `8.0.1` even at 7.1.1 — so bumping SqlClient cannot fix it. Fix = add `<PackageVersion Include="System.Security.Cryptography.Pkcs" Version="8.0.2" />` to `Directory.Packages.props`; CPM turns it into a `CentralTransitive` pin that overrides the parent. This is the intended use of `CentralPackageTransitivePinningEnabled=true`. Verify with `dotnet list CoreSystem.sln package --vulnerable --include-transitive`.
+- Don't trust `vulnerable_version_range` from the GitHub advisory mirror for .NET CVEs: for CVE-2026-84008 / CVE-2026-70162 it reported `>= 10.0.0, <= 10.0.12` / patched `10.0.13`, but NuGet's audit data also flagged 8.0.1 and cleared on 8.0.2. Empirically bisect instead of reasoning from the advisory.
+- Resolving a dependency **to the latest published** version and calling it done is not enough for the three packages that consume `CoreSystem.Observability.Abstractions`. NuGet pins to the *declared floor*, so a consumer of `Resilience 2.0.3` still lands on `Abstractions 1.0.1` unless the central pin was bumped **before** the tag was pushed. This is exactly what produced the 1.0.2 / 1.2.2 / 2.0.2 "package-only fix" releases. Always check the release order, and never bump a central pin to a version that is not yet on NuGet — `RestoreLockedMode` will fail the whole solution.
+- `PackageReference` is the contract for cross-package dependencies in `src/`. Swapping one for an unconditional `ProjectReference` to make local builds convenient is not a local-only change: it deletes the package dependency from the nuspec, lets local edits leak into unrelated packages, and defeats the point of the NuGet-monorepo layout. Use `-p:UseLocalObservabilityAbstractions=true` or a gitignored `Directory.Build.local.props` instead.
+- `src/Core.Observability/Core.Observability.csproj` declares the Abstractions `ProjectReference` inside a `Condition`, so a careless edit can produce two `ProjectReference` items for the same path. NuGet rejects the duplicate and the nupkg loses its dependency.
+- **A `<Version>` in a csproj is a claim on a version number, whether or not it was ever tagged.** Check for a pending bump before choosing the next version: `git tag --list 'Core.RateLimiting/*'` plus the NuGet flat-container index. PR #56 staged RateLimiting 1.2.3 four days before this branch was cut, and rebasing produced a real conflict on `PackageReleaseNotes` because both branches independently wrote a `1.2.3:` line.
+- **Rebase onto `main`, not onto an open PR.** Long-lived unmerged PRs (a pin bump here, a version bump there) are normal in this repo, and a new branch cut from `main` silently reverts them — restore still succeeds because the old versions exist on NuGet, so CI stays green and the regression ships. Before opening a release PR, diff the central pins against every open PR and confirm the sample lock files resolve the *latest published* versions.
 - Build/format must stay green with `TreatWarningsAsErrors` + `AnalysisLevel latest-recommended`; public APIs without XML docs are build errors.
 - Many source files carry a UTF-8 BOM from Visual Studio. That is the committed state — do not "normalize" it away.
 - `main` is protected: always branch + PR via `gh pr create`.
