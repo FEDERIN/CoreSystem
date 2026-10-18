@@ -22,16 +22,19 @@ internal static class OpenTelemetryMetricsExtensions
         // Guard clause to ensure services collection is not null
         ArgumentNullException.ThrowIfNull(services);
 
-        var oTelOptions = new OpenTelemetryOptions();
-        var section = configuration.GetSection(OpenTelemetryOptions.SectionName);
+        // Bind only the Metrics subsection: an invalid value in the Logging or Tracing sections must not
+        // affect metrics. A missing section yields defaults, which are disabled, so metrics are bypassed.
+        bool metricsBound = OpenTelemetryConfigurationBinder.TryBindChild<OtlpMetricsOptions>(
+            configuration, nameof(OpenTelemetryOptions.Metrics), out OtlpMetricsOptions metricsOptions);
 
-        // If the configuration section is missing, we bypass OTel setup to prevent crashes
-        if (!section.Exists())
+        if (!metricsBound)
         {
-            return services;
+            // The section exists but did not bind. Keep metrics enabled when the flag itself is valid, so a
+            // malformed sibling value (a bad meter name, for instance) does not silently disable the exporter.
+            metricsOptions.Enabled = ReadEnabledFlag(configuration, nameof(OpenTelemetryOptions.Metrics));
         }
 
-        section.Bind(oTelOptions);
+        var oTelOptions = new OpenTelemetryOptions { Metrics = metricsOptions };
 
         // Early exit if metrics are null or explicitly disabled in configuration
         if (oTelOptions.Metrics == null || !oTelOptions.Metrics.Enabled)
@@ -98,4 +101,16 @@ internal static class OpenTelemetryMetricsExtensions
 
         return services;
     }
+
+    /// <summary>
+    /// Reads the <c>Enabled</c> flag of a child section without binding the rest of it, so a malformed sibling
+    /// value cannot hide the fact that the feature was explicitly turned on.
+    /// </summary>
+    /// <param name="configuration">The application configuration.</param>
+    /// <param name="childName">The child section name, for example <c>Metrics</c>.</param>
+    /// <returns>The configured flag, or <c>false</c> when it is absent or not a valid boolean.</returns>
+    private static bool ReadEnabledFlag(IConfiguration configuration, string childName) =>
+        bool.TryParse(
+            configuration[$"{OpenTelemetryOptions.SectionName}:{childName}:Enabled"], out bool enabled)
+            && enabled;
 }

@@ -20,14 +20,12 @@ internal static class SerilogExtensions
         // Ensure builder is not null before proceeding
         ArgumentNullException.ThrowIfNull(builder);
 
-        var oTelOptions = new OpenTelemetryOptions();
-        var section = builder.Configuration.GetSection(OpenTelemetryOptions.SectionName);
+        // Bind only the Logging subsection: Serilog never reads Tracing/Metrics, so an invalid value
+        // in those must not affect log configuration.
+        OpenTelemetryConfigurationBinder.TryBindChild<OtlpLoggingOptions>(
+            builder.Configuration, nameof(OpenTelemetryOptions.Logging), out OtlpLoggingOptions loggingOptions);
 
-        // If the section exists, bind it to our options class
-        if (section.Exists())
-        {
-            section.Bind(oTelOptions);
-        }
+        var oTelOptions = new OpenTelemetryOptions { Logging = loggingOptions };
 
         builder.Host.UseSerilog((context, loggerConfig) =>
         {
