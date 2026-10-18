@@ -2,11 +2,10 @@
 
 Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md.
 
-## Current state (Oct 2026 dependency refresh, in review on `chore/dependency-refresh-release`)
+## Current state (Oct 2026 — dependency refresh completed, versioning closed)
 
-- **Published** (NuGet.org + GitHub Packages): Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis 1.0.3, Observability 1.0.2, Observability.Abstractions **1.0.2**, RateLimiting 1.2.2, Resilience 2.0.2, Serialization 1.2.3, Correlation 1.0.0. Verified against the NuGet flat-container API, not just tags — a tag exists for every published version, but the tag alone does not prove the push succeeded. Abstractions 1.0.2 went out 2026-10-18 (run 39146486587); its only change vs 1.0.1 is the nuspec floor `Microsoft.Extensions.Diagnostics.HealthChecks 8.0.28 → 8.0.32`, the DLL differs solely in the assembly-version stamp.
-- **Staged but NOT yet published**: `Core.RateLimiting` 1.2.3. PR #56 already claimed it for the LICENSE fix and it was never tagged, so the dependency refresh was folded into that same 1.2.3 instead of burning 1.2.4.
-- **Pending release** (versions staged on the branch): Observability 1.0.3, RateLimiting 1.2.3, Resilience 2.0.3, Redis 1.0.4, Serialization 1.2.4. Http, Http.ProblemDetails, Memory and Correlation have no dependency changes and are deliberately *not* bumped.
+- **Published** (NuGet.org + GitHub Packages), verified against the NuGet flat-container API — not just tags, since a tag alone does not prove the push succeeded: Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis **1.0.4**, Observability **1.0.3**, Observability.Abstractions 1.0.2, RateLimiting **1.2.3**, Resilience **2.0.3**, Serialization **1.2.4**, Correlation 1.0.0. **Nothing is pending** — see "Versioning is closed" below.
+- ~~Staged but NOT yet published: Core.RateLimiting 1.2.3~~ — shipped.
 - The full solution now audits **zero vulnerable packages** (was: MessagePack 3.1.8 Moderate GHSA-qhrr-8q5h-9q3h, cleared by 3.1.12).
 - Every `src/Core.*` project has exactly one `README.md` (packed via `PackageReadmeFile`). The `README_NUGET.md` convention is gone — do not reintroduce it.
 - `Core.Observability` and `CoreSystem.Correlation` are independent packages with **no cross-reference** (verified: no `PackageReference`/`ProjectReference`/usings between them). Composition is opt-in by the user.
@@ -34,10 +33,17 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - `PackageReleaseNotes` for `1.0.3` amended from "No code or API changes" to describe the fix. 1.0.3 is staged but **not tagged**, so this amends in place rather than burning a 1.0.4. If `chore/dependency-refresh-release` has moved on, #63 needs a rebase before tagging.
 - Gotcha for future test projects: `IOpenTelemetryTracerProvider`/`IHealthCheckService` do **not** exist as public types. Assert on the concrete `TracerProvider`, `MeterProvider` and `HealthCheckService` service descriptors instead.
 
-## Open items
+## Versioning is closed (decision, Oct 2026)
 
-- Release `chore/dependency-refresh-release` in **two phases**, because `CoreSystem.Observability.Abstractions` is a NuGet dependency of Observability, RateLimiting and Resilience. **Phase 1 done**: `Core.Observability.Abstractions/v1.0.2` published. Still to tag (no ordering constraints): `Core.Redis/v1.0.4`, `Core.Serialization/v1.2.4`.
-- Phase 2 is unblocked and waiting on **PR #60** (`chore/bump-abstractions-pin-1.0.2`): bumps the Abstractions pin to 1.0.2 and regenerates 7 lock files. Once merged: tag `Core.Resilience/v2.0.3`, `Core.RateLimiting/v1.2.3`, `Core.Observability/v1.0.3`, then bump the `CoreSystem.Observability` and `CoreSystem.Resilience` pins for the samples to 1.0.3 and 2.0.3.
+- **Do not bump versions or open release branches unless the user explicitly asks.** The user closed versioning after the dependency-refresh cycle landed.
+- **Verified: all 10 packages are published at their current csproj versions** (Correlation 1.0.0, Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Observability 1.0.3, Observability.Abstractions 1.0.2, RateLimiting 1.2.3, Redis 1.0.4, Resilience 2.0.3, Serialization 1.2.4). There is nothing pending, so no release work is outstanding.
+- The old two-phase release plan below is **done and obsolete** — kept only as history for why the current pins look the way they do.
+- Consequence for PR #64 (`.snupkg` symbols): it is a **pipeline-only** change. It adds no version bump and needs none. Symbols only reach consumers on the next tag, which will happen whenever there is a real reason to release. The published 1.0.x packages can never gain symbols retroactively — NuGet packages are immutable.
+- If a future release does happen, the pending question is whether the sample pins need refreshing (see the phase-2 note below); the `.snupkg` work in #64 rides along automatically.
+
+## Open items (historical — completed)
+
+- ~~Release `chore/dependency-refresh-release` in two phases~~ **DONE**: Abstractions 1.0.2 published, PR #60 merged, then Observability 1.0.3 / RateLimiting 1.2.3 / Resilience 2.0.3 / Redis 1.0.4 / Serialization 1.2.4 all published. Nothing left to tag.
 - PR #59 merged `RELEASING.md` as the tracked release checklist. Its `publish-package.bat` no longer prompts: step 9 creates and pushes the tag unattended, so a run from a non-interactive shell cannot silently cancel.
 - `RELEASING.md` is now tracked and is the release checklist (names table, two-phase order, pre-flight). It was untracked *and* written for the Idempotency repo, which aborted `publish-package.bat` at its clean-tree check and documented a `--skip-duplicate` behaviour `publish.yml` does not have.
 - Skipped the `README`/`docs` version refresh for the 6 bumped packages: dependency bumps change no public surface, so only the OTel badge in `docs/Observability/index.md` + `src/Core.Observability/README.md` needed touching.
