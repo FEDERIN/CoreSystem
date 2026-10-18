@@ -28,6 +28,7 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - Release `chore/dependency-refresh-release` in **two phases**, because `CoreSystem.Observability.Abstractions` is a NuGet dependency of Observability, RateLimiting and Resilience:
   1. Tag now (no ordering constraints): `Core.Observability.Abstractions/v1.0.2`, `Core.Redis/v1.0.4`, `Core.Serialization/v1.2.4`.
   2. Once 1.0.2 is on NuGet, bump the `CoreSystem.Observability.Abstractions` pin in `Directory.Packages.props` to 1.0.2, re-run `dotnet restore --use-lock-file --force-evaluate`, then tag `Core.Resilience/v2.0.3`, `Core.RateLimiting/v1.2.3`, `Core.Observability/v1.0.3`. Then bump the `CoreSystem.Observability` and `CoreSystem.Resilience` pins for the samples a second time, to 1.0.3 and 2.0.3.
+- `RELEASING.md` is now tracked and is the release checklist (names table, two-phase order, pre-flight). It was untracked *and* written for the Idempotency repo, which aborted `publish-package.bat` at its clean-tree check and documented a `--skip-duplicate` behaviour `publish.yml` does not have.
 - Skipped the `README`/`docs` version refresh for the 6 bumped packages: dependency bumps change no public surface, so only the OTel badge in `docs/Observability/index.md` + `src/Core.Observability/README.md` needed touching.
 - PR #57 (`chore/bump-central-pins-after-publish`, Observability 1.0.2 / Resilience 2.0.2) was open and green for 4 days; it is now merged as `16c96e8`. Always merge those before cutting a release branch, not after.
 
