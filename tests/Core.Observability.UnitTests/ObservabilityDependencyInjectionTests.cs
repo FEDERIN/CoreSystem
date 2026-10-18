@@ -123,18 +123,79 @@ public sealed class ObservabilityDependencyInjectionTests
     }
 
     [Fact]
-    public void AddObservability_WhenSamplingProbabilityIsNotANumber_ThrowsAConfigurationBindingError()
+    public void AddObservability_WhenSamplingProbabilityIsNotANumber_FallsBackToFullSampling()
     {
-        // Documented limitation, not a desired behaviour: Serilog binds the whole "OpenTelemetry"
-        // section (SerilogExtensions only reads Logging), so an unparsable double fails the bind
-        // before OpenTelemetryTracingExtensions can apply its NaN/range guard.
+        // Regression: every consumer used to bind the whole "OpenTelemetry" section, so an unparsable
+        // SamplingProbability failed the bind inside SerilogExtensions before tracing could apply its
+        // guard, and the host failed to start. Tracing now binds only its own subsection.
         WebApplicationBuilder builder =
             ObservabilityTestBuilder.CreateWithTracingEnabled(samplingProbability: "not-a-number");
 
         Action act = () => builder.AddObservability(Environment, ServiceName, ServiceNamespace);
 
-        act.Should().Throw<InvalidOperationException>()
-            .WithMessage("*SamplingProbability*");
+        act.Should().NotThrow();
+        HasTracerProvider(builder.Services).Should().BeTrue();
+    }
+
+    [Fact]
+    public void AddObservability_WhenTracingSectionIsInvalid_StillWiresSerilog()
+    {
+        // An invalid tracing value must not leak into logging configuration.
+        WebApplicationBuilder builder =
+            ObservabilityTestBuilder.CreateWithTracingEnabled(samplingProbability: "not-a-number");
+
+        builder.AddObservability(Environment, ServiceName, ServiceNamespace);
+
+        using ServiceProvider provider = builder.Services.BuildServiceProvider();
+        provider.GetRequiredService<ILoggerFactory>().Should().BeOfType<SerilogLoggerFactory>();
+    }
+
+    [Fact]
+    public void AddObservability_WhenMetricsEnabledIsNotABoolean_StillWiresSerilogAndTracing()
+    {
+        // Likewise for a malformed value in a sibling section.
+        WebApplicationBuilder builder = ObservabilityTestBuilder.Create(
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Tracing:Enabled", "true"),
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Tracing:OtlpEndpoint", "http://traces:4317"),
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Metrics:Enabled", "not-a-boolean"));
+
+        Action act = () => builder.AddObservability(Environment, ServiceName, ServiceNamespace);
+
+        act.Should().NotThrow();
+        HasTracerProvider(builder.Services).Should().BeTrue();
+
+        // An unparsable Enabled flag cannot be honoured, so metrics stay off rather than silently on.
+        HasMeterProvider(builder.Services).Should().BeFalse();
+    }
+
+    [Fact]
+    public void AddObservability_WhenMetricsMetersAreMalformed_KeepsMetricsEnabled()
+    {
+        // A bad value in one property must not disable the whole exporter: Enabled is still honoured.
+        WebApplicationBuilder builder = ObservabilityTestBuilder.Create(
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Metrics:Enabled", "true"),
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Metrics:OtlpEndpoint", "http://metrics:4317"),
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Metrics:Meters:0", "Core.Resilience"),
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Metrics:Meters", "not-a-list"));
+
+        Action act = () => builder.AddObservability(Environment, ServiceName, ServiceNamespace);
+
+        act.Should().NotThrow();
+        HasMeterProvider(builder.Services).Should().BeTrue();
+    }
+
+    [Fact]
+    public void AddObservability_WhenLoggingSectionIsInvalid_StillRegistersHealthChecks()
+    {
+        WebApplicationBuilder builder = ObservabilityTestBuilder.Create(
+            KeyValuePair.Create<string, string?>("OpenTelemetry:Logging:Enabled", "not-a-boolean"));
+
+        Action act = () => builder.AddObservability(Environment, ServiceName, ServiceNamespace);
+
+        act.Should().NotThrow();
+
+        using ServiceProvider provider = builder.Services.BuildServiceProvider();
+        provider.GetService<HealthCheckService>().Should().NotBeNull();
     }
 
     [Fact]
