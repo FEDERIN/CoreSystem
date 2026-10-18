@@ -311,19 +311,19 @@
       "CoreSystem.RateLimiting": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Observability.Abstractions": "[1.0.1, )",
+          "CoreSystem.Observability.Abstractions": "[1.0.2, )",
           "OpenTelemetry.Extensions.Hosting": "[1.20.0, )"
         }
       },
       "CoreSystem.Observability.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[1.0.1, )",
-        "resolved": "1.0.1",
-        "contentHash": "YhqdxLhgxLgxb0UJl7sOS8k3ELarGzdGdDgZSDV+6OswFFYEifeDQXPMByQ8+ZKBmXjrpHyO+JqXsUMyUVPh9A==",
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "ycGspIeGMWTdfNvEp3sZ62Vlysfq1Ye4ij43+7fe9U4CGF1ZQNAM8gXDM8xrR17LecRNdo1h97debu0d0uee9Q==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.28",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.32",
           "Microsoft.Extensions.Options": "8.0.2"
         }
       },
