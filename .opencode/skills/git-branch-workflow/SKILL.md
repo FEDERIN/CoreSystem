@@ -5,6 +5,27 @@ description: Use when starting work, committing, or preparing a release on a rep
 
 # Git Branch and PR Workflow
 
+## "Generate the PR" means exactly that
+
+When the user asks for a PR, do these and stop:
+
+1. `git checkout -b <prefix>/<slug>`
+2. `git add` + `git commit`
+3. `git push -u origin <branch>`
+4. `gh pr create`
+
+Do **not** run `dotnet build`, `dotnet format`, `dotnet test`, or a second
+`--force-evaluate` restore unless the user asked. CI runs all of it on the PR,
+and the user is paying per token for a preview of a green check they will get
+for free. Reading the diff once to write an accurate commit message is fine;
+re-running the toolchain is not.
+
+Do not ask permission to proceed either. Branch, commit, push, PR, report the
+URL. Offer the verification as a one-line note, not as a gate.
+
+Reserve full validation for a **release tag** — see `nuget-release`. There the
+gate is the local script (`publish-package.bat`) or CI, not a hand-run build.
+
 ## main is protected
 
 When `git push origin main` returns:
