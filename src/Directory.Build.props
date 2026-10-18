@@ -6,6 +6,11 @@
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<!-- Publish PDBs to a .snupkg on the NuGet Symbol Server so consumers can step into the real
+		     source from a production stack trace. Kept out of the main .nupkg: it would make every
+		     download larger. The debugger fetches symbols on demand, only when a crash is debugged. -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
