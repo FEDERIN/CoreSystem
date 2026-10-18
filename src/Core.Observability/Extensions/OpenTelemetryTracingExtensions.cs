@@ -24,13 +24,21 @@ internal static class OpenTelemetryTracingExtensions
         // Guard clause for the service collection
         ArgumentNullException.ThrowIfNull(services);
 
-        var oTelOptions = new OpenTelemetryOptions();
-        var section = configuration.GetSection(OpenTelemetryOptions.SectionName);
+        // Bind only the Tracing subsection: an invalid value in the Logging or Metrics sections must not
+        // affect tracing. A missing section yields defaults, which are disabled, so tracing is bypassed.
+        bool tracingBound = OpenTelemetryConfigurationBinder.TryBindChild<OtlpTracingOptions>(
+            configuration, nameof(OpenTelemetryOptions.Tracing), out OtlpTracingOptions tracingOptions);
 
-        // If the configuration section is missing, bypass tracing setup to prevent crashes
-        if (!section.Exists()) return services;
+        if (!tracingBound)
+        {
+            // The section exists but did not bind, so one value is malformed. Keep tracing enabled when the
+            // flag itself is valid: dropping it to false would silently disable tracing because of a typo in
+            // an unrelated value such as SamplingProbability. The remaining values fall back to defaults,
+            // which the sampling guard below already handles.
+            tracingOptions.Enabled = ReadEnabledFlag(configuration, nameof(OpenTelemetryOptions.Tracing));
+        }
 
-        section.Bind(oTelOptions);
+        var oTelOptions = new OpenTelemetryOptions { Tracing = tracingOptions };
 
         // Early return if tracing is not enabled in configuration
         if (oTelOptions.Tracing == null || !oTelOptions.Tracing.Enabled)
@@ -152,4 +160,16 @@ internal static class OpenTelemetryTracingExtensions
 
         return services;
     }
+
+    /// <summary>
+    /// Reads the <c>Enabled</c> flag of a child section without binding the rest of it, so a malformed sibling
+    /// value cannot hide the fact that the feature was explicitly turned on.
+    /// </summary>
+    /// <param name="configuration">The application configuration.</param>
+    /// <param name="childName">The child section name, for example <c>Tracing</c>.</param>
+    /// <returns>The configured flag, or <c>false</c> when it is absent or not a valid boolean.</returns>
+    private static bool ReadEnabledFlag(IConfiguration configuration, string childName) =>
+        bool.TryParse(
+            configuration[$"{OpenTelemetryOptions.SectionName}:{childName}:Enabled"], out bool enabled)
+            && enabled;
 }
