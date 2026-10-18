@@ -23,15 +23,16 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - `<TargetFramework>net8.0</TargetFramework>` stays declared in every csproj even though `Directory.Build.props` sets it. Closed as a non-issue: keeping it explicit makes each project readable and independently buildable.
 - READMEs are verified against the real public API, not just eyeballed: the Memory README referenced `IMemoryLockProvider` (never existed, it is `IAsyncKeyLock`) and `docs/Serialization` documented the `internal` `ISerializerFactory` instead of the public `IPayloadSerializer`. Check the type name in `src/` before writing an example.
 
-## Fix in review: invalid Observability config aborted startup (PR #63)
+## Fixes shipped (PR #62, #63 merged 2026-10-18)
 
-- **PR #62** (`test/observability-unit-tests`, open): new `tests/Core.Observability.UnitTests`, 44 tests. Registered in the solution so CI runs it and `test-changed.ps1` maps `src/Core.Observability` to it.
-- **PR #63** (`fix/observability-invalid-sampling-probability`, open): fixes a real bug those tests exposed. Stacked on #62 — the test project does not exist on `main`, so **#62 must merge first**, then #63 retargets to `main`.
-- **The bug**: all three extension methods bound the *whole* `OpenTelemetry` section while each reads only one of `Logging`/`Tracing`/`Metrics`. `IConfiguration.Bind` throws on the first unconvertible value, so `Tracing:SamplingProbability="not-a-number"` blew up inside `SerilogExtensions` — a class that never read that value — making `AddObservability` throw and preventing host startup. Fixing only Serilog would not have helped; tracing threw next.
+- **PR #62** (merged `5664d6a`): new `tests/Core.Observability.UnitTests`, 48 tests. Registered in the solution so CI runs it and `test-changed.ps1` maps `src/Core.Observability` to it.
+- **PR #63** (merged `4023389`): fixed the invalid-config crash described below. Verified the published `CoreSystem.Observability 1.0.3` **contains** the fix (`OpenTelemetryConfigurationBinder` and `TryBindChild` are present in the shipped DLL), so no follow-up release is needed. Note that 1.0.3's `.nuspec` has no `<releaseNotes>` on NuGet even though the csproj documents 1.0.3 — the package was packed before the release-note edit.
+- **PR #64** (`chore/publish-symbol-packages`, open): publishes PDBs as `.snupkg` so SourceLink actually reaches consumers. See the SourceLink entries in Gotchas.
+- **The bug (now fixed)**: all three extension methods bound the *whole* `OpenTelemetry` section while each reads only one of `Logging`/`Tracing`/`Metrics`. `IConfiguration.Bind` throws on the first unconvertible value, so `Tracing:SamplingProbability="not-a-number"` blew up inside `SerilogExtensions` — a class that never read that value — making `AddObservability` throw and preventing host startup. Fixing only Serilog would not have helped; tracing threw next.
 - **The fix**: new internal `OpenTelemetryConfigurationBinder.TryBindChild<T>` binds one subsection and reports invalid values via `Trace` instead of throwing. Each exporter binds only its own subsection.
 - **Non-obvious part**: when a subsection fails to bind, a valid `Enabled` flag is still re-read and honoured. Falling back to defaults alone would have silently disabled tracing because of a typo in `SamplingProbability` — trading a loud crash for a quiet loss of observability. Test: `AddObservability_WhenMetricsMetersAreMalformed_KeepsMetricsEnabled`.
 - The `NaN`/range guard in `OpenTelemetryTracingExtensions` (lines ~40-47) used to be **unreachable**; it is now exercised by real tests.
-- `PackageReleaseNotes` for `1.0.3` amended from "No code or API changes" to describe the fix. 1.0.3 is staged but **not tagged**, so this amends in place rather than burning a 1.0.4. If `chore/dependency-refresh-release` has moved on, #63 needs a rebase before tagging.
+- `PackageReleaseNotes` for `1.0.3` amended from "No code or API changes" to describe the fix. Confirm whether `Core.Observability/v1.0.3` has been tagged; if not, this amends 1.0.3 in place rather than burning a 1.0.4.
 - Gotcha for future test projects: `IOpenTelemetryTracerProvider`/`IHealthCheckService` do **not** exist as public types. Assert on the concrete `TracerProvider`, `MeterProvider` and `HealthCheckService` service descriptors instead.
 
 ## Open items
@@ -42,6 +43,11 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 - `RELEASING.md` is now tracked and is the release checklist (names table, two-phase order, pre-flight). It was untracked *and* written for the Idempotency repo, which aborted `publish-package.bat` at its clean-tree check and documented a `--skip-duplicate` behaviour `publish.yml` does not have.
 - Skipped the `README`/`docs` version refresh for the 6 bumped packages: dependency bumps change no public surface, so only the OTel badge in `docs/Observability/index.md` + `src/Core.Observability/README.md` needed touching.
 - PR #57 (`chore/bump-central-pins-after-publish`, Observability 1.0.2 / Resilience 2.0.2) was open and green for 4 days; it is now merged as `16c96e8`. Always merge those before cutting a release branch, not after.
+
+- **The GitHub repo is PUBLIC.** The local folder is `C:\Portafolio\Private\CoreSystem`, which is misleading — do not infer repo visibility from the path. Verify with `gh repo view FEDERIN/CoreSystem --json visibility`. I wrongly assumed private and nearly recommended the wrong thing.
+- **SourceLink was configured but useless until PR #64.** The PDB was never shipped, so consumers got stack traces with no file/line info. Fix = `IncludeSymbols`/`SymbolPackageFormat` in `src/Directory.Build.props` (emits a `.snupkg`), **plus** `--symbol-source` on the NuGet push in `publish.yml`. The props change alone is not enough: `dotnet nuget push ./nupkgs/*.nupkg` without `--symbol-source` never uploads the `.snupkg`. GitHub Packages push needs `--no-symbols` (it is not a symbol server).
+- `GeneratePackageOnBuild=true` on every `src/Core.*` does **not** conflict with `dotnet pack --no-build` in CI — verified the snupkg is still produced.
+- To read SourceLink from a PDB without a decompiler: `MetadataReaderProvider.FromPortablePdbStream` + scan `CustomDebugInformation` for GUID `CC110556-A091-4D38-9FEC-25AB9A351A6A`.
 
 ## Gotchas
 
