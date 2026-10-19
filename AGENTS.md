@@ -1,6 +1,6 @@
 # AGENTS.md
 
-.NET 8 (SDK pinned to 8.0.402 in `global.json`) monorepo of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). The root `README.md` lists the current packages; Cache and Idempotency were split out — they remain part of the ecosystem but have their own repositories and docs are external, see `docs/External`. Do not propose re-creating or re-adding them as packages in this repo. Use `dotnet sln list` / `src/` as the source of truth.
+.NET monorepo (SDK pinned to `10.0.201` in `global.json`, plus `"test": { "runner": "Microsoft.Testing.Platform" }`) of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). Everything targets `net8.0` except `Core.Correlation`, which is multi-targeted (`net8.0;net9.0;net10.0`) as a pilot. The root `README.md` lists the current packages; Cache and Idempotency were split out — they remain part of the ecosystem but have their own repositories and docs are external, see `docs/External`. Do not propose re-creating or re-adding them as packages in this repo. Use `dotnet sln list` / `src/` as the source of truth.
 
 ## Layout
 - `src/Core.<Name>`: one NuGet package per project. `GeneratePackageOnBuild=true`, so every build also produces a `.nupkg`.
@@ -22,8 +22,8 @@
 - Every public API needs XML docs; `GenerateDocumentationFile` makes missing docs a build error.
 
 ## Commands
-- Build/test everything: `dotnet build CoreSystem.sln` / `dotnet test CoreSystem.sln -c Release` (CI uses Release).
-- Single project: `dotnet test tests/Core.Redis.UnitTests -c Release`.
+- Build/test everything: `dotnet build CoreSystem.sln` / `dotnet test --solution CoreSystem.sln -c Release` (CI uses Release).
+- Single project: `dotnet test --project tests/Core.Redis.UnitTests -c Release`. SDK 10 runs tests in Microsoft.Testing.Platform mode, which rejects a positional path — always use `--solution`/`--project`.
 - Affected tests only: `pwsh scripts/test-changed.ps1`. It maps changed `src/X` → `tests/X.UnitTests` and runs the full suite when solution-wide files, `Core.Serialization`, or `Core.Observability.Abstractions` change.
 - Formatting is enforced in CI: `dotnet format CoreSystem.sln --verify-no-changes`. Run `dotnet format CoreSystem.sln` to apply fixes before pushing.
 - Docs: `pip install -r requirements.txt`, then `mkdocs build` (or `mkdocs serve`).

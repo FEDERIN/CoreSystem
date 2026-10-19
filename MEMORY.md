@@ -2,9 +2,20 @@
 
 Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md.
 
+## Multi-targeting pilot: Core.Correlation (PR #66, branch `feat/multi-target-correlation`)
+
+- `global.json` moved from SDK 8.0.402 to **10.0.201** (`rollForward: latestFeature`, `allowPrerelease: false`) and now carries `"test": { "runner": "Microsoft.Testing.Platform" }`. Only `src/Core.Correlation` + `tests/Core.Correlation.UnitTests` are multi-targeted; everything else stays net8.0.
+- **Clear `TargetFramework` (`<TargetFramework />`) in any multi-targeted csproj** while `Directory.Build.props` sets it: `Sdk.targets` only sets `IsCrossTargetingBuild` when `TargetFramework` is empty. Otherwise restore resolves 3 TFMs (3 lock-file sections) but the build silently emits **net8.0 only**.
+- SDK 10 enables NuGet package pruning for **all** TFMs of a multi-targeted project (`Microsoft.NET.Sdk.FrameworkReferenceResolution.targets`), so the test project's *net8.0* lock-file section also dropped two framework-provided transitives (`System.Diagnostics.DiagnosticSource` 5.0.0, `System.Security.Principal.Windows` 5.0.0). Expected, not a bug.
+- `WebHostBuilder` is deprecated on ASP.NET Core 10 (`ASPDEPR004`, a build error under warnings-as-errors): the test helper uses `HostBuilder` + `ConfigureWebHost` + `UseTestServer`/`GetTestServer` instead.
+- `Microsoft.AspNetCore.TestHost` is pinned **per TFM** in `Directory.Packages.props` (8.0.32 / 9.0.21 / 10.0.13) with conditional `PackageVersion` ItemGroups: CPM allows one version per id, and NuGet evaluates those conditions per framework during restore, so each TFM resolves its matching host. The other 6 test projects stay single-TFM net8.0 and keep 8.0.32.
+- **`dotnet test` syntax changed on SDK 10 MTP mode**: `dotnet test --solution X.sln` / `--project X.csproj`; a positional path is rejected. Updated `ci.yml`, `publish.yml`, `scripts/test-changed.ps1`, `AGENTS.md`, the quality-gates skill and the local `.bat` helpers. The samples Dockerfile build stage is `sdk:10.0`; its runtime stage stays `aspnet:8.0`.
+- Verified: solution restore/build 0 warnings, `dotnet format --verify-no-changes` clean, `dotnet test --solution CoreSystem.sln` **218/218**, Correlation **15/15** (5 per TFM), nupkg has `lib/net8.0|net9.0|net10.0` under the single id `CoreSystem.Correlation`. Version bumped to **1.1.0** (minor: new TFM assets, API unchanged) in all four csproj properties; nothing tagged or published yet — the tag will be `Core.Correlation/v1.1.0`. Note that the workflow's `/p:Version=` does **not** override an explicit `InformationalVersion`/`FileVersion` in the csproj, so the four properties must be bumped by hand.
+- Open: samples smoke (Docker) not run (no Docker daemon locally); the rolling `sdk:10.0` tag must resolve to 10.0.2xx+ or `rollForward: latestFeature` fails.
+
 ## Current state (Oct 2026 — dependency refresh completed, versioning closed)
 
-- **Published** (NuGet.org + GitHub Packages), verified against the NuGet flat-container API — not just tags, since a tag alone does not prove the push succeeded: Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis **1.0.4**, Observability **1.0.3**, Observability.Abstractions 1.0.2, RateLimiting **1.2.3**, Resilience **2.0.3**, Serialization **1.2.4**, Correlation 1.0.0. **Nothing is pending** — see "Versioning is closed" below.
+- **Published** (NuGet.org + GitHub Packages), verified against the NuGet flat-container API — not just tags, since a tag alone does not prove the push succeeded: Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis **1.0.4**, Observability **1.0.3**, Observability.Abstractions 1.0.2, RateLimiting **1.2.3**, Resilience **2.0.3**, Serialization **1.2.4**, Correlation 1.0.0. **One release is pending**: `CoreSystem.Correlation` 1.1.0 is already bumped in the csproj and awaits its tag — see "Versioning is closed" below.
 - ~~Staged but NOT yet published: Core.RateLimiting 1.2.3~~ — shipped.
 - The full solution now audits **zero vulnerable packages** (was: MessagePack 3.1.8 Moderate GHSA-qhrr-8q5h-9q3h, cleared by 3.1.12).
 - Every `src/Core.*` project has exactly one `README.md` (packed via `PackageReadmeFile`). The `README_NUGET.md` convention is gone — do not reintroduce it.
@@ -36,7 +47,7 @@ Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md
 ## Versioning is closed (decision, Oct 2026)
 
 - **Do not bump versions or open release branches unless the user explicitly asks.** The user closed versioning after the dependency-refresh cycle landed.
-- **Verified: all 10 packages are published at their current csproj versions** (Correlation 1.0.0, Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Observability 1.0.3, Observability.Abstractions 1.0.2, RateLimiting 1.2.3, Redis 1.0.4, Resilience 2.0.3, Serialization 1.2.4). There is nothing pending, so no release work is outstanding.
+- **Verified: 9 of the 10 packages are published at their current csproj versions** (Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Observability 1.0.3, Observability.Abstractions 1.0.2, RateLimiting 1.2.3, Redis 1.0.4, Resilience 2.0.3, Serialization 1.2.4). The exception is **Correlation**: its csproj is bumped to **1.1.0** (multi-targeting pilot, PR #66) while 1.0.0 is still the version on NuGet, so the only outstanding release work is that tag, `Core.Correlation/v1.1.0`, which the user explicitly requested.
 - The old two-phase release plan below is **done and obsolete** — kept only as history for why the current pins look the way they do.
 - Consequence for PR #64 (`.snupkg` symbols): it is a **pipeline-only** change. It adds no version bump and needs none. Symbols only reach consumers on the next tag, which will happen whenever there is a real reason to release. The published 1.0.x packages can never gain symbols retroactively — NuGet packages are immutable.
 - If a future release does happen, the pending question is whether the sample pins need refreshing (see the phase-2 note below); the `.snupkg` work in #64 rides along automatically.

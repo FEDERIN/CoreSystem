@@ -1,12 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<!-- Multi-targeting pilot: net9.0/net10.0 assets are built from the same source as net8.0. -->
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<!-- Clears the net8.0 default from Directory.Build.props; without it TargetFramework is non-empty and the SDK skips the cross-targeting (outer) build. -->
+		<TargetFramework />
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Correlation</PackageId>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
-		<InformationalVersion>1.0.0</InformationalVersion>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
+		<InformationalVersion>1.1.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Correlation-id propagation middleware for ASP.NET Core, usable standalone or alongside CoreSystem.Observability.</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
@@ -14,6 +18,9 @@
 		<PackageProjectUrl>https://federin.github.io/CoreSystem/Correlation</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReleaseNotes>
+			1.1.0: targets net8.0, net9.0 and net10.0. No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 asset is unchanged.
+		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
