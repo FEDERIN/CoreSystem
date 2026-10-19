@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	  <TargetFramework>net8.0</TargetFramework>
+	  <!-- Multi-targeting: net9.0/net10.0 assets are built from the same source as net8.0. -->
+	  <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+	  <!-- Clears the net8.0 default from Directory.Build.props; without it TargetFramework is non-empty and the SDK skips the cross-targeting (outer) build. -->
+	  <TargetFramework />
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <Nullable>enable</Nullable>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageId>CoreSystem.Redis</PackageId>
-	  <Version>1.0.4</Version>
+	  <Version>1.1.0</Version>
 	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
-	  <Description>Production-ready Redis infrastructure library for .NET 8 providing connection management, distributed locking, and dependency injection integration built on StackExchange.Redis.</Description>
+	  <Description>Production-ready Redis infrastructure library for .NET 8, 9 and 10 providing connection management, distributed locking, and dependency injection integration built on StackExchange.Redis.</Description>
 	  <PackageTags>
 		  Redis;
 		  StackExchange.Redis;
@@ -19,16 +22,18 @@
 		  DependencyInjection;
 		  CloudNative;
 		  Microservices;
-		  .NET8
+		  .NET8;
+		  .NET9;
+		  .NET10
 	  </PackageTags>
 	  <RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
 	  <PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Redis</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageLicenseFile>LICENSE</PackageLicenseFile>	 
-	  <AssemblyVersion>1.0.4.0</AssemblyVersion>
-	  <FileVersion>1.0.4.0</FileVersion>
-	  <InformationalVersion>1.0.4</InformationalVersion>
+	  <AssemblyVersion>1.1.0.0</AssemblyVersion>
+	  <FileVersion>1.1.0.0</FileVersion>
+	  <InformationalVersion>1.1.0</InformationalVersion>
 	  <PackageReleaseNotes>
 		  Initial stable release.
 		  - Redis Connection Factory
@@ -36,6 +41,7 @@
 		  - Dependency Injection integration
 		  - Production-ready defaults
 		  1.0.4: Dependency refresh. StackExchange.Redis 2.13.1 to 2.13.17. No code or API changes.
+		  1.1.0: targets net8.0, net9.0 and net10.0. No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 asset is unchanged. Microsoft.Extensions.DependencyInjection.Abstractions is declared per TFM (8.0.2 / 9.0.21 / 10.0.13), raising the floor on net9.0/net10.0.
 	  </PackageReleaseNotes>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
