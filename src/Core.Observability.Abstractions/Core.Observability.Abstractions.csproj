@@ -1,19 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<!-- Multi-targeting: net9.0/net10.0 assets are built from the same source as net8.0. -->
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<!-- Clears the net8.0 default from Directory.Build.props; without it TargetFramework is non-empty and the SDK skips the cross-targeting (outer) build. -->
+		<TargetFramework />
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Observability.Abstractions</PackageId>
-		<Version>1.0.2</Version>
-		<AssemblyVersion>1.0.2.0</AssemblyVersion>
-		<FileVersion>1.0.2.0</FileVersion>
-		<InformationalVersion>1.0.2</InformationalVersion>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
+		<InformationalVersion>1.1.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Base contracts for the CoreSystem modular observability system.</Description>
 		<PackageReleaseNotes>
 			1.0.2: Dependency refresh. Microsoft.Extensions.Diagnostics.HealthChecks 8.0.28 to 8.0.32. No code or API changes.
+			1.1.0: targets net8.0, net9.0 and net10.0. No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 asset is unchanged. Microsoft.Extensions.Configuration(.Abstractions), Diagnostics.HealthChecks and Options are declared per TFM (8.0.x / 9.0.21 / 10.0.13).
 		</PackageReleaseNotes>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Observability.Abstractions</PackageProjectUrl>
