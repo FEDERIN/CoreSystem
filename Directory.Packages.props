@@ -12,7 +12,6 @@
     <PackageVersion Include="CoreSystem.Resilience" Version="2.0.2" />
     <PackageVersion Include="CoreSystem.Serialization" Version="1.2.3" />
     <PackageVersion Include="MessagePack" Version="3.1.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.32" />
     <PackageVersion Include="Microsoft.Build.Tasks.Git" Version="10.0.402" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="7.1.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
@@ -51,5 +50,18 @@
     <PackageVersion Include="Testcontainers.Redis" Version="4.16.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
     <PackageVersion Include="xunit.v3" Version="4.0.2" />
+  </ItemGroup>
+  <!-- Versions that must match the target framework of a multi-targeting project.
+       CPM allows only one PackageVersion per id, so each TFM declares its own conditional ItemGroup;
+       NuGet evaluates these conditions per framework during restore.
+       Each version must match the servicing patch of that TFM's runtime. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.32" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.21" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
   </ItemGroup>
 </Project>

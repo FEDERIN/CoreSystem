@@ -7,7 +7,7 @@ CoreSystem.Correlation is a lightweight, standalone library that accepts or issu
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Correlation?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Correlation?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ---
 

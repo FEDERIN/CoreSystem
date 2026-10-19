@@ -1,5 +1,6 @@
 # STAGE 1: Build & Publish
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# global.json requires the .NET 10 SDK; the app itself still targets net8.0, so the runtime stage stays aspnet:8.0.
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # 1. Copy project files needed for restore (paths match the physical structure)

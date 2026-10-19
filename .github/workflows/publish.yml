@@ -18,7 +18,12 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' 
+          # SDK 10 builds the multi-targeted Core.Correlation (net8.0/net9.0/net10.0);
+          # the 8.0 and 9.0 runtimes are required to run the net8.0/net9.0 test hosts.
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
 
       - name: Extract info
         run: |
@@ -49,7 +54,7 @@ jobs:
 
       - name: Test solution
         run: |
-          dotnet test CoreSystem.sln \
+          dotnet test --solution CoreSystem.sln \
             --configuration Release \
             --no-restore
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Correlation.UnitTests;
@@ -13,12 +14,12 @@ public sealed class CorrelationIdMiddlewareTests
     public async Task PreservesValidIncomingHeader_AndAddsItToContextAndResponse()
     {
         const string correlationId = "order-42.a";
-        using var server = CreateServer(context =>
+        using IHost host = CreateHost(context =>
         {
             Assert.Equal(correlationId, context.Items[CoreCorrelationConstants.HttpContextItemKey]);
             return Task.CompletedTask;
         });
-        using HttpClient client = server.CreateClient();
+        using HttpClient client = host.GetTestServer().CreateClient();
         client.DefaultRequestHeaders.Add("X-Correlation-Id", correlationId);
 
         using HttpResponseMessage response = await client.GetAsync("/", TestContext.Current.CancellationToken);
@@ -30,13 +31,14 @@ public sealed class CorrelationIdMiddlewareTests
     public async Task GeneratesGuid_WhenHeaderIsMissing()
     {
         string? correlationId = null;
-        using var server = CreateServer(context =>
+        using IHost host = CreateHost(context =>
         {
             correlationId = context.Items[CoreCorrelationConstants.HttpContextItemKey] as string;
             return Task.CompletedTask;
         });
 
-        using HttpResponseMessage response = await server.CreateClient().GetAsync("/", TestContext.Current.CancellationToken);
+        using HttpResponseMessage response =
+            await host.GetTestServer().CreateClient().GetAsync("/", TestContext.Current.CancellationToken);
 
         Assert.True(Guid.TryParse(correlationId, out _));
         Assert.Equal(correlationId, response.Headers.GetValues("X-Correlation-Id").Single());
@@ -47,8 +49,8 @@ public sealed class CorrelationIdMiddlewareTests
     [InlineData("this-value-is-deliberately-made-much-longer-than-the-maximum-correlation-identifier-length")]
     public async Task ReplacesInvalidOrExcessiveHeader(string value)
     {
-        using var server = CreateServer(_ => Task.CompletedTask, options => options.MaximumLength = 24);
-        using HttpClient client = server.CreateClient();
+        using IHost host = CreateHost(_ => Task.CompletedTask, options => options.MaximumLength = 24);
+        using HttpClient client = host.GetTestServer().CreateClient();
         client.DefaultRequestHeaders.Add("X-Correlation-Id", value);
 
         using HttpResponseMessage response = await client.GetAsync("/", TestContext.Current.CancellationToken);
@@ -62,7 +64,7 @@ public sealed class CorrelationIdMiddlewareTests
     public async Task AddsCorrelationIdToLogScope()
     {
         var loggerProvider = new ScopeCapturingLoggerProvider();
-        using var server = CreateServer(
+        using IHost host = CreateHost(
             context =>
             {
                 context.RequestServices.GetRequiredService<ILogger<CorrelationIdMiddlewareTests>>()
@@ -70,7 +72,7 @@ public sealed class CorrelationIdMiddlewareTests
                 return Task.CompletedTask;
             },
             loggerProvider: loggerProvider);
-        using HttpClient client = server.CreateClient();
+        using HttpClient client = host.GetTestServer().CreateClient();
         client.DefaultRequestHeaders.Add("X-Correlation-Id", "logged-request");
 
         using HttpResponseMessage response = await client.GetAsync("/", TestContext.Current.CancellationToken);
@@ -80,23 +82,28 @@ public sealed class CorrelationIdMiddlewareTests
                 && Equals(value, "logged-request"));
     }
 
-    private static TestServer CreateServer(
+    private static IHost CreateHost(
         RequestDelegate endpoint,
         Action<CorrelationOptions>? configure = null,
         ScopeCapturingLoggerProvider? loggerProvider = null) =>
-        new(new WebHostBuilder()
-            .ConfigureServices(services =>
+        new HostBuilder()
+            .ConfigureWebHost(webHostBuilder =>
             {
-                services.AddLogging(logging =>
+                webHostBuilder.UseTestServer();
+                webHostBuilder.ConfigureServices(services =>
                 {
-                    if (loggerProvider is not null)
+                    services.AddLogging(logging =>
                     {
-                        logging.AddProvider(loggerProvider);
-                    }
+                        if (loggerProvider is not null)
+                        {
+                            logging.AddProvider(loggerProvider);
+                        }
+                    });
+                    services.AddCoreCorrelation(configure);
                 });
-                services.AddCoreCorrelation(configure);
+                webHostBuilder.Configure(app => app.UseCoreCorrelationId().Run(endpoint));
             })
-            .Configure(app => app.UseCoreCorrelationId().Run(endpoint)));
+            .Start();
 
     private sealed class ScopeCapturingLoggerProvider : ILoggerProvider, ISupportExternalScope
     {

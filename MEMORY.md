@@ -2,6 +2,16 @@
 
 Facts and current repo state NOT covered by AGENTS.md. Read this after AGENTS.md.
 
+## Multi-targeting pilot: Core.Correlation (PR #66, branch `feat/multi-target-correlation`)
+
+- `global.json` moved from SDK 8.0.402 to **10.0.201** (`rollForward: latestFeature`, `allowPrerelease: false`) and now carries `"test": { "runner": "Microsoft.Testing.Platform" }`. Only `src/Core.Correlation` + `tests/Core.Correlation.UnitTests` are multi-targeted; everything else stays net8.0.
+- **Clear `TargetFramework` (`<TargetFramework />`) in any multi-targeted csproj** while `Directory.Build.props` sets it: `Sdk.targets` only sets `IsCrossTargetingBuild` when `TargetFramework` is empty. Otherwise restore resolves 3 TFMs (3 lock-file sections) but the build silently emits **net8.0 only**.
+- SDK 10 enables NuGet package pruning for **all** TFMs of a multi-targeted project (`Microsoft.NET.Sdk.FrameworkReferenceResolution.targets`), so the test project's *net8.0* lock-file section also dropped two framework-provided transitives (`System.Diagnostics.DiagnosticSource` 5.0.0, `System.Security.Principal.Windows` 5.0.0). Expected, not a bug.
+- `WebHostBuilder` is deprecated on ASP.NET Core 10 (`ASPDEPR004`, a build error under warnings-as-errors): the test helper uses `HostBuilder` + `ConfigureWebHost` + `UseTestServer`/`GetTestServer` instead.
+- **`dotnet test` syntax changed on SDK 10 MTP mode**: `dotnet test --solution X.sln` / `--project X.csproj`; a positional path is rejected. Updated `ci.yml`, `publish.yml`, `scripts/test-changed.ps1`, `AGENTS.md`, the quality-gates skill and the local `.bat` helpers. The samples Dockerfile build stage is `sdk:10.0`; its runtime stage stays `aspnet:8.0`.
+- Verified: solution restore/build 0 warnings, `dotnet format --verify-no-changes` clean, `dotnet test --solution CoreSystem.sln` **218/218**, Correlation **15/15** (5 per TFM), nupkg has `lib/net8.0|net9.0|net10.0` under the single id `CoreSystem.Correlation` 1.0.0. Nothing tagged or published — the eventual release must bump to **>= 1.1.0**.
+- Open: samples smoke (Docker) not run (no Docker daemon locally); the rolling `sdk:10.0` tag must resolve to 10.0.2xx+ or `rollForward: latestFeature` fails.
+
 ## Current state (Oct 2026 — dependency refresh completed, versioning closed)
 
 - **Published** (NuGet.org + GitHub Packages), verified against the NuGet flat-container API — not just tags, since a tag alone does not prove the push succeeded: Http 1.1.0, Http.ProblemDetails 1.0.2, Memory 1.0.3, Redis **1.0.4**, Observability **1.0.3**, Observability.Abstractions 1.0.2, RateLimiting **1.2.3**, Resilience **2.0.3**, Serialization **1.2.4**, Correlation 1.0.0. **Nothing is pending** — see "Versioning is closed" below.

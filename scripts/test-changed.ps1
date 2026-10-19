@@ -34,7 +34,7 @@ $requiresFullSuite = $changedFiles | Where-Object {
 
 if ($requiresFullSuite) {
     Write-Host "Shared or solution-level change detected. Running full suite."
-    dotnet test $solution --configuration $configuration
+    dotnet test --solution $solution --configuration $configuration
     exit $LASTEXITCODE
 }
 
@@ -106,7 +106,8 @@ foreach ($testProject in $testProjects) {
     Write-Host "Running: $testProject"
 
     # No --no-build: compiles only this test project and its dependencies.
-    dotnet test $testProject --configuration $configuration
+    # .NET 10 SDK MTP mode requires the test project to be passed via --project.
+    dotnet test --project $testProject --configuration $configuration
 
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
