@@ -1,37 +1,141 @@
-# Core.Observability.Abstractions
+# 🧩 CoreSystem.Observability.Abstractions
 
----
+> **Base contracts for health checks and observability contributors in .NET 8, 9 and 10**
 
+CoreSystem.Observability.Abstractions defines the extension points that let
+CoreSystem modules contribute health checks and OpenTelemetry activity sources
+without depending on the observability runtime. It references only
+`Microsoft.Extensions.Diagnostics.HealthChecks`; `CoreSystem.Observability`
+discovers the registered contributors and wires them into the host.
 
-**CoreSystem.Observability.Abstractions** is the modular observability core for the **CoreSystem** ecosystem. It provides the base contracts required to implement health checks and telemetry (**OpenTelemetry**) in a decoupled manner within **.NET 8.0** applications.
+![NuGet](https://img.shields.io/nuget/v/CoreSystem.Observability.Abstractions?style=for-the-badge)
+![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Observability.Abstractions?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
-## 🚀 Purpose
+------------------------------------------------------------------------
 
-This project eliminates the need to couple monitoring logic with business logic. Through the use of contribution interfaces, any module can define its own metrics, traces, and health checks, which are then automatically discovered and registered by the **Core.Observability** engine.
+## ✨ Features
 
-## 📦 Architecture
+- ✅ `IHealthCheckContributor` contract for module health checks
+- ✅ `IObservabilityContributor` contract for activity sources and DI registration
+- ✅ Decoupled from the OpenTelemetry runtime
+- ✅ Contributors are discovered by `CoreSystem.Observability` from dependency injection
+- ✅ Targets .NET 8, .NET 9 and .NET 10
 
-The system is built on an **assembly-discovery pattern**, allowing seamless integration across distributed modules.
+------------------------------------------------------------------------
 
-## 🛠 Main Interfaces
+## 📦 Installation
 
-### 1. `IHealthCheckContributor`
+``` bash
+dotnet add package CoreSystem.Observability.Abstractions
+```
 
-Allows modules to register their own health verification checks.
+------------------------------------------------------------------------
 
-**Responsibilities:**
-- Define health checks specific to a module.
-- Register health check implementations in a centralized manner.
-- Enable automatic discovery and registration by the observability engine.
+## 🚀 Quick Start
 
-**Example use cases:**
-- Database connectivity validation.
-- External API availability checks.
-- Message broker health verification.
-- Cache service status monitoring.
+Implement a health check contributor:
 
-```csharp
-public interface IHealthCheckContributor
+``` csharp
+using Core.Observability.Abstractions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+public sealed class DatabaseHealthCheckContributor : IHealthCheckContributor
 {
-    void Configure(IHealthChecksBuilder builder);
+    public void RegisterHealthChecks(
+        IHealthChecksBuilder builder,
+        IConfiguration configuration)
+    {
+        builder.AddCheck("database", () => HealthCheckResult.Healthy());
+    }
 }
+```
+
+Implement an observability contributor:
+
+``` csharp
+using Core.Observability.Abstractions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+public sealed class OrdersObservabilityContributor : IObservabilityContributor
+{
+    public IEnumerable<string> GetActivitySources()
+        => ["Orders.Api"];
+
+    public void ConfigureObservability(
+        IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Register observability services used by the module.
+    }
+}
+```
+
+Register the contributors as **instances** so `CoreSystem.Observability` can
+discover them:
+
+``` csharp
+builder.Services.AddSingleton<IHealthCheckContributor>(
+    new DatabaseHealthCheckContributor());
+builder.Services.AddSingleton<IObservabilityContributor>(
+    new OrdersObservabilityContributor());
+```
+
+------------------------------------------------------------------------
+
+## 🧩 Contributor Contracts
+
+| Interface | Member | Purpose |
+|---|---|---|
+| `IHealthCheckContributor` | `RegisterHealthChecks(IHealthChecksBuilder, IConfiguration)` | Adds health checks to the health checks builder. |
+| `IObservabilityContributor` | `GetActivitySources()` | Returns the activity source names contributed by the module. |
+| `IObservabilityContributor` | `ConfigureObservability(IServiceCollection, IConfiguration)` | Registers observability services in the DI container. |
+
+------------------------------------------------------------------------
+
+## 🏗 How Discovery Works
+
+Contributors are **not** discovered by scanning assemblies. Each module
+registers its contributors as instances in the dependency injection container,
+and `CoreSystem.Observability` reads them when the host is built:
+
+``` text
+Module
+  │  services.AddSingleton<IHealthCheckContributor>(new MyContributor())
+  ▼
+CoreSystem.Observability
+  │  reads the IServiceCollection descriptors
+  ▼
+Health checks and activity sources registered
+```
+
+> Note: discovery looks for registered **instances**. A type registration such
+> as `AddSingleton<IHealthCheckContributor, MyContributor>()` is not picked up.
+
+------------------------------------------------------------------------
+
+## 📖 Documentation
+
+The full documentation includes:
+
+- Architecture overview
+- Dependency injection guide
+- Package dependency map
+
+Visit the GitHub repository for the complete documentation.
+
+------------------------------------------------------------------------
+
+## 🤝 Contributing
+
+Issues and pull requests are welcome.
+
+------------------------------------------------------------------------
+
+## 📄 License
+
+Released under the MIT License.
