@@ -1,6 +1,6 @@
 # CoreSystem.Redis
 
-> **Redis infrastructure and distributed locking for .NET 8.**
+> **Redis infrastructure and distributed locking for .NET 8, 9 and 10.**
 
 CoreSystem.Redis is a lightweight Redis infrastructure library built on
 StackExchange.Redis. It provides reusable components for connection
@@ -10,7 +10,7 @@ and other CoreSystem modules can coordinate reliably across nodes.
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Redis?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Redis?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ---
 

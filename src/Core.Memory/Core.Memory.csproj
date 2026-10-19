@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<!-- Multi-targeting: net9.0/net10.0 assets are built from the same source as net8.0. -->
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<!-- Clears the net8.0 default from Directory.Build.props; without it TargetFramework is non-empty and the SDK skips the cross-targeting (outer) build. -->
+		<TargetFramework />
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Memory</PackageId>
-		<Version>1.0.3</Version>
+		<Version>1.1.0</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
-		<Description>Production-ready in-memory synchronization library for .NET 8 providing lightweight keyed asynchronous locks for coordinating concurrent operations within a single process.</Description>
+		<Description>Production-ready in-memory synchronization library for .NET 8, 9 and 10 providing lightweight keyed asynchronous locks for coordinating concurrent operations within a single process.</Description>
 		<PackageTags>
 			Memory;
 			Synchronization;
@@ -18,16 +21,18 @@
 			SemaphoreSlim;
 			InMemory;
 			DependencyInjection;
-			.NET8
+			.NET8;
+			.NET9;
+			.NET10
 		</PackageTags>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Memory</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<AssemblyVersion>1.0.3.0</AssemblyVersion>
-		<FileVersion>1.0.3.0</FileVersion>
-		<InformationalVersion>1.0.3</InformationalVersion>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
+		<InformationalVersion>1.1.0</InformationalVersion>
 		<PackageReleaseNotes>
 			Initial stable release.
 			- In-memory keyed asynchronous lock provider
@@ -35,6 +40,7 @@
 			- Automatic lock lifecycle management
 			- Dependency Injection integration
 			- Production-ready implementation
+			1.1.0: targets net8.0, net9.0 and net10.0. No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 asset is unchanged.
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>

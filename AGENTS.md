@@ -1,6 +1,6 @@
 # AGENTS.md
 
-.NET monorepo (SDK pinned to `10.0.201` in `global.json`, plus `"test": { "runner": "Microsoft.Testing.Platform" }`) of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). Everything targets `net8.0` except `Core.Correlation`, which is multi-targeted (`net8.0;net9.0;net10.0`) as a pilot. The root `README.md` lists the current packages; Cache and Idempotency were split out — they remain part of the ecosystem but have their own repositories and docs are external, see `docs/External`. Do not propose re-creating or re-adding them as packages in this repo. Use `dotnet sln list` / `src/` as the source of truth.
+.NET monorepo (SDK pinned to `10.0.201` in `global.json`, plus `"test": { "runner": "Microsoft.Testing.Platform" }`) of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). Everything targets `net8.0` except `Core.Correlation`, `Core.Memory` and `Core.Redis`, which are multi-targeted (`net8.0;net9.0;net10.0`). The root `README.md` lists the current packages; Cache and Idempotency were split out — they remain part of the ecosystem but have their own repositories and docs are external, see `docs/External`. Do not propose re-creating or re-adding them as packages in this repo. Use `dotnet sln list` / `src/` as the source of truth.
 
 ## Layout
 - `src/Core.<Name>`: one NuGet package per project. `GeneratePackageOnBuild=true`, so every build also produces a `.nupkg`.
@@ -10,6 +10,7 @@
 
 ## Dependencies / restore (common pitfall)
 - Package versions are managed centrally in `Directory.Packages.props`. Do not put `Version=` on `PackageReference`.
+- Packages that must match a TFM are pinned with conditional `<ItemGroup Condition="'$(TargetFramework)' == 'netX.0'">` blocks in `Directory.Packages.props` (`Microsoft.AspNetCore.TestHost`, `Microsoft.Extensions.DependencyInjection(.Abstractions)`). Single-TFM net8.0 projects only see the net8.0 group, so they are unaffected. CPM permits one `PackageVersion` per id, so a new TFM needs its own conditional group.
 - `Directory.Build.props` turns on `RestoreLockedMode`, and `packages.lock.json` files are committed. After adding, removing, or changing a package, run `dotnet restore CoreSystem.sln --use-lock-file --force-evaluate` and commit the updated lock files. Otherwise restore fails.
 - Most libraries reference each other as **NuGet packages**, not project references. For example, `Core.Resilience` and `Core.RateLimiting` use `PackageReference CoreSystem.Observability.Abstractions`, so local Abstractions changes do not reach them until that package is published and the central version is bumped.
 - Exception: `Core.Observability` can use a `ProjectReference` to Abstractions by passing `-p:UseLocalObservabilityAbstractions=true` (defaults to false, i.e. the published NuGet package).

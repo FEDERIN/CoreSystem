@@ -9,7 +9,7 @@ and per-resource synchronisation that does not justify a distributed lock.
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Memory?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Memory?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ---
 
@@ -20,7 +20,7 @@ and per-resource synchronisation that does not justify a distributed lock.
 - Automatic lock lifecycle management
 - Lightweight and allocation-friendly
 - Dependency Injection integration
-- Designed for .NET 8
+- Targets .NET 8, .NET 9 and .NET 10
 
 ---
 
