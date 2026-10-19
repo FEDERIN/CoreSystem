@@ -5,7 +5,7 @@
 CoreSystem.Observability configures structured logs, distributed traces,
 metrics, and health-check endpoints from a single integration point. Telemetry
 is exported through OTLP/gRPC, while other CoreSystem modules can contribute
-their own metrics, activity sources, and health checks.
+their own activity sources and health checks.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Observability?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
