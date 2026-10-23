@@ -227,7 +227,7 @@
       "coresystem.samples.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Resilience": "[2.0.3, )",
+          "CoreSystem.Resilience": "[2.1.0, )",
           "CoreSystem.Samples.Core": "[1.0.0, )"
         }
       },
@@ -614,7 +614,7 @@
       "coresystem.samples.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Resilience": "[2.0.3, )",
+          "CoreSystem.Resilience": "[2.1.0, )",
           "CoreSystem.Samples.Core": "[1.0.0, )"
         }
       },
@@ -1004,7 +1004,7 @@
       "coresystem.samples.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Resilience": "[2.0.3, )",
+          "CoreSystem.Resilience": "[2.1.0, )",
           "CoreSystem.Samples.Core": "[1.0.0, )"
         }
       },
