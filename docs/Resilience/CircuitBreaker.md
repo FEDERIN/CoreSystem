@@ -153,7 +153,7 @@ Multiple exception types can also be configured.
 ```csharp
 pipeline.CircuitBreaker = new CircuitBreakerOptions()
     .Handle(
-        typeof<HttpRequestException>(),
+        typeof(HttpRequestException),
         typeof(TimeoutException));
 ```
 

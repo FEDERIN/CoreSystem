@@ -3,7 +3,7 @@
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.RateLimiting?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.RateLimiting?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 ![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Enabled-purple?style=for-the-badge)
 
 `CoreSystem.RateLimiting` is a production-ready fixed-window rate-limiting package for ASP.NET Core APIs. It protects APIs with a global limiter that partitions authenticated requests by subject and anonymous requests by client IP address.

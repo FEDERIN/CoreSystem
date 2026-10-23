@@ -16,8 +16,8 @@ and other CoreSystem modules can coordinate reliably across nodes.
 
 ## Features
 
-- Redis connection factory (`IRedisConnectionFactory` / `RedisConnectionFactory`)
-- Distributed lock provider (`IDistributedLockProvider` / `RedisLockProvider`)
+- Redis connection factory (`IRedisConnectionFactory`)
+- Distributed lock provider (`IDistributedLockProvider`)
 - Configurable lock options (`RedisLockOptions`)
 - Dependency Injection integration
 
@@ -49,7 +49,9 @@ public sealed class OrderService(IDistributedLockProvider lockProvider)
 }
 ```
 
-> The connection string is resolved by `RedisConnectionFactory` from configuration.
+> Endpoints and connection settings are supplied through the
+> `IRedisConnectionFactory.Create` delegate (for example
+> `options.EndPoints.Add("localhost:6379")`); at least one endpoint is required.
 > Consult the package README for the wire-up details.
 
 ---

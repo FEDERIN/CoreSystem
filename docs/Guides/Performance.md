@@ -120,4 +120,3 @@ Potential future improvements include:
 - Automated benchmark reporting.
 - Cross-platform benchmark comparisons.
 - Native AOT performance analysis.
-```

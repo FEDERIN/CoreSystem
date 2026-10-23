@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoreSystem.Resilience" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CoreSystem.Samples.Core\CoreSystem.Samples.Core.csproj" />
+    <ProjectReference Include="..\..\src\Core.Resilience\Core.Resilience.csproj" />
   </ItemGroup>
 
 </Project>

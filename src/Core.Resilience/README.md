@@ -1,13 +1,13 @@
 # ⚡ CoreSystem.Resilience
 
-> **Production-ready resilience framework for .NET 8**
+> **Production-ready resilience framework for .NET 8, .NET 9 and .NET 10**
 
 CoreSystem.Resilience provides a clean abstraction over resilience strategies for .NET applications. It enables applications to define named resilience pipelines while keeping application code independent from the underlying Polly implementation.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Resilience?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Resilience?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ---
 

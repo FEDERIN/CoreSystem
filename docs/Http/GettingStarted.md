@@ -1,6 +1,6 @@
 # 🚀 Getting Started
 
-Welcome to **CoreSystem.Http**, a lightweight HTTP infrastructure library for **ASP.NET Core** and **.NET 8**.
+Welcome to **CoreSystem.Http**, a lightweight HTTP infrastructure library for **ASP.NET Core** and **.NET 8, .NET 9 and .NET 10**.
 
 This guide will help you capture and replay HTTP responses in just a few minutes.
 
@@ -19,7 +19,7 @@ By the end of this guide you will know how to:
 
 Before getting started, ensure you have:
 
-- .NET 8 SDK
+- .NET 8 SDK, .NET 9 SDK or .NET 10 SDK
 - An ASP.NET Core application
 - Basic knowledge of Dependency Injection
 - Basic understanding of ASP.NET Core middleware

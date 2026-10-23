@@ -1,13 +1,13 @@
 # ⚡ Core.Serialization
 
-> **Production-ready serialization abstraction for .NET 8**
+> **Production-ready serialization abstraction for .NET 8, .NET 9 and .NET 10**
 
 Core.Serialization (distributed as the **CoreSystem.Serialization** NuGet package) provides a unified serialization abstraction for .NET applications, allowing you to seamlessly work with **JSON**, **MessagePack**, or **Protocol Buffers** through a single API.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Serialization?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Serialization?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ---
 

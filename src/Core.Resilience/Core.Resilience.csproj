@@ -1,18 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Resilience</PackageId>
-		<Version>2.0.3</Version>
-		<AssemblyVersion>2.0.3.0</AssemblyVersion>
-		<FileVersion>2.0.3.0</FileVersion>
-		<InformationalVersion>2.0.3</InformationalVersion>
+		<Version>2.1.0</Version>
+		<AssemblyVersion>2.1.0.0</AssemblyVersion>
+		<FileVersion>2.1.0.0</FileVersion>
+		<InformationalVersion>2.1.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>
-			Production-ready resilience framework for .NET 8 with configurable resilience pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry metrics.
+			Production-ready resilience framework for .NET 8, .NET 9 and .NET 10 with configurable resilience pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry metrics.
 		</Description>
 		<RepositoryUrl>https://github.com/FEDERIN/CoreSystem</RepositoryUrl>
 		<PackageProjectUrl>https://federin.github.io/CoreSystem/Resilience</PackageProjectUrl>

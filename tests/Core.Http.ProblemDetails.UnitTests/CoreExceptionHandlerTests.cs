@@ -29,9 +29,10 @@ public sealed class CoreExceptionHandlerTests
         HttpStatusCode expectedStatus,
         string expectedErrorCode)
     {
-        using var server = CreateServer(Environments.Production);
+        using IHost host = CreateHost(Environments.Production);
+        using HttpClient client = host.GetTestServer().CreateClient();
 
-        using HttpResponseMessage response = await server.CreateClient().GetAsync(path, TestContext.Current.CancellationToken);
+        using HttpResponseMessage response = await client.GetAsync(path, TestContext.Current.CancellationToken);
         ProblemResponse? problem = await response.Content.ReadFromJsonAsync<ProblemResponse>(TestContext.Current.CancellationToken);
 
         Assert.Equal(expectedStatus, response.StatusCode);
@@ -49,9 +50,10 @@ public sealed class CoreExceptionHandlerTests
     [Fact]
     public async Task IncludesExceptionDetail_OnlyInDevelopment()
     {
-        using var server = CreateServer(Environments.Development);
+        using IHost host = CreateHost(Environments.Development);
+        using HttpClient client = host.GetTestServer().CreateClient();
 
-        using HttpResponseMessage response = await server.CreateClient().GetAsync("/", TestContext.Current.CancellationToken);
+        using HttpResponseMessage response = await client.GetAsync("/", TestContext.Current.CancellationToken);
         ProblemResponse? problem = await response.Content.ReadFromJsonAsync<ProblemResponse>(TestContext.Current.CancellationToken);
 
         Assert.Equal("StatusException", problem!.ExceptionType);
@@ -164,19 +166,27 @@ public sealed class CoreExceptionHandlerTests
         problemDetailsService.Verify(service => service.TryWriteAsync(It.IsAny<ProblemDetailsContext>()), Times.Never);
     }
 
-    private static TestServer CreateServer(string environment) => new(new WebHostBuilder()
-        .UseEnvironment(environment)
-        .ConfigureServices(services =>
-        {
-            services.AddCoreProblemDetails(options =>
-                options.CustomizeProblemDetails = (problem, _, _) => problem.Extensions["custom"] = "value");
-            services.AddCoreExceptionHandler<TestMapper>();
-        })
-        .Configure(app =>
-        {
-            app.UseExceptionHandler();
-            app.Run(context => throw new StatusException(context.Request.Path));
-        }));
+    // HostBuilder + ConfigureWebHost instead of WebHostBuilder + new TestServer(IWebHostBuilder):
+    // both are obsolete (ASPDEPR004/ASPDEPR008) on the ASP.NET Core 10 TestHost, and warnings are errors.
+    private static IHost CreateHost(string environment) =>
+        new HostBuilder()
+            .ConfigureWebHost(webHostBuilder =>
+            {
+                webHostBuilder.UseEnvironment(environment);
+                webHostBuilder.UseTestServer();
+                webHostBuilder.ConfigureServices(services =>
+                {
+                    services.AddCoreProblemDetails(options =>
+                        options.CustomizeProblemDetails = (problem, _, _) => problem.Extensions["custom"] = "value");
+                    services.AddCoreExceptionHandler<TestMapper>();
+                });
+                webHostBuilder.Configure(app =>
+                {
+                    app.UseExceptionHandler();
+                    app.Run(context => throw new StatusException(context.Request.Path));
+                });
+            })
+            .Start();
 
     private static ServiceProvider CreateServiceProvider()
     {
