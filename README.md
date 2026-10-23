@@ -1,7 +1,7 @@
 # ⚙️ CoreSystem Ecosystem
 
 <p align="center">
-  <img src="https://img.shields.io/badge/.NET-8.0-512bd4?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-512bd4?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Architecture-Microservices-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/OpenTelemetry-Native-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge" />
@@ -11,8 +11,8 @@
 > **Production-ready modular infrastructure libraries for modern .NET
 > applications.**
 
-CoreSystem is an ecosystem of reusable .NET 8 libraries designed to
-simplify the development of cloud-native, observable, and resilient
+CoreSystem is an ecosystem of reusable .NET 8, .NET 9 and .NET 10 libraries
+designed to simplify the development of cloud-native, observable, and resilient
 applications.
 
 ------------------------------------------------------------------------
@@ -49,6 +49,7 @@ composable.
 | [CoreSystem.RateLimiting](https://www.nuget.org/packages/CoreSystem.RateLimiting) | Configurable rate limiting with metrics | ✅ Stable |
 | [CoreSystem.Http](https://www.nuget.org/packages/CoreSystem.Http) | HTTP response capture and replay infrastructure | ✅ Stable |
 | [CoreSystem.Http.ProblemDetails](https://www.nuget.org/packages/CoreSystem.Http.ProblemDetails) | RFC 9457 problem details and exception mapping | ✅ Stable |
+| [CoreSystem.Correlation](https://www.nuget.org/packages/CoreSystem.Correlation) | Correlation-id propagation middleware | ✅ Stable |
 
 External projects: [CoreSystem.Cache](https://www.nuget.org/packages/CoreSystem.Cache) and [CoreSystem.Idempotency](https://www.nuget.org/packages/CoreSystem.Idempotency) are maintained in their own repositories — see docs/External.
 
@@ -101,6 +102,7 @@ dotnet build
 
 ``` text
 src/
+ ├── Core.Correlation
  ├── Core.Http
  ├── Core.Http.ProblemDetails
  ├── Core.Memory
@@ -125,6 +127,7 @@ src/
 -   Resilience
 -   Rate Limiting
 -   HTTP infrastructure and Problem Details
+-   Correlation-id propagation
 
 ## External / split out
 

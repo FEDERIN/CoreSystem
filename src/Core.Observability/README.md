@@ -1,6 +1,6 @@
 # 📊 CoreSystem.Observability
 
-> **OpenTelemetry and Serilog integration for ASP.NET Core applications on .NET 8**
+> **OpenTelemetry and Serilog integration for ASP.NET Core applications on .NET 8, .NET 9 and .NET 10**
 
 CoreSystem.Observability configures structured logs, distributed traces, metrics,
 and health-check endpoints from a single `WebApplicationBuilder` extension. It
@@ -10,8 +10,8 @@ registered by other CoreSystem modules.
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Observability?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Observability?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.0-purple?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.1-purple?style=for-the-badge)
 
 ---
 
@@ -168,7 +168,7 @@ builder.AddObservability(
 
 | Component | Version |
 |---|---|
-| .NET SDK | 8.0+ |
+| .NET SDK | 8.0+ (supports .NET 8, 9 and 10) |
 | ASP.NET Core | 8.0+ |
 | OTLP collector or compatible backend | Recommended |
 | OTLP gRPC endpoint | Commonly port 4317 |

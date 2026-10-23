@@ -3,13 +3,13 @@
 > **Consistent RFC 9457 Problem Details for ASP.NET Core APIs.**
 
 CoreSystem.Http.ProblemDetails provides reusable exception-to-HTTP error
-handling for .NET 8 APIs. It owns the HTTP mechanism while each application
+handling for ASP.NET Core APIs on .NET 8, .NET 9 and .NET 10. It owns the HTTP mechanism while each application
 keeps its domain exceptions, business error codes, and mapping rules.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Http.ProblemDetails?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Http.ProblemDetails?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ---
 
@@ -48,17 +48,21 @@ public sealed class ApiExceptionProblemMapper : IExceptionProblemMapper
 }
 ```
 
-Register the handler and mapper:
+Register Problem Details and the mapper-backed exception handler:
 
 ```csharp
-builder.Services.AddCoreProblemDetails(new ApiExceptionProblemMapper());
+builder.Services.AddCoreProblemDetails();
+builder.Services.AddCoreExceptionHandler<ApiExceptionProblemMapper>();
 
-app.UseCoreExceptionHandler();
+var app = builder.Build();
+app.UseExceptionHandler();
 ```
 
-> When the exception mapper is registered via DI, an alternative for the
-> `UseCoreExceptionHandler` flow is `AddCoreExceptionHandler<TMapper>()`, which
-> returns the handler from the same registration entry point.
+`AddCoreExceptionHandler<TMapper>()` registers the concrete mapper as scoped
+when it has not already been registered. Register any dependencies required by
+the mapper in the usual way. The exception handler creates a scope for each
+handled exception, so scoped mapper dependencies (such as a DbContext) are
+resolved and disposed correctly.
 
 > Refer to the full package README for the complete Quick Start example,
 > including custom problem extensions and options.

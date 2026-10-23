@@ -45,10 +45,10 @@ builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
 
         pipeline.Timeout = new TimeoutOptions
         {
@@ -237,7 +237,7 @@ pipeline.Retry = new RetryOptions
     MaxRetryAttempts = 3
 }
 .Handle(
-    typeof<HttpRequestException>(),
+    typeof(HttpRequestException),
     typeof(TimeoutException));
 ```
 

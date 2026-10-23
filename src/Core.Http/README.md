@@ -2,7 +2,7 @@
 
 > **Build HTTP features once. Reuse them everywhere.**
 
-Production-ready HTTP infrastructure for ASP.NET Core and .NET 8.
+Production-ready HTTP infrastructure for ASP.NET Core, .NET 8, .NET 9 and .NET 10.
 
 CoreSystem.Http provides reusable infrastructure for capturing and replaying
 HTTP responses in ASP.NET Core applications. It offers lightweight,
@@ -16,7 +16,7 @@ capturing or reproducing HTTP responses.
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Http?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Http?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ------------------------------------------------------------------------
 

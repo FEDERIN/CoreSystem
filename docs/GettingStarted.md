@@ -6,7 +6,7 @@ Welcome to **CoreSystem**, a collection of production-ready .NET libraries desig
 
 Before getting started, ensure you have:
 
-- .NET 8 SDK or later
+- .NET 8 SDK, .NET 9 SDK or .NET 10 SDK
 - An IDE such as Visual Studio 2022 or JetBrains Rider
 - Basic knowledge of C# and Dependency Injection
 

@@ -81,10 +81,8 @@ public sealed class OrderService(IDistributedLockProvider lockProvider)
 
 | Component | Description |
 |-----------|-------------|
-| `IRedisConnectionFactory` | Creates Redis connections. |
-| `RedisConnectionFactory` | Applies production-ready defaults. |
-| `IDistributedLockProvider` | Abstraction for distributed locking. |
-| `RedisLockProvider` | Redis-based lock implementation. |
+| `IRedisConnectionFactory` | Creates Redis connections (implementation is internal). |
+| `IDistributedLockProvider` | Abstraction for distributed locking (implementation is internal). |
 | `RedisLockOptions` | Lock duration, retry delay and max wait time. |
 
 ---

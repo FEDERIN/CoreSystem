@@ -106,10 +106,10 @@ builder.Services.AddCoreResilience(options =>
 {
     options.AddPipeline(PipelineType.Redis, pipeline =>
     {
-        pipeline.AddRetry(retry =>
+        pipeline.Retry = new RetryOptions
         {
-            retry.MaxRetryAttempts = 3;
-        });
+            MaxRetryAttempts = 3
+        };
     });
 });
 ```

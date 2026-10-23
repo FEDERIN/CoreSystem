@@ -32,8 +32,14 @@ Example
 
 ```csharp
 builder.Services
-    .AddCoreRateLimiting()
-    .AddCoreResilience()
+    .AddCoreRateLimiting(options =>
+    {
+        // Configure rate-limiting options here.
+    })
+    .AddCoreResilience(options =>
+    {
+        // Configure resilience pipelines here.
+    })
     .AddCoreHttp();
 ```
 
@@ -62,8 +68,15 @@ MemoryLockProvider
 Register packages using the provided extension methods.
 
 ```csharp
-builder.Services.AddCoreRateLimiting();
-builder.Services.AddCoreResilience();
+builder.Services.AddCoreRateLimiting(options =>
+{
+    // Configure rate-limiting options here.
+});
+
+builder.Services.AddCoreResilience(options =>
+{
+    // Configure resilience pipelines here.
+});
 ```
 
 Avoid manual service registration unless customization is required.

@@ -3,13 +3,13 @@
 > **Consistent RFC 9457 Problem Details for ASP.NET Core APIs.**
 
 CoreSystem.Http.ProblemDetails provides reusable exception-to-HTTP error
-handling for .NET 8 APIs. It owns the HTTP mechanism while each application
+handling for ASP.NET Core APIs on .NET 8, .NET 9 and .NET 10. It owns the HTTP mechanism while each application
 keeps its domain exceptions, business error codes, and mapping rules.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Http.ProblemDetails?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Http.ProblemDetails?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
 ------------------------------------------------------------------------
 

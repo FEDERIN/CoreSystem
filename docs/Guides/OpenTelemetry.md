@@ -10,13 +10,11 @@
 
 ## Meter Names
 
-CoreSystem.Resilience
+- `Core.Resilience`
+- `Core.RateLimiting`
 
-CoreSystem.Http
-
-CoreSystem.RateLimiting
-
-...
+Register a meter with OpenTelemetry via `metrics.AddMeter("<name>")`, or list it
+in the `OpenTelemetry:Metrics:Meters` configuration array.
 
 ## ActivitySource Names
 

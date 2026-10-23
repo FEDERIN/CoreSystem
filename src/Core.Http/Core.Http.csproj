@@ -8,7 +8,7 @@
 		<Version>1.2.0</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>
-			Production-ready HTTP infrastructure library for .NET 8 providing reusable components for capturing and replaying HTTP responses in ASP.NET Core applications.
+			Production-ready HTTP infrastructure library for .NET 8, .NET 9 and .NET 10 providing reusable components for capturing and replaying HTTP responses in ASP.NET Core applications.
 		</Description>
 		<PackageTags>
 			HTTP;

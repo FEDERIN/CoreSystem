@@ -25,7 +25,7 @@ CoreSystem helps developers build applications that are:
 
 | Package            | Description                                                                                       |
 | ------------------ | ------------------------------------------------------------------------------------------------- |
-| Core.Resilience    | Retry, timeout, circuit breaker, fallback, and resilience pipelines.                              |
+| Core.Resilience    | Retry, timeout, circuit breaker, and resilience pipelines.                                         |
 | Core.Http          | HTTP abstractions and middleware for modern applications.                                         |
 | Core.RateLimiting  | Configurable rate limiting with metrics and policy-based throttling.                              |
 | Core.Memory        | High-performance keyed asynchronous locks.                                                        |

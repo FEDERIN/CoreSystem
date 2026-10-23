@@ -1,6 +1,6 @@
 # 📊 CoreSystem.Observability
 
-> **OpenTelemetry and Serilog integration for ASP.NET Core applications on .NET 8**
+> **OpenTelemetry and Serilog integration for ASP.NET Core applications on .NET 8, .NET 9 and .NET 10**
 
 CoreSystem.Observability configures structured logs, distributed traces,
 metrics, and health-check endpoints from a single integration point. Telemetry
@@ -8,8 +8,8 @@ is exported through OTLP/gRPC, while other CoreSystem modules can contribute
 their own activity sources and health checks.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Observability?style=for-the-badge)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.0-purple?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.1-purple?style=for-the-badge)
 
 ---
 

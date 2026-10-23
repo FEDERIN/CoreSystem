@@ -1,6 +1,6 @@
 # 🚀 Getting Started
 
-Welcome to **CoreSystem.Resilience**, a resilience framework for **.NET 8**.
+Welcome to **CoreSystem.Resilience**, a resilience framework for **.NET 8, .NET 9 and .NET 10**.
 
 This guide will help you configure your first resilience pipeline and execute protected operations in a few minutes.
 
@@ -19,7 +19,7 @@ By the end of this guide you will know how to:
 
 Before getting started, ensure you have:
 
-- .NET 8 SDK
+- .NET 8 SDK, .NET 9 SDK or .NET 10 SDK
 - An ASP.NET Core application (or any .NET application using Microsoft Dependency Injection)
 - Basic knowledge of Dependency Injection
 

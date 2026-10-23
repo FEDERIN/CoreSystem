@@ -48,11 +48,20 @@ Applications only install the packages they require.
 Every package integrates naturally with the Microsoft dependency injection ecosystem.
 
 ```csharp
-builder.Services.AddCoreRateLimiting();
+builder.Services.AddCoreRateLimiting(options =>
+{
+    // Configure rate-limiting options here.
+});
 
-builder.Services.AddCoreResilience();
+builder.Services.AddCoreResilience(options =>
+{
+    // Configure resilience pipelines here.
+});
 
-builder.Services.AddCoreObservability();
+builder.AddObservability(
+    builder.Environment.EnvironmentName,
+    "Orders.Api",
+    "Company.Platform");
 ```
 
 ---

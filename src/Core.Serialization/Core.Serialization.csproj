@@ -7,7 +7,7 @@
 	  <PackageId>CoreSystem.Serialization</PackageId>
 	  <Version>1.3.0</Version>
 	  <Authors>Federin Pastor Gutierrez Ortiz</Authors>
-	  <Description>Production-ready serialization library for .NET 8 with a unified abstraction over JSON, MessagePack, and Protocol Buffers, designed for high-performance applications.</Description>
+	  <Description>Production-ready serialization library for .NET 8, .NET 9 and .NET 10 with a unified abstraction over JSON, MessagePack, and Protocol Buffers, designed for high-performance applications.</Description>
 	  <PackageTags>
 		  Serialization;
 		  JSON;
