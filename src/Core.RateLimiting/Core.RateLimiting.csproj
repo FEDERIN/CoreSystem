@@ -1,16 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
 		<PackageId>CoreSystem.RateLimiting</PackageId>
-		<Version>1.2.3</Version>
-		<AssemblyVersion>1.2.3.0</AssemblyVersion>
-		<FileVersion>1.2.3.0</FileVersion>
-		<InformationalVersion>1.2.3</InformationalVersion>
+		<Version>1.3.0</Version>
+		<AssemblyVersion>1.3.0.0</AssemblyVersion>
+		<FileVersion>1.3.0.0</FileVersion>
+		<InformationalVersion>1.3.0</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Safe fixed-window rate limiting for ASP.NET Core APIs.</Description>
 		<PackageReleaseNotes>

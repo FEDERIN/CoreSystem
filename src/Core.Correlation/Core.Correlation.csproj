@@ -1,10 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- Multi-targeting pilot: net9.0/net10.0 assets are built from the same source as net8.0. -->
-		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-		<!-- Clears the net8.0 default from Directory.Build.props; without it TargetFramework is non-empty and the SDK skips the cross-targeting (outer) build. -->
-		<TargetFramework />
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Correlation</PackageId>
 		<Version>1.1.0</Version>
