@@ -6,11 +6,7 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="coverlet.collector"><PrivateAssets>all</PrivateAssets></PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit.runner.visualstudio"><PrivateAssets>all</PrivateAssets></PackageReference>
-    <PackageReference Include="xunit.v3" />
   </ItemGroup>
   <ItemGroup><ProjectReference Include="..\..\src\Core.Correlation\Core.Correlation.csproj" /></ItemGroup>
   <ItemGroup><Using Include="Xunit" /></ItemGroup>

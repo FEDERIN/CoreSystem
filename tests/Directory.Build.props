@@ -5,4 +5,20 @@
 		<!-- xUnit convention: test names use underscores (Method_Sce_Nario). -->
 		<NoWarn>$(NoWarn);CA1707;CA1848</NoWarn>
 	</PropertyGroup>
+
+	<!-- Dependencies shared by every test project. Their versions stay in Directory.Packages.props
+	     (CPM); project-specific packages (FluentAssertions, Moq, Microsoft.AspNetCore.TestHost,
+	     Testcontainers.Redis, ...) stay declared in each test csproj. -->
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="xunit.runner.visualstudio">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="xunit.v3" />
+	</ItemGroup>
 </Project>
