@@ -35,6 +35,7 @@
 			2.0.1: SourceLink + XML documentation now shipped; rename NoOpResiliencePipeline.ExecuteAsync parameter ct to cancellationToken to match IResiliencePipeline; deterministic builds; assembly version normalized.
 			2.0.2: Package-only fix. The 2.0.1 nuspec declared CoreSystem.Observability.Abstractions 1.0.0 because the package was tagged before the central pin was refreshed. This release declares 1.0.1. No code or API changes.
 			2.0.3: Dependency refresh. Polly 8.7.0 to 8.8.0; OpenTelemetry.Extensions.Hosting 1.19.0 to 1.20.0; CoreSystem.Observability.Abstractions refreshed to 1.0.2 (Microsoft.Extensions.Diagnostics.HealthChecks 8.0.32). No code or API changes.
+			2.1.0: Targets net8.0, net9.0 and net10.0. No public API or code change; the net9.0 and net10.0 assets are new. Dependency refresh on every TFM: OpenTelemetry, OpenTelemetry.Api and OpenTelemetry.Extensions.Hosting 1.20.0 to 1.20.1; CoreSystem.Observability.Abstractions 1.0.2 to 1.1.0.
 		</PackageReleaseNotes>
 	</PropertyGroup>
 

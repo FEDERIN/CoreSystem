@@ -17,7 +17,10 @@
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
     <InformationalVersion>1.1.0</InformationalVersion>
-    <PackageReleaseNotes>Initial release with RFC 9457 Problem Details, exception mapping, trace identifiers, and extension callbacks.</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      Initial release with RFC 9457 Problem Details, exception mapping, trace identifiers, and extension callbacks.
+      1.1.0: Targets net8.0, net9.0 and net10.0 (previously net8.0 only). No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 assembly is unchanged. The nuspec no longer declares Microsoft.Extensions.DependencyInjection.Abstractions and Microsoft.Extensions.Options as package dependencies: both assemblies ship in the Microsoft.AspNetCore.App framework reference the package already carries, so consumers are unaffected.
+    </PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

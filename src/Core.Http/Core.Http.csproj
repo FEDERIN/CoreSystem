@@ -38,6 +38,7 @@
 			• ASP.NET Core integration
 			• Dependency Injection support
 			• Production-ready implementation
+			1.2.0: Targets net8.0, net9.0 and net10.0 (previously net8.0 only). No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 assembly is unchanged. The nuspec no longer declares Microsoft.Extensions.DependencyInjection.Abstractions and Microsoft.Extensions.Options as package dependencies: both assemblies ship in the Microsoft.AspNetCore.App framework reference the package already carries, so consumers are unaffected.
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
