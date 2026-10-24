@@ -36,6 +36,7 @@
 		  - Protocol Buffers serializer
 		  - Dependency Injection integration
 		  1.2.4: Dependency refresh. MessagePack 3.1.8 to 3.1.12 (clears Moderate advisory GHSA-qhrr-8q5h-9q3h); protobuf-net and protobuf-net.Core 3.2.56 to 3.4.30. No code or API changes.
+		  1.3.0: Targets net8.0, net9.0 and net10.0. No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 asset and its declared dependencies are unchanged.
 	  </PackageReleaseNotes>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
