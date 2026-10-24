@@ -15,6 +15,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreSystem.Samples.Api", "samples\CoreSystem.Samples.Api\CoreSystem.Samples.Api.csproj", "{4E85C4A5-C126-A849-A39B-96D82B5ACFA5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CC99C87C-68B7-48BD-9904-804D628BC54B}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Directory.Build.props = tests\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CC99C87C-68B7-48BD-9903-804D628BC53A}"
 	ProjectSection(SolutionItems) = preProject
