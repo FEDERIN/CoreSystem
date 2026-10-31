@@ -1,49 +1,144 @@
 # AGENTS.md
 
-.NET monorepo (SDK pinned to `10.0.201` in `global.json`, plus `"test": { "runner": "Microsoft.Testing.Platform" }`) of independently published NuGet libraries (`src/Core.*` → package IDs `CoreSystem.*`). Everything targets `net8.0` except `Core.Correlation`, `Core.Memory`, `Core.Redis` and `Core.Observability.Abstractions`, which are multi-targeted (`net8.0;net9.0;net10.0`). The root `README.md` lists the current packages; Cache and Idempotency were split out — they remain part of the ecosystem but have their own repositories and docs are external, see `docs/External`. Do not propose re-creating or re-adding them as packages in this repo. Use `dotnet sln list` / `src/` as the source of truth.
+## 1. Engineering Standards
 
-## Layout
-- `src/Core.<Name>`: one NuGet package per project. `GeneratePackageOnBuild=true`, so every build also produces a `.nupkg`.
-- `tests/Core.<Name>.UnitTests`: xUnit v3 + FluentAssertions + Moq.
-- `samples/`: demo API plus a docker-compose stack (OTel collector, Prometheus, Grafana).
-- `docs/` + `mkdocs.yml`: MkDocs site with one folder per package. It is deployed to GitHub Pages on push to `main`.
+Before performing any task, read `CORE-SYSTEM-STANDARDS.md`.
 
-## Dependencies / restore (common pitfall)
-- Package versions are managed centrally in `Directory.Packages.props`. Do not put `Version=` on `PackageReference`.
-- Packages that must match a TFM are pinned with conditional `<ItemGroup Condition="'$(TargetFramework)' == 'netX.0'">` blocks in `Directory.Packages.props` (`Microsoft.AspNetCore.TestHost`, `Microsoft.Extensions.Configuration(.Abstractions)`, `Microsoft.Extensions.DependencyInjection(.Abstractions)`, `Microsoft.Extensions.Diagnostics.HealthChecks`, `Microsoft.Extensions.Options`). Single-TFM net8.0 projects only see the net8.0 group, so they are unaffected. CPM permits one `PackageVersion` per id, so a new TFM needs its own conditional group.
-- `Directory.Build.props` turns on `RestoreLockedMode`, and `packages.lock.json` files are committed. After adding, removing, or changing a package, run `dotnet restore CoreSystem.sln --use-lock-file --force-evaluate` and commit the updated lock files. Otherwise restore fails.
-- Most libraries reference each other as **NuGet packages**, not project references. For example, `Core.Resilience` and `Core.RateLimiting` use `PackageReference CoreSystem.Observability.Abstractions`, so local Abstractions changes do not reach them until that package is published and the central version is bumped.
-- Exception: `Core.Observability` can use a `ProjectReference` to Abstractions by passing `-p:UseLocalObservabilityAbstractions=true` (defaults to false, i.e. the published NuGet package).
-- `Directory.Build.props` optionally imports `Directory.Build.local.props` if that file exists (gitignored, local-only). Use it for machine-specific overrides such as `UseLocalProjectReferences=true`, which disables `RestoreLockedMode` so local project edits are picked up without republishing.
+These standards are mandatory and apply to all development
+activities in this repository.
 
-## Build properties
-- Root `Directory.Build.props`: `TargetFramework`, `ImplicitUsings`, `Nullable`, `Deterministic`, plus `TreatWarningsAsErrors`, `EnforceCodeStyleInBuild` and `AnalysisLevel=latest-recommended`. Warnings are errors — fix them or add a targeted `SuppressMessage` with justification.
-- `src/Directory.Build.props` adds package-only metadata for every `src/Core.*`: `GenerateDocumentationFile`, `PublishRepositoryUrl`, `EmbedUntrackedSources`, `ContinuousIntegrationBuild`, and `Microsoft.SourceLink.GitHub`. Do not re-add these per csproj.
-- `tests/Directory.Build.props` suppresses `CA1707` (xUnit `Method_Scenario` naming) and `CA1848` for test projects only.
-- Every public API needs XML docs; `GenerateDocumentationFile` makes missing docs a build error.
+The repository-specific instructions in this file complement
+the common standards.
 
-## Commands
-- Build/test everything: `dotnet build CoreSystem.sln` / `dotnet test --solution CoreSystem.sln -c Release` (CI uses Release).
-- Single project: `dotnet test --project tests/Core.Redis.UnitTests -c Release`. SDK 10 runs tests in Microsoft.Testing.Platform mode, which rejects a positional path — always use `--solution`/`--project`.
-- Affected tests only: `pwsh scripts/test-changed.ps1`. It maps changed `src/X` → `tests/X.UnitTests` and runs the full suite when solution-wide files, `Core.Serialization`, or `Core.Observability.Abstractions` change.
-- Formatting is enforced in CI: `dotnet format CoreSystem.sln --verify-no-changes`. Run `dotnet format CoreSystem.sln` to apply fixes before pushing.
-- Docs: `pip install -r requirements.txt`, then `mkdocs build` (or `mkdocs serve`).
+If a project-specific rule differs from a common standard,
+follow the explicit project-specific exception.
 
-## CI / branches
-- `.github/workflows/ci.yml` runs restore → build → `dotnet format --verify-no-changes` → test (Release) → NuGet vulnerability audit on push/PR to `main`. Everything else (CodeQL, docs deploy, samples smoke, publish) is a separate workflow.
-- `main` is protected: never push directly. Create a branch and open a PR with `gh pr create`.
-- `*.bat` files are gitignored and only exist locally (`serve-docs.bat`, `generate-lock-files.bat`, `setup/`). Don't rely on them or add new ones expecting them to be committed.
-- When editing files, write UTF-8 explicitly. PowerShell `Set-Content` without `-Encoding utf8` writes mojibake (`U+FFFD`) and silently corrupts files; prefer the editor tools instead.
+## 2. Repository Overview
 
-## Release
-- Publishing is tag-driven (`.github/workflows/publish.yml`). The tag format is `<src folder name>/v<version>`, e.g. `Core.Http.ProblemDetails/v1.0.1`.
-- CI restores the solution, builds that one project with `/p:Version=<tag version>`, runs **all** tests, then pushes to NuGet.org and GitHub Packages.
-- Keep `<Version>`, `AssemblyVersion`, `FileVersion`, and `InformationalVersion` in the csproj in sync with the tag. When a package's public surface changes, update its `README.md` (packed into the nupkg) and its `docs/<Package>` pages.
+CoreSystem is a .NET monorepo containing independently
+published NuGet libraries.
 
-## Memory
+- Solution: CoreSystem.sln
+- Source: src/Core.*
+- Package IDs: CoreSystem.*
+- Documentation: MkDocs
+- Samples: demo API and observability stack.
 
-- At the start, read `MEMORY.md` to learn the current state of the project and past decisions.
-- When a task is finished, update it: current state, important decisions (with their rationale), and mistakes to avoid.
-- Keep it short (max ~50 lines): summarize or drop what no longer adds value.
-- If something becomes a permanent rule, propose moving it to `AGENTS.md` instead of keeping it in memory.
-- Never store sensitive data (keys, tokens, personal data).
+Follow CORE-SYSTEM-STANDARDS.md for common
+engineering rules.
+
+## 3. Repository Architecture
+
+- Each src/Core.* project represents an independent library.
+- Packages are published independently.
+- Use dotnet sln list and src/ as the source of truth.
+- Do not recreate packages that have been extracted
+  into independent repositories.
+- Respect the existing dependency direction.
+
+## 4. Dependencies
+
+- Package versions are centralized.
+- Most inter-library dependencies use PackageReference.
+- Core.Observability has a documented exception for
+  local Observability.Abstractions references.
+- Preserve conditional package versions by TFM.
+- `Directory.Build.props` enables `RestoreLockedMode`
+  (unless `UseLocalProjectReferences=true` is set in the
+  gitignored `Directory.Build.local.props`).
+- After adding, removing or changing a package, run
+  `dotnet restore CoreSystem.sln --use-lock-file --force-evaluate`
+  and commit the updated `packages.lock.json` files.
+- Per-TFM packages are pinned with conditional
+  `<ItemGroup Condition="'$(TargetFramework)' == 'netX.0'">` blocks
+  in `Directory.Packages.props`. CPM permits one `PackageVersion`
+  per id, so each TFM needs its own block.
+- Inter-library dependencies use `PackageReference`, not
+  `ProjectReference`, so local changes reach dependents only after
+  the package is published and the central version is bumped.
+- Exception: `Core.Observability` can use a local `ProjectReference`
+  to Abstractions with `-p:UseLocalObservabilityAbstractions=true`.
+
+## 5. Framework Configuration
+
+- SDK: 10.0.201
+- Target frameworks: net8.0;net9.0;net10.0
+- All `src/Core.*` libraries and their `tests/Core.*.UnitTests`
+  projects are multi-targeted from the central
+  `<TargetFrameworks>` in `Directory.Packages.props`.
+- The three `samples/` projects stay on net8.0 via
+  `samples/Directory.Build.props`.
+- A project that must be single-TFM sets an explicit
+  `<TargetFramework>` in its nearest `Directory.Build.props`
+  (the central one imports first, so a non-empty value wins).
+  Do not re-add a global `TargetFramework` default.
+
+## 6. Testing
+
+- Unit tests: tests/Core.*.UnitTests
+- Integration tests must follow the infrastructure
+  requirements of each library.
+- Use scripts/test-changed.ps1 for affected tests.
+- Test all projects when solution-wide changes require it.
+
+## 7. Build and Commands
+
+dotnet build CoreSystem.sln -c Release
+dotnet test --solution CoreSystem.sln -c Release
+dotnet format CoreSystem.sln --verify-no-changes
+
+On SDK 10 (Microsoft.Testing.Platform mode) `dotnet test`
+rejects a positional path: always use `--solution` or
+`--project`. Single-project example:
+`dotnet test --project tests/Core.Redis.UnitTests -c Release`.
+
+## 8. CI/CD
+
+- GitHub Actions.
+- Restore, build, format, tests and security audit.
+- Independent package publishing.
+- `main` is protected: never push directly. Create a branch and
+  open a PR with `gh pr create`.
+- Preserve existing workflow mappings and filters.
+
+## 8.1 Release
+
+- Publishing is tag-driven (`.github/workflows/publish.yml`).
+  The tag format is `<src folder name>/v<version>`,
+  e.g. `Core.Http.ProblemDetails/v1.0.1`.
+- CI builds that one project with `/p:Version=<tag version>` and
+  runs all tests before pushing to NuGet.org and GitHub Packages.
+- Keep `<Version>`, `AssemblyVersion`, `FileVersion` and
+  `InformationalVersion` in the csproj in sync with the tag
+  (`/p:Version` does not override the last two).
+
+## 9. Documentation
+
+- MkDocs documentation.
+- One folder per package.
+- Navigation configured in mkdocs.yml.
+- README files packaged with their respective libraries.
+- When a package's public surface changes, update its
+  `README.md` (packed into the nupkg) and its `docs/<Package>` pages.
+- Documentation and published artifacts are written in English.
+
+## 9.1 Editing rules
+
+- Write UTF-8 explicitly. PowerShell `Set-Content` without
+  `-Encoding utf8` writes mojibake (`U+FFFD`) and silently corrupts
+  files; prefer the editor tools instead. Many source files
+  carry a UTF-8 BOM from Visual Studio — that is the committed
+  state, do not normalize it away.
+- `*.bat` files are gitignored and exist only locally
+  (`serve-docs.bat`, `generate-lock-files.bat`). New `.bat`
+  helpers are not committed.
+
+## 10. Memory
+
+Read MEMORY.md at the beginning of a task.
+Update it when significant decisions or project state change.
+Keep it concise and avoid duplicating permanent rules
+(max ~50 lines: summarize or drop what no longer adds value).
+If something becomes a permanent rule, propose moving it to
+`AGENTS.md` instead of keeping it in memory.
+Never store sensitive data (keys, tokens, personal data).
