@@ -1,0 +1,15 @@
+<Project>
+	<!-- Common properties for every sample. Imports the root Directory.Build.props
+	     (MSBuild only picks up the nearest one, so this chain matters). -->
+	<Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
+
+	<PropertyGroup>
+		<!-- Samples stay single-TFM net8.0 (the root TargetFrameworks list all
+		     three TFMs; this non-empty TargetFramework overrides it). -->
+		<TargetFramework>net8.0</TargetFramework>
+
+		<!-- Samples are demo apps, never packed. -->
+		<IsPackable>false</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
+</Project>

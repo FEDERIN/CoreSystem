@@ -11,6 +11,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability", "src\Core.Observability\Core.Observability.csproj", "{733186E1-3FFF-753B-5BC8-313CA916646D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{9938565C-D966-4DB9-8D3B-6D92CACE56DF}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Directory.Build.props = samples\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreSystem.Samples.Api", "samples\CoreSystem.Samples.Api\CoreSystem.Samples.Api.csproj", "{4E85C4A5-C126-A849-A39B-96D82B5ACFA5}"
 EndProject
@@ -34,8 +37,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{EF9A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{41535C27-8E2F-4AA0-8F66-C658319FCF79}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 		.github\workflows\documentation.yml = .github\workflows\documentation.yml
 		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\samples-smoke.yml = .github\workflows\samples-smoke.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.Abstractions", "src\Core.Observability.Abstractions\Core.Observability.Abstractions.csproj", "{D5D8670A-7C9E-4893-8B3E-23782A01D780}"
@@ -94,8 +100,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{C41DB1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{F5B84E9E-1C6F-45C9-8148-FE5AD45148B4}"
 	ProjectSection(SolutionItems) = preProject
+		AGENTS.md = AGENTS.md
+		CORE-SYSTEM-STANDARDS.md = CORE-SYSTEM-STANDARDS.md
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+		MEMORY.md = MEMORY.md
 		mkdocs.yml = mkdocs.yml
 		README.md = README.md
 		requirements.txt = requirements.txt
