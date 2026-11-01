@@ -70,6 +70,12 @@ nav:
           - Architecture: Http/Architecture.md
           - Problem Details: Http/ProblemDetails.md
 
+      - OpenAPI:
+          - Overview: OpenApi/index.md
+          - Getting Started: OpenApi/GettingStarted.md
+          - Configuration: OpenApi/Configuration.md
+          - Problem Responses: OpenApi/ProblemResponses.md
+
       - Resilience:
           - Overview: Resilience/index.md
           - Getting Started: Resilience/GettingStarted.md

@@ -34,6 +34,7 @@ CoreSystem helps developers build applications that are:
 | Core.Observability | Metrics, tracing, and logging integration based on OpenTelemetry.                                 |
 | Core.Correlation | Correlation-id propagation middleware for ASP.NET Core.                                           |
 | Core.Http.ProblemDetails | Consistent RFC 9457 problem details for APIs.                                                     |
+| Core.OpenApi        | OpenAPI document conventions and shared error components.                                          |
 
 ---
 
@@ -44,6 +45,7 @@ Choose a package to get started:
 * Resilience
 * Rate Limiting
 * Http
+* OpenAPI
 * Memory
 * Redis
 * Serialization
