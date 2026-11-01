@@ -196,6 +196,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.Abstract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Observability.UnitTests", "tests\Core.Observability.UnitTests\Core.Observability.UnitTests.csproj", "{4A4DE1F7-9DF1-46A8-9109-145008F15710}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.OpenApi", "src\Core.OpenApi\Core.OpenApi.csproj", "{1C4AED37-16DF-58CF-DD60-79C3F46435D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.OpenApi.UnitTests", "tests\Core.OpenApi.UnitTests\Core.OpenApi.UnitTests.csproj", "{D365C64D-F878-8855-5348-8D0B348241C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -294,6 +298,14 @@ Global
 		{4A4DE1F7-9DF1-46A8-9109-145008F15710}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A4DE1F7-9DF1-46A8-9109-145008F15710}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A4DE1F7-9DF1-46A8-9109-145008F15710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C4AED37-16DF-58CF-DD60-79C3F46435D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C4AED37-16DF-58CF-DD60-79C3F46435D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C4AED37-16DF-58CF-DD60-79C3F46435D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C4AED37-16DF-58CF-DD60-79C3F46435D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D365C64D-F878-8855-5348-8D0B348241C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D365C64D-F878-8855-5348-8D0B348241C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D365C64D-F878-8855-5348-8D0B348241C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D365C64D-F878-8855-5348-8D0B348241C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -342,6 +354,8 @@ Global
 		{5118FE47-2053-49FD-82B9-EC4BE3D7C56C} = {CC99C87C-68B7-48BD-9903-804D628BC53A}
 		{00CB0873-650C-4C33-BE4D-B48DA5849BAF} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 		{4A4DE1F7-9DF1-46A8-9109-145008F15710} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
+		{1C4AED37-16DF-58CF-DD60-79C3F46435D2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D365C64D-F878-8855-5348-8D0B348241C2} = {CC99C87C-68B7-48BD-9904-804D628BC54B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89DB2D33-B643-44C6-8CAA-0B1FB69605CA}

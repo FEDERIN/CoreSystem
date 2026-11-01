@@ -49,6 +49,7 @@ composable.
 | [CoreSystem.RateLimiting](https://www.nuget.org/packages/CoreSystem.RateLimiting) | Configurable rate limiting with metrics | ✅ Stable |
 | [CoreSystem.Http](https://www.nuget.org/packages/CoreSystem.Http) | HTTP response capture and replay infrastructure | ✅ Stable |
 | [CoreSystem.Http.ProblemDetails](https://www.nuget.org/packages/CoreSystem.Http.ProblemDetails) | RFC 9457 problem details and exception mapping | ✅ Stable |
+| [CoreSystem.OpenApi](https://www.nuget.org/packages/CoreSystem.OpenApi) | OpenAPI document conventions and shared error components | 🚧 Unreleased |
 | [CoreSystem.Correlation](https://www.nuget.org/packages/CoreSystem.Correlation) | Correlation-id propagation middleware | ✅ Stable |
 
 External projects: [CoreSystem.Cache](https://www.nuget.org/packages/CoreSystem.Cache) and [CoreSystem.Idempotency](https://www.nuget.org/packages/CoreSystem.Idempotency) are maintained in their own repositories — see docs/External.
