@@ -192,9 +192,15 @@
       "CoreSystem.OpenApi": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.OpenApi.Abstractions": "(, )",
+          "CoreSystem.OpenApi.Abstractions": "[1.0.0, )",
           "Swashbuckle.AspNetCore.SwaggerGen": "[9.0.6, )",
           "Swashbuckle.AspNetCore.SwaggerUI": "[9.0.6, )"
+        }
+      },
+      "CoreSystem.OpenApi.Abstractions": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.OpenApi": "[1.6.25, )"
         }
       },
       "Microsoft.OpenApi": {
@@ -418,9 +424,15 @@
       "CoreSystem.OpenApi": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.OpenApi.Abstractions": "(, )",
+          "CoreSystem.OpenApi.Abstractions": "[1.0.0, )",
           "Swashbuckle.AspNetCore.SwaggerGen": "[9.0.6, )",
           "Swashbuckle.AspNetCore.SwaggerUI": "[9.0.6, )"
+        }
+      },
+      "CoreSystem.OpenApi.Abstractions": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.OpenApi": "[1.6.25, )"
         }
       },
       "Microsoft.OpenApi": {
@@ -636,9 +648,15 @@
       "CoreSystem.OpenApi": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.OpenApi.Abstractions": "(, )",
+          "CoreSystem.OpenApi.Abstractions": "[1.0.0, )",
           "Swashbuckle.AspNetCore.SwaggerGen": "[9.0.6, )",
           "Swashbuckle.AspNetCore.SwaggerUI": "[9.0.6, )"
+        }
+      },
+      "CoreSystem.OpenApi.Abstractions": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.OpenApi": "[1.6.25, )"
         }
       },
       "Microsoft.OpenApi": {

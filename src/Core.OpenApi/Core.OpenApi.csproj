@@ -27,20 +27,12 @@
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<UseLocalOpenApiAbstractions Condition="'$(UseLocalOpenApiAbstractions)' == ''">false</UseLocalOpenApiAbstractions>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(UseLocalOpenApiAbstractions)' != 'true'">
-		<PackageReference Include="CoreSystem.OpenApi.Abstractions" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(UseLocalOpenApiAbstractions)' == 'true'">
+	<ItemGroup>
 		<ProjectReference Include="..\Core.OpenApi.Abstractions\Core.OpenApi.Abstractions.csproj" />
 	</ItemGroup>
 
