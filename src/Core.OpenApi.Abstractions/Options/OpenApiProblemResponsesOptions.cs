@@ -2,7 +2,7 @@ namespace Core.OpenApi.Options;
 
 /// <summary>
 /// Configures the shared problem-details responses produced by
-/// <see cref="OpenApiDocumentPatcher"/>.
+/// <c>OpenApiDocumentPatcher</c>.
 /// </summary>
 public sealed class OpenApiProblemResponsesOptions
 {
