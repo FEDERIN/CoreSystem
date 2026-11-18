@@ -4,7 +4,7 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Memory</PackageId>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>Production-ready in-memory synchronization library for .NET 8, 9 and 10 providing lightweight keyed asynchronous locks for coordinating concurrent operations within a single process.</Description>
 		<PackageTags>
@@ -26,9 +26,9 @@
 		<PackageProjectUrl>https://github.com/FEDERIN/CoreSystem/tree/main/src/Core.Memory</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<AssemblyVersion>1.1.0.0</AssemblyVersion>
-		<FileVersion>1.1.0.0</FileVersion>
-		<InformationalVersion>1.1.0</InformationalVersion>
+		<AssemblyVersion>1.1.1.0</AssemblyVersion>
+		<FileVersion>1.1.1.0</FileVersion>
+		<InformationalVersion>1.1.1</InformationalVersion>
 		<PackageReleaseNotes>
 			Initial stable release.
 			- In-memory keyed asynchronous lock provider
@@ -37,6 +37,7 @@
 			- Dependency Injection integration
 			- Production-ready implementation
 			1.1.0: targets net8.0, net9.0 and net10.0. No public API or behavior change; the net9.0 and net10.0 assets are new, and the net8.0 asset is unchanged.
+			1.1.1: Dependency refresh on net10.0. Microsoft.Extensions.DependencyInjection.Abstractions 10.0.13 to 10.0.15. The target framework declarations (net8.0;net9.0;net10.0) moved to the central Directory.Packages.props. No code or API changes.
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
