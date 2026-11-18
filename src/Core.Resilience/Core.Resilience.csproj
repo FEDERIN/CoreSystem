@@ -5,10 +5,10 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>CoreSystem.Resilience</PackageId>
-		<Version>2.1.0</Version>
-		<AssemblyVersion>2.1.0.0</AssemblyVersion>
-		<FileVersion>2.1.0.0</FileVersion>
-		<InformationalVersion>2.1.0</InformationalVersion>
+		<Version>2.1.1</Version>
+		<AssemblyVersion>2.1.1.0</AssemblyVersion>
+		<FileVersion>2.1.1.0</FileVersion>
+		<InformationalVersion>2.1.1</InformationalVersion>
 		<Authors>Federin Pastor Gutierrez Ortiz</Authors>
 		<Description>
 			Production-ready resilience framework for .NET 8, .NET 9 and .NET 10 with configurable resilience pipelines, Retry, Timeout, Circuit Breaker, and OpenTelemetry metrics.
@@ -36,6 +36,7 @@
 			2.0.2: Package-only fix. The 2.0.1 nuspec declared CoreSystem.Observability.Abstractions 1.0.0 because the package was tagged before the central pin was refreshed. This release declares 1.0.1. No code or API changes.
 			2.0.3: Dependency refresh. Polly 8.7.0 to 8.8.0; OpenTelemetry.Extensions.Hosting 1.19.0 to 1.20.0; CoreSystem.Observability.Abstractions refreshed to 1.0.2 (Microsoft.Extensions.Diagnostics.HealthChecks 8.0.32). No code or API changes.
 			2.1.0: Targets net8.0, net9.0 and net10.0. No public API or code change; the net9.0 and net10.0 assets are new. Dependency refresh on every TFM: OpenTelemetry, OpenTelemetry.Api and OpenTelemetry.Extensions.Hosting 1.20.0 to 1.20.1; CoreSystem.Observability.Abstractions 1.0.2 to 1.1.0.
+			2.1.1: Dependency refresh. Polly 8.8.0 to 8.9.1; OpenTelemetry, OpenTelemetry.Api and OpenTelemetry.Extensions.Hosting on net10.0 1.20.1 to 1.21.0 (net8.0 and net9.0 stay on 1.20.1). No public API or code change.
 		</PackageReleaseNotes>
 	</PropertyGroup>
 
