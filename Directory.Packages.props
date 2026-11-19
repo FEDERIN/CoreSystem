@@ -11,7 +11,7 @@
 		<PackageVersion Include="CoreSystem.Http" Version="1.2.0" />
 		<PackageVersion Include="CoreSystem.Memory" Version="1.1.0" />
 		<PackageVersion Include="CoreSystem.Observability" Version="1.1.0" />
-		<PackageVersion Include="CoreSystem.Observability.Abstractions" Version="1.1.0" />
+		<PackageVersion Include="CoreSystem.Observability.Abstractions" Version="1.1.1" />
 		<PackageVersion Include="CoreSystem.Redis" Version="1.1.0" />
 		<PackageVersion Include="CoreSystem.Resilience" Version="2.1.1" />
 		<PackageVersion Include="CoreSystem.Serialization" Version="1.3.1" />

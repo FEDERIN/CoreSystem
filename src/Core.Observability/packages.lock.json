@@ -4,14 +4,14 @@
     "net10.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.13",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.13",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.13",
-          "Microsoft.Extensions.Options": "10.0.13"
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.15",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.15",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.15",
+          "Microsoft.Extensions.Options": "10.0.15"
         }
       },
       "Microsoft.Data.SqlClient": {
@@ -593,9 +593,9 @@
     "net8.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
@@ -1183,9 +1183,9 @@
     "net9.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.21",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.21",

@@ -516,7 +516,7 @@
       "CoreSystem.Observability": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Observability.Abstractions": "[1.1.0, )",
+          "CoreSystem.Observability.Abstractions": "[1.1.1, )",
           "Microsoft.Data.SqlClient": "[7.1.2, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.21.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.21.0, )",
@@ -531,14 +531,14 @@
       },
       "CoreSystem.Observability.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.13",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.13",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.13",
-          "Microsoft.Extensions.Options": "10.0.13"
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.15",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.15",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.15",
+          "Microsoft.Extensions.Options": "10.0.15"
         }
       },
       "Microsoft.Data.SqlClient": {
@@ -1278,7 +1278,7 @@
       "CoreSystem.Observability": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Observability.Abstractions": "[1.1.0, )",
+          "CoreSystem.Observability.Abstractions": "[1.1.1, )",
           "Microsoft.Data.SqlClient": "[7.1.2, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.20.1, )",
           "OpenTelemetry.Extensions.Hosting": "[1.20.1, )",
@@ -1293,9 +1293,9 @@
       },
       "CoreSystem.Observability.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
@@ -2033,7 +2033,7 @@
       "CoreSystem.Observability": {
         "type": "Project",
         "dependencies": {
-          "CoreSystem.Observability.Abstractions": "[1.1.0, )",
+          "CoreSystem.Observability.Abstractions": "[1.1.1, )",
           "Microsoft.Data.SqlClient": "[7.1.2, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.20.1, )",
           "OpenTelemetry.Extensions.Hosting": "[1.20.1, )",
@@ -2048,9 +2048,9 @@
       },
       "CoreSystem.Observability.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.21",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.21",

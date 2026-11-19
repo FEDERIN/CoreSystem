@@ -4,9 +4,9 @@
     "net10.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw=="
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
@@ -82,9 +82,9 @@
     "net8.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw=="
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
@@ -160,9 +160,9 @@
     "net9.0": {
       "CoreSystem.Observability.Abstractions": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "jvqF4P9398+LdSDqvy9LfRpTz8SxbCW1GCmg+b5RF1x8/8ttNJghl3/ThpAX2OEYZ//H4xbqOTPKUyZdeosRbw=="
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+Xxd9UkyEQ2mrfi2Y5tMrc8LsiSCe9BUxzHa7yc5WVer6qMXZDDU25v5ubuYmQyN8jFyBqORnw9MaklKGBJ15w=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
