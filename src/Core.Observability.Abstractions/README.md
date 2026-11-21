@@ -1,4 +1,4 @@
-# 🧩 CoreSystem.Observability.Abstractions
+# ⚡ CoreSystem.Observability.Abstractions
 
 > **Base contracts for health checks and observability contributors in .NET 8, 9 and 10**
 
@@ -13,7 +13,7 @@ discovers the registered contributors and wires them into the host.
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
@@ -23,21 +23,21 @@ discovers the registered contributors and wires them into the host.
 - ✅ Contributors are discovered by `CoreSystem.Observability` from dependency injection
 - ✅ Targets .NET 8, .NET 9 and .NET 10
 
-------------------------------------------------------------------------
+---
 
 ## 📦 Installation
 
-``` bash
+```bash
 dotnet add package CoreSystem.Observability.Abstractions
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Quick Start
 
 Implement a health check contributor:
 
-``` csharp
+```csharp
 using Core.Observability.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,7 +56,7 @@ public sealed class DatabaseHealthCheckContributor : IHealthCheckContributor
 
 Implement an observability contributor:
 
-``` csharp
+```csharp
 using Core.Observability.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -78,14 +78,14 @@ public sealed class OrdersObservabilityContributor : IObservabilityContributor
 Register the contributors as **instances** so `CoreSystem.Observability` can
 discover them:
 
-``` csharp
+```csharp
 builder.Services.AddSingleton<IHealthCheckContributor>(
     new DatabaseHealthCheckContributor());
 builder.Services.AddSingleton<IObservabilityContributor>(
     new OrdersObservabilityContributor());
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🧩 Contributor Contracts
 
@@ -95,7 +95,7 @@ builder.Services.AddSingleton<IObservabilityContributor>(
 | `IObservabilityContributor` | `GetActivitySources()` | Returns the activity source names contributed by the module. |
 | `IObservabilityContributor` | `ConfigureObservability(IServiceCollection, IConfiguration)` | Registers observability services in the DI container. |
 
-------------------------------------------------------------------------
+---
 
 ## 🏗 How Discovery Works
 
@@ -103,7 +103,7 @@ Contributors are **not** discovered by scanning assemblies. Each module
 registers its contributors as instances in the dependency injection container,
 and `CoreSystem.Observability` reads them when the host is built:
 
-``` text
+```text
 Module
   │  services.AddSingleton<IHealthCheckContributor>(new MyContributor())
   ▼
@@ -116,25 +116,20 @@ Health checks and activity sources registered
 > Note: discovery looks for registered **instances**. A type registration such
 > as `AddSingleton<IHealthCheckContributor, MyContributor>()` is not picked up.
 
-------------------------------------------------------------------------
+---
 
-## 📖 Documentation
+## 📚 Documentation
 
-The full documentation includes:
+- [Observability overview](https://federin.github.io/CoreSystem/Observability/)
+- [Architecture guide](https://federin.github.io/CoreSystem/Guides/Architecture/)
 
-- Architecture overview
-- Dependency injection guide
-- Package dependency map
-
-Visit the GitHub repository for the complete documentation.
-
-------------------------------------------------------------------------
+---
 
 ## 🤝 Contributing
 
 Issues and pull requests are welcome.
 
-------------------------------------------------------------------------
+---
 
 ## 📄 License
 

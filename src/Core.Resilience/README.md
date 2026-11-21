@@ -114,9 +114,9 @@ The `Core.Resilience` meter is registered for OpenTelemetry integration.
 | `core.resilience.circuit.opened` | Total circuit breaker transitions to Open. |
 | `core.resilience.circuit.half_opened` | Total circuit breaker transitions to Half-Open. |
 | `core.resilience.circuit.closed` | Total circuit breaker transitions to Closed. |
-| `core.resilience.pipeline.duration` | Execution time of the resilience pipeline. |
 
-Register the meter with OpenTelemetry:
+When CoreSystem.Observability is enabled, the meter is registered automatically.
+Otherwise, register it with OpenTelemetry:
 
 ```csharp
 builder.Services
@@ -158,20 +158,17 @@ Each configured `PipelineType` is registered in the pipeline registry and resolv
 
 ---
 
-## 📖 Documentation
+## 📚 Documentation
 
-The full documentation includes:
-
-- Getting Started
-- Configuration
-- Retry
-- Circuit Breaker
-- Timeout
-- Metrics
-- Architecture
-- Extensibility
-
-Visit the GitHub repository for the complete documentation.
+- [Overview](https://federin.github.io/CoreSystem/Resilience/)
+- [Getting Started](https://federin.github.io/CoreSystem/Resilience/GettingStarted/)
+- [Configuration](https://federin.github.io/CoreSystem/Resilience/Configuration/)
+- [Retry](https://federin.github.io/CoreSystem/Resilience/Retry/)
+- [Circuit Breaker](https://federin.github.io/CoreSystem/Resilience/CircuitBreaker/)
+- [Timeout](https://federin.github.io/CoreSystem/Resilience/Timeout/)
+- [Observability](https://federin.github.io/CoreSystem/Resilience/Observability/)
+- [Architecture](https://federin.github.io/CoreSystem/Resilience/Architecture/)
+- [Extensibility](https://federin.github.io/CoreSystem/Resilience/Extensibility/)
 
 ---
 

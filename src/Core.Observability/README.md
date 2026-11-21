@@ -1,4 +1,4 @@
-# 📊 CoreSystem.Observability
+# ⚡ CoreSystem.Observability
 
 > **OpenTelemetry and Serilog integration for ASP.NET Core applications on .NET 8, .NET 9 and .NET 10**
 
@@ -11,7 +11,7 @@ registered by other CoreSystem modules.
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Observability?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
-![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP%20v1.20.1-purple?style=for-the-badge)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-OTLP-purple?style=for-the-badge)
 
 ---
 
@@ -84,7 +84,6 @@ Each signal is disabled unless its `Enabled` property is `true`.
       "Enabled": true,
       "OtlpEndpoint": "http://localhost:4317",
       "Meters": [
-        "Core.Idempotency",
         "Core.Resilience"
       ]
     }
@@ -118,8 +117,9 @@ or personally identifiable information.
 | `/ready` | Readiness probe | All checks registered by `IHealthCheckContributor` implementations. |
 
 Both endpoints return JSON with the overall status, duration, and individual
-check details. The health and readiness endpoints are excluded from ASP.NET
-Core trace instrumentation to reduce telemetry noise.
+check details. Requests whose path contains `/health`, `/swagger` or `/metrics`
+are excluded from ASP.NET Core trace instrumentation to reduce telemetry noise.
+`/ready` is traced like any other endpoint.
 
 ---
 
@@ -145,22 +145,42 @@ valid OTLP endpoint is configured, logs are additionally exported through OTLP.
 
 ## 🔌 CoreSystem Integration
 
-CoreSystem modules can contribute their own telemetry and health checks through
-the `CoreSystem.Observability.Abstractions` package. Register those modules
-before calling `AddObservability` so their contributors are included during
+CoreSystem modules contribute their own telemetry and health checks through
+the `CoreSystem.Observability.Abstractions` package, using the
+`IObservabilityContributor` and `IHealthCheckContributor` interfaces. Register
+those contributors before calling `AddObservability` so they are included during
 observability setup.
 
 ```csharp
-builder.Services.AddCoreIdempotency(options =>
-{
-    // Configure the module.
-});
+builder.Services.AddSingleton<IObservabilityContributor, MyModuleObservabilityContributor>();
+builder.Services.AddSingleton<IHealthCheckContributor, MyModuleHealthCheckContributor>();
 
 builder.AddObservability(
     builder.Environment.EnvironmentName,
     "Orders.Api",
     "Company.Platform");
 ```
+
+---
+
+## 🏗 Architecture
+
+```text
+WebApplicationBuilder.AddObservability(environment, serviceName, serviceNamespace)
+ ├── Serilog            -> console, plus OTLP/gRPC when Logging is enabled
+ ├── Tracing            -> ASP.NET Core, HttpClient, SQL Client, contributed sources
+ ├── Metrics            -> ASP.NET Core, HttpClient, runtime, configured meters
+ └── Health checks      -> IHealthCheckContributor registrations
+
+app.UseObservabilityEndpoints()
+ ├── Serilog request logging
+ ├── /health  (liveness, no checks)
+ └── /ready   (readiness, all checks)
+```
+
+Each signal binds only its own `OpenTelemetry` subsection, so a malformed value
+in one cannot disable or break the others. Contributors discovered from the
+service collection supply activity sources, meters, and health checks.
 
 ---
 
@@ -172,6 +192,15 @@ builder.AddObservability(
 | ASP.NET Core | 8.0+ |
 | OTLP collector or compatible backend | Recommended |
 | OTLP gRPC endpoint | Commonly port 4317 |
+
+---
+
+## 📚 Documentation
+
+Full documentation is in the repository:
+
+- [Observability overview](https://federin.github.io/CoreSystem/Observability/)
+- [Architecture guide](https://federin.github.io/CoreSystem/Guides/Architecture/)
 
 ---
 
