@@ -59,7 +59,7 @@ app.MapGet("/ping", (HttpContext ctx) =>
 
 ---
 
-## ⚙ Configuration
+## ⚙️ Configuration
 
 Bind from the `Core:Correlation` configuration section:
 
@@ -95,17 +95,10 @@ Each request gets one ID for its whole pipeline. The value flows through `HttpCo
 
 ---
 
-## 📖 Documentation
+## 📚 Documentation
 
-The full documentation includes:
-
-- Getting Started
-- Configuration
-- Log enrichment
-- Composing with CoreSystem.Observability
-- Architecture
-
-Visit the GitHub repository for the complete documentation.
+- [Correlation overview](https://federin.github.io/CoreSystem/Correlation/)
+- [Observability overview](https://federin.github.io/CoreSystem/Observability/)
 
 ---
 

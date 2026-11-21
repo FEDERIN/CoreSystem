@@ -1,4 +1,4 @@
-# ⚠️ CoreSystem.Http.ProblemDetails
+# ⚡ CoreSystem.Http.ProblemDetails
 
 > **Consistent RFC 9457 Problem Details for ASP.NET Core APIs.**
 
@@ -11,7 +11,7 @@ keeps its domain exceptions, business error codes, and mapping rules.
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
@@ -23,7 +23,7 @@ keeps its domain exceptions, business error codes, and mapping rules.
 - ✅ Exception type and message exposed only in Development
 - ✅ No dependency on domain, application, or idempotency packages
 
-------------------------------------------------------------------------
+---
 
 ## 📦 Installation
 
@@ -31,7 +31,7 @@ keeps its domain exceptions, business error codes, and mapping rules.
 dotnet add package CoreSystem.Http.ProblemDetails
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Quick Start
 
@@ -78,31 +78,31 @@ the mapper in the usual way. The exception handler creates a scope for each
 handled exception, so scoped mapper dependencies (such as a DbContext) are
 resolved and disposed correctly.
 
-------------------------------------------------------------------------
+---
 
 ## 🔌 Application Extensions
 
 Applications can add fields without introducing domain dependencies into this
-package. For example, an API that uses `CoreSystem.Idempotency` can expose the
-key related to a fingerprint mismatch:
+package. For example, an API can add a field to the problem response for one of
+its own exception types:
 
 ```csharp
-using Core.Idempotency.Exceptions;
+using Core.Http.ProblemDetails.Options;
 
 builder.Services.AddCoreProblemDetails(options =>
 {
     options.CustomizeProblemDetails = (problem, context, exception) =>
     {
-        if (exception is IdempotencyFingerprintMismatchException)
+        if (exception is OrderAlreadyExistsException)
         {
-            problem.Extensions["idempotencyKey"] =
-                context.Request.Headers["Idempotency-Key"].ToString();
+            problem.Extensions["tenantId"] =
+                context.Request.Headers["X-Tenant-Id"].ToString();
         }
     };
 });
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 📄 Response Contract
 
@@ -128,7 +128,7 @@ uses `about:blank`.
 In Development, `exceptionType` and `exceptionMessage` are added. They are
 omitted in every other environment.
 
-------------------------------------------------------------------------
+---
 
 ## 🏗 Architecture
 
@@ -151,7 +151,7 @@ RFC 9457 Problem Details Response
 The application owns the vocabulary of errors. CoreSystem owns only reusable
 HTTP infrastructure.
 
-------------------------------------------------------------------------
+---
 
 ## 📖 Public API
 
@@ -163,26 +163,19 @@ HTTP infrastructure.
 | `AddCoreExceptionHandler<TMapper>()` | Registers the mapper-backed exception handler. |
 | `CoreProblemDetailsOptions` | Provides the `CustomizeProblemDetails` callback. |
 
-------------------------------------------------------------------------
+---
 
 ## 📚 Documentation
 
-The full documentation includes:
+- [Problem Details overview](https://federin.github.io/CoreSystem/Http/ProblemDetails/)
 
-- Getting Started
-- Exception Mapping
-- Application Extensions
-- Response Contract
-- Development Diagnostics
-- Best Practices
-
-------------------------------------------------------------------------
+---
 
 ## 🤝 Contributing
 
 Issues, discussions and pull requests are welcome.
 
-------------------------------------------------------------------------
+---
 
 ## 📄 License
 

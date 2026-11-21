@@ -67,7 +67,7 @@ public sealed class OrderService(IDistributedLockProvider lockProvider)
 {
     public async Task ProcessAsync(Guid id, CancellationToken ct)
     {
-        await using var handle =
+        using var handle =
             await lockProvider.AcquireAsync($"orders:{id}", ct);
 
         // Critical section: only one holder across all nodes
@@ -87,9 +87,21 @@ public sealed class OrderService(IDistributedLockProvider lockProvider)
 
 ---
 
+## 🔒 Lock Behavior
+
+`AcquireAsync` retries every `RetryDelay` until it takes the lock. If
+`MaxWaitTime` is set and expires first, it throws `TimeoutException`. When
+`MaxWaitTime` is null, it retries until the lock is taken or the token is
+cancelled.
+
+A lock is released when its handle is disposed. It also expires automatically
+after `LockDuration`, so the critical section must finish within that window.
+
+---
+
 ## 🏗 Architecture
 
-``` text
+```text
 Application
       │
       ▼
@@ -99,7 +111,7 @@ IDistributedLockProvider
 RedisLockProvider
       │
       ▼
-RedisLock (SET NX PX)
+RedisLock (LockTake / LockRelease)
       │
       ▼
 Protected Operation
@@ -110,17 +122,9 @@ critical section at a time regardless of how many application instances exist.
 
 ---
 
-## 📖 Documentation
+## 📚 Documentation
 
-The full documentation includes:
-
-- Getting Started
-- Connection management
-- Distributed locking
-- Ecosystem integration
-- Architecture
-
-Visit the GitHub repository for the complete documentation.
+- [Overview](https://federin.github.io/CoreSystem/Redis/)
 
 ---
 

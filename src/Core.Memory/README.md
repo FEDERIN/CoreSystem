@@ -12,39 +12,38 @@ workloads.
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
--   ✅ Keyed asynchronous locking
--   ✅ Thread-safe implementation
--   ✅ Automatic lock lifecycle management
--   ✅ Lightweight and allocation-friendly
--   ✅ Dependency Injection integration
--   ✅ Targets .NET 8, .NET 9 and .NET 10
--   ✅ Production-ready
+- ✅ Keyed asynchronous locking
+- ✅ Thread-safe implementation
+- ✅ Automatic lock lifecycle management
+- ✅ Dependency Injection integration
+- ✅ Targets .NET 8, .NET 9 and .NET 10
+- ✅ Production-ready
 
-------------------------------------------------------------------------
+---
 
 ## 📦 Installation
 
-``` bash
+```bash
 dotnet add package CoreSystem.Memory
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Quick Start
 
 Register the services:
 
-``` csharp
+```csharp
 builder.Services.AddCoreMemory();
 ```
 
 Inject the lock provider:
 
-``` csharp
+```csharp
 public sealed class OrderService(IAsyncKeyLock lockProvider)
 {
 }
@@ -52,24 +51,24 @@ public sealed class OrderService(IAsyncKeyLock lockProvider)
 
 Acquire a keyed lock:
 
-``` csharp
-await using (await lockProvider.AcquireAsync($"orders:{orderId}"))
+```csharp
+using (await lockProvider.AcquireAsync($"orders:{orderId}"))
 {
     // Critical section
 }
 ```
 
-------------------------------------------------------------------------
+---
 
-## 🏗 Typical Use Cases
+## 🎯 Typical Use Cases
 
--   Prevent concurrent processing of the same entity.
--   Protect critical sections inside ASP.NET Core applications.
--   Synchronize background jobs.
--   Avoid duplicate in-process operations.
--   Coordinate access to shared resources.
+- Prevent concurrent processing of the same entity.
+- Protect critical sections inside ASP.NET Core applications.
+- Synchronize background jobs.
+- Avoid duplicate in-process operations.
+- Coordinate access to shared resources.
 
-------------------------------------------------------------------------
+---
 
 ## ⚙️ Configuration
 
@@ -77,41 +76,6 @@ Locks are created on demand with production-ready defaults; there is nothing to
 configure. Inject `IAsyncKeyLock` and acquire by key.
 
 ---
-
-## 📖 Documentation
-
-The full documentation includes:
-
-- Getting Started
-- Dependency Injection
-- Typical use cases
-- Design
-- Important limitations
-
-Visit the GitHub repository for the complete documentation.
-
----
-
-## 📚 Design
-
-Each key has its own asynchronous lock backed by `SemaphoreSlim`. Locks
-are created on demand and automatically removed when no longer in use,
-preventing unnecessary memory growth.
-
-``` text
-Application
-      │
-      ▼
-IAsyncKeyLock
-      │
-      ▼
-ConcurrentDictionary
-      │
-      ▼
-SemaphoreSlim
-```
-
-------------------------------------------------------------------------
 
 ## ⚠️ Important
 
@@ -121,13 +85,43 @@ process**.
 For synchronization across multiple application instances or servers,
 use a distributed locking solution such as Redis.
 
-------------------------------------------------------------------------
+---
+
+## 🏗 Architecture
+
+Each key has its own asynchronous lock backed by `SemaphoreSlim`. Locks
+are created on demand and automatically removed when no longer in use,
+preventing unnecessary memory growth.
+
+```text
+Application
+      │
+      ▼
+IAsyncKeyLock (MemoryLockProvider)
+      │
+      ▼
+ILockRegistry (MemoryLockRegistry)
+      │
+      ▼
+ConcurrentDictionary<string, MemoryLockEntry>
+      │
+      ▼
+SemaphoreSlim (one per key, reference-counted)
+```
+
+---
+
+## 📚 Documentation
+
+- [Overview](https://federin.github.io/CoreSystem/Memory/)
+
+---
 
 ## 🤝 Contributing
 
 Issues and pull requests are welcome.
 
-------------------------------------------------------------------------
+---
 
 ## 📄 License
 

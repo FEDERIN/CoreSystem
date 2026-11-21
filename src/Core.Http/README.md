@@ -1,32 +1,18 @@
-# 🌐 CoreSystem.Http
+# ⚡ CoreSystem.Http
 
-> **Build HTTP features once. Reuse them everywhere.**
+> **Reusable capture and replay of HTTP responses for ASP.NET Core.**
 
-Production-ready HTTP infrastructure for ASP.NET Core, .NET 8, .NET 9 and .NET 10.
-
-CoreSystem.Http provides reusable infrastructure for capturing and replaying
-HTTP responses in ASP.NET Core applications. It offers lightweight,
-dependency-free components that simplify response interception while promoting
-code reuse across middleware, pipelines, and application frameworks.
-
-Designed as a foundational building block, CoreSystem.Http can be used by
-caching, idempotency, auditing, logging, security, or any feature that requires
-capturing or reproducing HTTP responses.
+CoreSystem.Http captures and replays HTTP responses in ASP.NET Core applications
+without repeating response-interception boilerplate. It has no dependencies
+beyond ASP.NET Core, so features such as caching, idempotency or auditing can
+build on it directly.
 
 ![NuGet](https://img.shields.io/nuget/v/CoreSystem.Http?style=for-the-badge)
 ![Downloads](https://img.shields.io/nuget/dt/CoreSystem.Http?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-blue?style=for-the-badge)
 
-------------------------------------------------------------------------
-
-## Why use CoreSystem.Http?
-
-ASP.NET Core provides powerful HTTP primitives, but reusable response capture and replay often require repetitive boilerplate code.
-
-
-CoreSystem.Http extracts these capabilities into reusable building blocks that can be shared across multiple libraries and applications.
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
@@ -39,7 +25,7 @@ CoreSystem.Http extracts these capabilities into reusable building blocks that c
 - ✅ Built for ASP.NET Core
 - ✅ Reusable across middleware, libraries and application frameworks
 
-------------------------------------------------------------------------
+---
 
 ## 📦 Installation
 
@@ -47,7 +33,7 @@ CoreSystem.Http extracts these capabilities into reusable building blocks that c
 dotnet add package CoreSystem.Http
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Quick Start
 
@@ -86,7 +72,7 @@ await responseWriter.WriteAsync(
     cancellationToken);
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 📖 Public API
 
@@ -99,7 +85,17 @@ CoreSystem.Http intentionally exposes a small, focused and stable public API.
 | `CapturedResponse` | Model | Represents a captured HTTP response, including the status code, headers, content type, and response body. |
 | `AddCoreHttp()` | Extension Method | Registers all CoreSystem.Http services required for response capture and replay. |
 
-------------------------------------------------------------------------
+---
+
+## 🧾 Captured Headers
+
+Capture copies every response header except hop-by-hop and transport headers:
+`Transfer-Encoding`, `Content-Length`, `Connection`, `Date`, `Server`,
+`Keep-Alive`, `Upgrade`, `TE`, `Trailer`, `Proxy-Authenticate` and
+`Proxy-Authorization`. Replay sets `Content-Length` from the captured body. For a
+HEAD request, replay writes the status and headers but no body.
+
+---
 
 ## 🏗 Architecture
 
@@ -117,21 +113,14 @@ IResponseCapture
       ▼
 CapturedResponse
       │
-      ├───────────────┐
-      │               │
-      ▼               ▼
-CoreSystem.Cache      CoreSystem.Idempotency
-      │               │
-      └───────────────┘
-              │
-              ▼
-      IHttpResponseWriter
-              │
-              ▼
-        HTTP Response
+      ▼
+IHttpResponseWriter
+      │
+      ▼
+HTTP Response
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🎯 Use Cases
 
@@ -146,38 +135,28 @@ CoreSystem.Http serves as reusable infrastructure for features such as:
 - Middleware development
 - Custom ASP.NET Core frameworks
 
-------------------------------------------------------------------------
+---
 
-## Dependencies
+## 🛠 Requirements
 
 CoreSystem.Http has no external runtime dependencies beyond ASP.NET Core.
-------------------------------------------------------------------------
+
+---
 
 ## 📚 Documentation
 
-The full documentation includes:
+- [Overview](https://federin.github.io/CoreSystem/Http/)
+- [Getting Started](https://federin.github.io/CoreSystem/Http/GettingStarted/)
+- [Architecture](https://federin.github.io/CoreSystem/Http/Architecture/)
+- [Problem Details](https://federin.github.io/CoreSystem/Http/ProblemDetails/)
 
-- Getting Started
-- Architecture
-- Dependency Injection
-- Response Capture
-- Response Replay
-- Extensibility
-- Best Practices
-
-## 📚 Documentation
-
-Documentation is continuously expanding as CoreSystem evolves.
-
-Additional guides, architecture notes and examples will be available in the project's documentation site.
-
-------------------------------------------------------------------------
+---
 
 ## 🤝 Contributing
 
 Issues, discussions and pull requests are welcome.
 
-------------------------------------------------------------------------
+---
 
 ## 📄 License
 
